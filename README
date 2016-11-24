@@ -1,0 +1,25 @@
+TQMa6 Yocto BSP
+===============
+
+Supported boards
+----------------
+
+SOM		Base board
+
+TQMa6D/TQMa6Q	MBa6
+
+Quick Start Guide
+-----------------
+
+Clone this repo using git clone --recurse-submodules <url>
+
+When switching branches keep in mind to keep the submodules in sync.
+
+To help setting up an initial build space, use 
+
+$: MACHINE=tqma6q-mba6 source setup-environment <build directory>
+
+After this step, everything is setup to build an image using bitbake.
+To use a shared download directory, you can provice $DL_DIR inside
+~/.yocto/site.conf. This will automatically symlinked in the conf dir
+of the build space.
