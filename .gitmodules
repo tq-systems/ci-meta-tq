@@ -9,4 +9,4 @@
 	url = https://git.yoctoproject.org/git/poky.git
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
-	url = https://github.com/tq-systems/meta-tq.git
+	url = ../meta-tq.git
