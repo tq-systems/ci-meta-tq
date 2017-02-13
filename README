@@ -1,12 +1,14 @@
-TQMa6 Yocto BSP
-===============
+TQMa6/6UL/7 core-image test
+===========================
 
 Supported boards
 ----------------
 
-SOM		Base board
+SOC		SOM		Base board
 
-TQMa6D/TQMa6Q	MBa6
+i.MX6<Q,D>	TQMa6D/TQMa6Q	MBa6
+i.MX6UL		TQMa6UL		MBaUL
+i.MX7		TQMa7		MBa7
 
 Quick Start Guide
 -----------------
@@ -17,7 +19,11 @@ When switching branches keep in mind to keep the submodules in sync.
 
 To help setting up an initial build space, use 
 
-$: MACHINE=tqma6q-mba6 source setup-environment <build directory>
+source setup-<machine>
+
+or if setup helper not available for the machine:
+
+$: MACHINE=<machine> source setup-environment <build directory>
 
 After this step, everything is setup to build an image using bitbake.
 To use a shared download directory, you can provice $DL_DIR inside
