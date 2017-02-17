@@ -27,8 +27,9 @@ PROGNAME="setup-environment"
 
 usage()
 {
-    echo -e "\nUsage: source $PROGNAME <build-dir>
+    echo -e "\nUsage: source $PROGNAME <build-dir> <template>
     <build-dir>: specifies the build directory location (required)
+    <template>: template bblayers.conf to use (optional)
 
 If undefined, this script will set \$MACHINE to 'tqma6q-mba6x'.
 "
@@ -36,7 +37,7 @@ If undefined, this script will set \$MACHINE to 'tqma6q-mba6x'.
     ls sources/*/conf/machine/*.conf > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo -e "
-Supported machines: `echo; ls sources/*/conf/machine/*.conf \
+Supported machines: `echo; ls sources/meta-tq/conf/machine/*.conf \
 | sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
 
 To build for a machine listed above, run this script as:
@@ -87,6 +88,12 @@ fi
 
 if [ -z "$MACHINE" ]; then
     MACHINE='tqma6q-mba6x'
+fi
+
+if [ -z "$2" ]; then
+    BBLAYERS_TEMPLATE=bblayers.conf.minimal
+else
+    BBLAYERS_TEMPLATE=bblayers.conf.${2}
 fi
 
 # Check the machine type specified
@@ -155,6 +162,7 @@ if [ ! -e conf/local.conf.sample ]; then
     cat >> conf/local.conf <<EOF
 
 DL_DIR ?= "\${BSPDIR}/downloads/"
+RM_OLD_IMAGE ?= "1"
 EOF
     # Change settings according environment
     sed -e "s,MACHINE ??=.*,MACHINE ??= '$MACHINE',g" \
@@ -163,6 +171,9 @@ EOF
         -i conf/local.conf
 
     cp $TEMPLATES/* conf/
+    if [ -e conf/${BBLAYERS_TEMPLATE} ]; then
+        cp conf/${BBLAYERS_TEMPLATE} conf/bblayers.conf
+    fi
 
     for s in $HOME/.oe $HOME/.yocto; do
         if [ -e $s/site.conf ]; then
