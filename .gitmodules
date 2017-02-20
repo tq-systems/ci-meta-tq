@@ -1,6 +1,6 @@
 [submodule "sources/meta-fsl-arm"]
 	path = sources/meta-fsl-arm
-	url = git://git.yoctoproject.org/meta-fsl-arm
+	url = https://git.yoctoproject.org/meta-fsl-arm.git
 [submodule "sources/poky"]
 	path = sources/poky
 	url = https://git.yoctoproject.org/git/poky.git
@@ -15,7 +15,7 @@
 	url = https://github.com/Freescale/meta-fsl-arm-extra.git
 [submodule "sources/meta-fsl-demos"]
 	path = sources/meta-fsl-demos
-	url = git://github.com/Freescale/meta-fsl-demos.git
+	url = https://github.com/Freescale/meta-fsl-demos.git
 [submodule "sources/meta-tq-distro-fsl"]
 	path = sources/meta-tq-distro-fsl
 	url = ../meta-tq-distro-fsl.git
