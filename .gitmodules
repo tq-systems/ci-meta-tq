@@ -1,9 +1,9 @@
 [submodule "sources/meta-fsl-arm"]
 	path = sources/meta-fsl-arm
-	url = https://git.yoctoproject.org/meta-fsl-arm.git
+	url = https://git.yoctoproject.org/meta-fsl-arm
 [submodule "sources/poky"]
 	path = sources/poky
-	url = https://git.yoctoproject.org/git/poky.git
+	url = https://git.yoctoproject.org/git/poky
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
