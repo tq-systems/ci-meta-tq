@@ -1,0 +1,60 @@
+#!/bin/bash
+# build all machines in a layer with a given config
+
+readonly SCRIPTNAME="${0}"
+
+usage()
+{
+	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> \n \
+	<build-dir>: specifies the build directory location (required) \n \
+	<template>: template bblayers.conf to use"
+}
+
+main () {
+	# this disables network check
+	export CONNECTIVITY_CHECK_URIS=" "
+
+	local BUILD_DIR=${1}
+	local LAYER="unknown"
+	local TARGETS="unknown"
+	local CONFIG=${2}
+	local IMAGE=core-image-minimal
+
+	case ${CONFIG} in
+	"gui" )
+		IMAGE=fsl-image-multimedia-full
+		LAYER="meta-tq-distro-fsl"
+		break
+		;;
+	"minimal" )
+		IMAGE=core-image-minimal
+		LAYER="meta-tq"
+		break
+		;;
+	* )
+		usage
+		exit 1
+		break
+		;;
+	esac
+
+	# filter out machines from the layer 
+	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
+		sed s/\.conf//g | xargs -n1 basename)
+	echo "TARGETS=$TARGETS" > ${CONFIG}.prop
+
+	# source the real setup workhorse.
+	. ./setup-environment ${BUILD_DIR} ${CONFIG}
+	[ "$?" -ne "0" ] && echo "environment setup failed" && exit 1
+	for t in $TARGETS; do
+		export MACHINE=$t
+		echo ${MACHINE} ${IMAGE}
+		bitbake ${IMAGE}
+		[ "$?" -ne "0" ] && echo "bitbake for ${MACHINE} failed" && exit 1
+	done
+
+	return 0
+}
+
+main ${@}
+
