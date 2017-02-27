@@ -5,9 +5,11 @@ readonly SCRIPTNAME="${0}"
 
 usage()
 {
-	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> \n \
+	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> [mirror] \n \
 	<build-dir>: specifies the build directory location (required) \n \
-	<template>: template bblayers.conf to use"
+	<template>: template bblayers.conf to use \n \
+	[mirror]: if given, download only and provide mirror tarballs \n
+	[ci]: if given, use only mirror tarballs to build"
 }
 
 main () {
@@ -19,22 +21,31 @@ main () {
 	local TARGETS="unknown"
 	local CONFIG=${2}
 	local IMAGE=core-image-minimal
+	local MODE="normal"
+
+	if ! [ -z "$3" ]
+	then
+		if [ "$3" == "mirror" ] || [ "$3" == "ci" ] || [ "$3" == "normal" ]
+		then
+			MODE=$3
+		fi
+	fi
+
+	echo $1 $2 $3 $MODE
 
 	case ${CONFIG} in
 	"gui" )
 		IMAGE=fsl-image-multimedia-full
 		LAYER="meta-tq-distro-fsl"
-		break
+		export EULA="y"
 		;;
 	"minimal" )
 		IMAGE=core-image-minimal
 		LAYER="meta-tq"
-		break
 		;;
 	* )
 		usage
 		exit 1
-		break
 		;;
 	esac
 
@@ -44,14 +55,53 @@ main () {
 	echo "TARGETS=$TARGETS" > ${CONFIG}.prop
 
 	# source the real setup workhorse.
+	export MACHINE=$(echo $TARGETS | awk '{ print $1 }')
 	. ./setup-environment ${BUILD_DIR} ${CONFIG}
 	[ "$?" -ne "0" ] && echo "environment setup failed" && exit 1
-	for t in $TARGETS; do
-		export MACHINE=$t
-		echo ${MACHINE} ${IMAGE}
-		bitbake ${IMAGE}
-		[ "$?" -ne "0" ] && echo "bitbake for ${MACHINE} failed" && exit 1
-	done
+
+	if [ "${MODE}" == "mirror" ]; then
+		echo "build mirror"
+		echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
+		echo "BB_GENERATE_MIRROR_TARBALLS = \"1\"" | tee -a conf/local.conf
+		echo "clean local dirs in $(pwd) ..."
+		rm -rf cache tmp sstate-cache
+		SETTER=$(bitbake -e -c fetchall core-image-minimal | grep ^DL_DIR)
+		echo "$SETTER"
+		export ${SETTER}
+		echo "clean git2 tarballs from ${DL_DIR} ..."
+		rm -rf ${DL_DIR}/git2_*.tar.gz
+		rm -rf ${DL_DIR}/git2_*.tar.gz.done
+		ls -1 ${DL_DIR}/git2_*
+
+		for t in $TARGETS; do
+			export MACHINE=$t
+			echo "baking: ${MACHINE} ${IMAGE} with -c fetchall"
+			bitbake -c fetchall ${IMAGE}
+		done
+	else
+		echo "build images"
+
+		if [ "${MODE}" == "ci" ]; then
+			echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
+			echo "SOURCE_MIRROR_URL ?= \"file:///mnt/git-tqsc/yocto/\"" | tee -a conf/local.conf
+			echo "INHERIT += \"own-mirrors\"" | tee -a conf/local.conf
+			echo "BB_FETCH_PREMIRRORONLY = \"1\"" | tee -a conf/local.conf
+			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
+			echo "PREMIRRORS_prepend = \"\\" | tee -a conf/local.conf
+			echo "	git://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
+			echo "	ftp://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
+			echo "	http://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
+			echo "	https://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
+			echo "	\"" | tee -a conf/local.conf
+		fi
+
+		for t in $TARGETS; do
+			export MACHINE=$t
+			echo "baking ${MACHINE} ${IMAGE} ..."
+			bitbake ${IMAGE}
+			[ "$?" -ne "0" ] && echo "bitbake for ${MACHINE} failed" && exit 1
+		done
+	fi
 
 	return 0
 }
