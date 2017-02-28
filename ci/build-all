@@ -58,13 +58,17 @@ main () {
 	export MACHINE=$(echo $TARGETS | awk '{ print $1 }')
 	. ./setup-environment ${BUILD_DIR} ${CONFIG}
 	[ "$?" -ne "0" ] && echo "environment setup failed" && exit 1
-
+	# modify local conf as needed before executing bitbake
 	if [ "${MODE}" == "mirror" ]; then
 		echo "build mirror"
+		# poky has per default procompiled native / host packages,
+		# these have malformed local URIs that prevent usage.
 		echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
+		# we will build a local mirror for usage with buildserver ...
 		echo "BB_GENERATE_MIRROR_TARBALLS = \"1\"" | tee -a conf/local.conf
 		echo "clean local dirs in $(pwd) ..."
 		rm -rf cache tmp sstate-cache
+		# get DL_DIR from local.conf to cleanup packages generated from git ...
 		SETTER=$(bitbake -e -c fetchall core-image-minimal | grep ^DL_DIR)
 		echo "$SETTER"
 		export ${SETTER}
@@ -73,6 +77,7 @@ main () {
 		rm -rf ${DL_DIR}/git2_*.tar.gz.done
 		ls -1 ${DL_DIR}/git2_*
 
+		# now force bitbake to do a fetchall for the image to generate
 		for t in $TARGETS; do
 			export MACHINE=$t
 			echo "baking: ${MACHINE} ${IMAGE} with -c fetchall"
@@ -82,25 +87,44 @@ main () {
 		echo "build images"
 
 		if [ "${MODE}" == "ci" ]; then
+			# poky has per default procompiled native / host packages,
+			# these have malformed local URIs that prevent usage.
 			echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
-			echo "SOURCE_MIRROR_URL ?= \"file:///mnt/git-tqsc/yocto/\"" | tee -a conf/local.conf
+			# need to set SOURCE_MIRROR_URL in a site global config on the build server
+			# echo "SOURCE_MIRROR_URL ?= \"file:///blabla
+			# used to force to use and generate a mirror config from $SOURCE_MIRROR_URL
 			echo "INHERIT += \"own-mirrors\"" | tee -a conf/local.conf
+			# force to fetch from premirrors only
 			echo "BB_FETCH_PREMIRRORONLY = \"1\"" | tee -a conf/local.conf
+			# force to switch off any network check
 			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
-			echo "PREMIRRORS_prepend = \"\\" | tee -a conf/local.conf
-			echo "	git://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
-			echo "	ftp://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
-			echo "	http://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
-			echo "	https://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
-			echo "	\"" | tee -a conf/local.conf
+			# premirrors have to be configured per site ...
+			#echo "PREMIRRORS_prepend = \"\\" | tee -a conf/local.conf
+			#echo "	git://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
+			#echo "	ftp://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
+			#echo "	http://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
+			#echo "	https://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
+			#echo "	\"" | tee -a conf/local.conf
 		fi
 
 		for t in $TARGETS; do
+			# overwrite MACHINE
 			export MACHINE=$t
 			echo "baking ${MACHINE} ${IMAGE} ..."
+			# create image for $MACHINE
 			bitbake ${IMAGE}
 			[ "$?" -ne "0" ] && echo "bitbake for ${MACHINE} failed" && exit 1
 		done
+
+		if [ "${MODE}" == "ci" ]; then
+			mkdir -p deployment
+			for t in $TARGETS; do
+				echo "baking ${MACHINE} ${IMAGE} ..."
+				# create image archive for $MACHINE
+				tar -cvzf deployment/${MACHINE}.tgz -C ${BUILD_DIR}/tmp/deploy/images ${MACHINE}
+				[ "$?" -ne "0" ] && echo "bitbake for ${MACHINE} failed" && exit 1
+			done
+		fi
 	fi
 
 	return 0
