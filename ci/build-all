@@ -52,7 +52,6 @@ main () {
 	# filter out machines from the layer 
 	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
 		sed s/\.conf//g | xargs -n1 basename)
-	echo "TARGETS=$TARGETS" > ${CONFIG}.prop
 
 	# source the real setup workhorse.
 	export MACHINE=$(echo $TARGETS | awk '{ print $1 }')
@@ -118,11 +117,13 @@ main () {
 
 		if [ "${MODE}" == "ci" ]; then
 			mkdir -p deployment
+			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
 			for t in $TARGETS; do
-				echo "baking ${MACHINE} ${IMAGE} ..."
+				MACHINE=$t
+				echo "archiving ${MACHINE} ${IMAGE} ..."
 				# create image archive for $MACHINE
-				tar -cvzf deployment/${MACHINE}.tgz -C ${BUILD_DIR}/tmp/deploy/images ${MACHINE}
-				[ "$?" -ne "0" ] && echo "bitbake for ${MACHINE} failed" && exit 1
+				tar -cvzf deployment/${MACHINE}.tgz -C ${ARTIFACTSDIR} ${MACHINE}
+				[ "$?" -ne "0" ] && echo "archiving for ${MACHINE} failed" && exit 1
 			done
 		fi
 	fi
