@@ -1,31 +1,44 @@
-TQMa6/6UL/7 core-image test
-===========================
+TQMa6[QDL]/6UL/7[DS] Yocto integration test
+===========================================
 
 Supported boards
 ----------------
 
-SOC		SOM		Base board
-
-i.MX6<Q,D>	TQMa6D/TQMa6Q	MBa6
-i.MX6UL		TQMa6UL		MBaUL
-i.MX7		TQMa7		MBa7
+see Readme of TQ Sytems Layers (meta-tq, meta-tq-distro-fsl)
 
 Quick Start Guide
 -----------------
 
-Clone this repo using git clone --recurse-submodules <url>
+Clone this repo using git clone --branch=<branch-name> --recurse-submodules <url>
 
-When switching branches keep in mind to keep the submodules in sync.
+current supported branche(s): krogoth
 
-To help setting up an initial build space, use 
+When switching branches keep in mind to keep the submodules in sync:
 
-source setup-<machine>
+git submodule sync
+git submodule update --init
 
-or if setup helper not available for the machine:
+To list supported machines:
 
-$: MACHINE=<machine> source setup-environment <build directory>
+LAYER=<meta-tq,meta-tq-distro-fsl>
+ls sources/${LAYER}/conf/machine/*.conf | sed s/\.conf//g | xargs -n1 basename
+
+To help setting up an initial build space, use
+
+MACHINE=<machine> source setup-environment <builddir> <config>
+
+where config is: minimal | gui
+
+This will use sources/template/conf/bblayers.conf.<config> as initial template
+for your layer configuration.
 
 After this step, everything is setup to build an image using bitbake.
-To use a shared download directory, you can provice $DL_DIR inside
-~/.yocto/site.conf. This will automatically symlinked in the conf dir
-of the build space.
+To use a shared download directory, you can provide $DL_DIR via
+~/.yocto/site.conf. This file - if available - will be automatically symlinked
+into the conf dir of the build space.
+
+To force a build of all supported machines in one of the configs, use the CI
+helper script:
+
+ci/build-all <builddir> <config>
+
