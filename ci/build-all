@@ -5,11 +5,12 @@ readonly SCRIPTNAME="${0}"
 
 usage()
 {
-	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> [mirror] \n \
+	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> [<mode>] \n \
 	<build-dir>: specifies the build directory location (required) \n \
 	<template>: template bblayers.conf to use \n \
-	[mirror]: if given, download only and provide mirror tarballs \n
-	[ci]: if given, use only mirror tarballs to build"
+	mode=normal or not given: do normal build \n
+	mode=mirror: if given, download only and provide mirror tarballs \n
+	mode=ci: if given, use only mirror tarballs to build"
 }
 
 main () {
