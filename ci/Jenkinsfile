@@ -1,0 +1,146 @@
+/**
+ * Jenkinsfile for Yocto-BSPs using declarative pipeline
+ */
+
+/**********************************************************************/
+/*******************         Functions         ************************/
+/**********************************************************************/
+def wipeOutWs(){
+    dir("${env.WORKSPACE}") {
+        echo "Remove ${env.WORKSPACE}..."
+        deleteDir()
+    }
+    dir("${env.WORKSPACE}@script") {
+        echo "Remove ${env.WORKSPACE}@script..."
+        deleteDir()
+    }
+    dir("${env.WORKSPACE}@tmp") {
+        echo "Remove ${env.WORKSPACE}@tmp..."
+        deleteDir()
+    }
+}
+
+/**********************************************************************/
+/*******************         Pipeline         *************************/
+/**********************************************************************/
+
+pipeline {
+    agent {
+        label 'master'
+    }
+
+    environment {
+        WS_GUI = "CONFIGS/gui"
+        WS_MIN = "CONFIGS/minimal"
+    }
+
+    stages {
+        stage ('Prepare Workspaces') {
+            steps {
+                parallel (
+                    "gui" : {
+                        checkout([
+                            $class: 'GitSCM',
+                            branches: [[name: "${YOCTO_VERSION}"]],
+                            doGenerateSubmoduleConfigurations: false,
+                            extensions: [
+                                [$class: 'RelativeTargetDirectory',
+                                    relativeTargetDir: "${env.WS_GUI}"
+                                ],
+                                [$class: 'PruneStaleBranch'],
+                            ],
+                            submoduleCfg: [],
+                            userRemoteConfigs: [
+                                [url: "${env.GIT_URI_TQG}/tq-embedded/tqmaxx/ci-meta-tq.git"]
+                            ]
+                        ])
+                    },
+                    "minimal" : {
+                        checkout([
+                            $class: 'GitSCM',
+                            branches: [[name: "${YOCTO_VERSION}"]],
+                            doGenerateSubmoduleConfigurations: false,
+                            extensions: [
+                                [$class: 'RelativeTargetDirectory',
+                                    relativeTargetDir: "${env.WS_MIN}"
+                                ],
+                                [$class: 'PruneStaleBranch'],
+                            ],
+                            submoduleCfg: [],
+                            userRemoteConfigs: [
+                                [url: "${env.GIT_URI_TQG}/tq-embedded/tqmaxx/ci-meta-tq.git"]
+                            ]
+                        ])
+                    }
+                )
+            }
+        }
+        stage ('Checkout all meta-layers') {
+            steps {
+                parallel (
+                    "gui" : {
+                        dir("${env.WS_GUI}") {
+                            sh """
+                            rm -rf buildspace
+                            git clean -fdx
+                            git submodule sync
+                            git submodule update --init"""
+                        }
+                    },
+                    "minimal" : {
+                        dir("${env.WS_MIN}") {
+                            sh """
+                            rm -rf buildspace
+                            git clean -fdx
+                            git submodule sync
+                            git submodule update --init"""
+                        }
+                    }
+                )
+            }
+        }
+        stage ('Build'){
+            steps {
+                parallel (
+                    "gui" : {
+                        dir("${env.WS_GUI}") {
+                            sh "./ci/build-all buildspace \$(basename \$(pwd)) ci"
+                        }
+                    },
+                    "minimal" : {
+                        dir("${env.WS_MIN}") {
+                            sh "./ci/build-all buildspace \$(basename \$(pwd)) ci"
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
+            archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
+            wipeOutWs()
+        }
+        unstable {
+            emailext (
+                to: "felschm@tqsc.de,niebelm@tqsc.de,krummsdorfm@tqsc.de",
+                subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
+                body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
+                  Check console output at ${env.BUILD_URL} to view the results.""",
+                attachLog: true,
+            )
+        }
+        failure {
+            emailext (
+                to: "felschm@tqsc.de,niebelm@tqsc.de,krummsdorfm@tqsc.de",
+                subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
+                body: """\
+                ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
+                Check console output at ${env.BUILD_URL} to view the results.""",
+                attachLog: true,
+            )
+        }
+    }
+}
