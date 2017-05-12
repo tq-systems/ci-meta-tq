@@ -125,7 +125,7 @@ pipeline {
         }
         unstable {
             emailext (
-                to: "felschm@tqsc.de,niebelm@tqsc.de,krummsdorfm@tqsc.de",
+                to: "niebelm@tqsc.de,krummsdorfm@tqsc.de",
                 subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
                 body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
                   Check console output at ${env.BUILD_URL} to view the results.""",
@@ -134,7 +134,7 @@ pipeline {
         }
         failure {
             emailext (
-                to: "felschm@tqsc.de,niebelm@tqsc.de,krummsdorfm@tqsc.de",
+                to: "niebelm@tqsc.de,krummsdorfm@tqsc.de",
                 subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
                 body: """\
                 ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
