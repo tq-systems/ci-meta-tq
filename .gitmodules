@@ -22,7 +22,3 @@
 	path = sources/meta-fsl-demos
 	url = https://github.com/Freescale/meta-fsl-demos.git
 	branch = krogoth
-[submodule "sources/meta-tq-distro-fsl"]
-	path = sources/meta-tq-distro-fsl
-	url = ../meta-tq-distro-fsl.git
-	branch = krogoth
