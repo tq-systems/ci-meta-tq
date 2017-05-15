@@ -18,4 +18,5 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-MACHINE=tqma6ul-mba6ul source setup-environment mba6ul-build
+MACHINE=tqma6ul-mba6ul source setup-environment build
+export MACHINE=tqma6ul-mba6ul
