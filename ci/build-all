@@ -62,7 +62,7 @@ main () {
 	case ${CONFIG} in
 	"gui" )
 		IMAGE=fsl-image-multimedia-full
-		LAYER="meta-tq-distro-fsl"
+		LAYER="meta-tq"
 		export EULA="y"
 		;;
 	"minimal" )
