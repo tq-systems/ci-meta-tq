@@ -4,7 +4,7 @@ TQMa6[QDL]/6UL/7[DS] Yocto integration test
 Supported boards
 ----------------
 
-see Readme of TQ Sytems Layers (meta-tq, meta-tq-distro-fsl)
+see Readme of TQ Sytems Layers (meta-tq)
 
 Quick Start Guide
 -----------------
@@ -20,7 +20,7 @@ git submodule update --init
 
 To list supported machines:
 
-LAYER=<meta-tq,meta-tq-distro-fsl>
+LAYER=meta-tq
 ls sources/${LAYER}/conf/machine/*.conf | sed s/\.conf//g | xargs -n1 basename
 
 To help setting up an initial build space, use
@@ -37,8 +37,8 @@ To use a shared download directory, you can provide $DL_DIR via
 ~/.yocto/site.conf. This file - if available - will be automatically symlinked
 into the conf dir of the build space.
 
-To force a build of all supported machines in one of the configs, use the CI
-helper script:
+To force a build of all supported machines in one of the configs, one can
+use the CI helper script:
 
 ci/build-all <builddir> <config>
 
