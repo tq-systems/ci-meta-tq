@@ -23,6 +23,7 @@
 
 CWD=$(pwd)
 PROGNAME="setup-environment"
+DEFAULT_MACHINE="tqma6q-mba6x"
 
 usage()
 {
@@ -30,7 +31,7 @@ usage()
     <build-dir>: specifies the build directory location (required)
     <template>: template bblayers.conf to use (optional)
 
-If undefined, this script will set \$MACHINE to 'tqma6q-mba6x'.
+If undefined, this script will set \$MACHINE to '${DEFAULT_MACHINE}'.
 "
 
     ls sources/*/conf/machine/*.conf > /dev/null 2>&1
