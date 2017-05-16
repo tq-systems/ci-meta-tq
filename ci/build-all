@@ -148,7 +148,7 @@ main () {
 				MACHINE=$t
 				echo "archiving ${MACHINE} ${IMAGE} ..."
 				# create image archive for $MACHINE
-				tar -cvzf deployment/${MACHINE}.tgz -C ${ARTIFACTSDIR} ${MACHINE}
+				tar -cvzf deployment/${MACHINE}-${IMAGE}.tgz -C ${ARTIFACTSDIR} ${MACHINE}
 				[ "$?" -ne "0" ] && echo "archiving for ${MACHINE} failed" && exit 1
 			done
 		fi
