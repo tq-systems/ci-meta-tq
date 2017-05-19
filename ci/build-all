@@ -69,6 +69,11 @@ main () {
 		IMAGE=core-image-minimal
 		LAYER="meta-tq"
 		;;
+	"mfgtool" )
+		IMAGE=fsl-image-mfgtool-initramfs
+		LAYER="meta-tq"
+		export EULA="y"
+		;;
 	* )
 		usage
 		exit 1
