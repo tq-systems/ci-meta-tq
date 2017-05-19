@@ -22,3 +22,7 @@
 	path = sources/meta-fsl-demos
 	url = https://github.com/Freescale/meta-fsl-demos.git
 	branch = krogoth
+[submodule "sources/meta-tq-mfgtool"]
+	path = sources/meta-tq-mfgtool
+	url = ../meta-tq-mfgtool.git
+	branch = krogoth
