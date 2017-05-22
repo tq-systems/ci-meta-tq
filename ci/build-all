@@ -83,6 +83,11 @@ main () {
 	# filter out machines from the layer 
 	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
 		sed s/\.conf//g | xargs -n1 basename)
+	# tqma6q-mav has no support for mfgtool
+	if [ "${CONFIG}" == "mfgtool" ]; then
+		local EXCLUDE="tqma6q-nav"
+		TARGETS=$(echo ${TARGETS} | sed -e "s/ *$EXCLUDE */ /")
+	fi
 
 	# source the real setup workhorse.
 	export MACHINE=$(echo $TARGETS | awk '{ print $1 }')
@@ -138,12 +143,27 @@ main () {
 		fi
 
 		for t in $TARGETS; do
+			local err;
 			# overwrite MACHINE
 			export MACHINE=$t
 			echo "baking ${MACHINE} ${IMAGE} ..."
 			# create image for $MACHINE
 			bitbake ${IMAGE}
-			[ "$?" -ne "0" ] && echo "bitbake for ${MACHINE} failed" && exit 1
+			err=$?
+			# HACKHACKHACK: fsl-image-mfgtool-initramfs needs linux-mfgtool
+			# this recipe will fail with a diagnostic error, even when
+			# building for mx6sabresd
+			# workaround: check if image exists
+			if [ "${IMAGE}" == "fsl-image-mfgtool-initramfs" ]; then
+				local THELINK="./tmp/deploy/images/${MACHINE}/${IMAGE}-${MACHINE}.cpio.gz.u-boot"
+				if [ -L ${THELINK} ] && [ -e ${THELINK} ]; then
+					echo "ok"
+				else
+					echo "bitbake ${IMAGE} for ${MACHINE} failed, no ${THELINK}" && exit 1
+				fi
+			else
+				[ "${err}" -ne "0" ] && echo "bitbake ${IMAGE} for ${MACHINE} failed" && exit 1
+			fi
 		done
 
 		if [ "${MODE}" == "ci" ]; then
