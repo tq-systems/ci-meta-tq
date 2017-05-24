@@ -27,7 +27,7 @@ To help setting up an initial build space, use
 
 MACHINE=<machine> source setup-environment <builddir> <config>
 
-where config is: minimal | gui
+where config is: minimal | gui | mfgtool
 
 This will use sources/template/conf/bblayers.conf.<config> as initial template
 for your layer configuration.
@@ -41,4 +41,16 @@ To force a build of all supported machines in one of the configs, one can
 use the CI helper script:
 
 ci/build-all <builddir> <config>
+
+depending on the selected config, the following will be built:
+
+minimal:	core-image-minimal
+gui:		fsl-image-multimedia-full
+mfgtool:	fsl-image-mfgtool-initramfs (meta-fsl-arm)
+
+To help to create a package mirror, one can use the CI helper script:
+
+ci/build-all <builddir> <config> mirror
+
+To fill the mirror, copy all archives from DL_DIR to the mirror.
 
