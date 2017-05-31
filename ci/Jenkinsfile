@@ -30,6 +30,7 @@ pipeline {
     }
 
     environment {
+        WS_MFG = "CONFIGS/mfgtool"
         WS_GUI = "CONFIGS/gui"
         WS_MIN = "CONFIGS/minimal"
     }
@@ -51,7 +52,7 @@ pipeline {
                             ],
                             submoduleCfg: [],
                             userRemoteConfigs: [
-                                [url: "${env.GIT_URI_TQG}/tq-embedded/tqmaxx/ci-meta-tq.git"]
+                                [url: "${env.GIT_URL}"]
                             ]
                         ])
                     },
@@ -68,7 +69,24 @@ pipeline {
                             ],
                             submoduleCfg: [],
                             userRemoteConfigs: [
-                                [url: "${env.GIT_URI_TQG}/tq-embedded/tqmaxx/ci-meta-tq.git"]
+                                [url: "${env.GIT_URL}"]
+                            ]
+                        ])
+                    },
+                    "mfgtool" : {
+                        checkout([
+                            $class: 'GitSCM',
+                            branches: [[name: "${YOCTO_VERSION}"]],
+                            doGenerateSubmoduleConfigurations: false,
+                            extensions: [
+                                [$class: 'RelativeTargetDirectory',
+                                    relativeTargetDir: "${env.WS_MFG}"
+                                ],
+                                [$class: 'PruneStaleBranch'],
+                            ],
+                            submoduleCfg: [],
+                            userRemoteConfigs: [
+                                [url: "${env.GIT_URL}"]
                             ]
                         ])
                     }
@@ -95,6 +113,15 @@ pipeline {
                             git submodule sync
                             git submodule update --init"""
                         }
+                    },
+                    "mfgtool" : {
+                        dir("${env.WS_MFG}") {
+                            sh """
+                            rm -rf buildspace
+                            git clean -fdx
+                            git submodule sync
+                            git submodule update --init"""
+                        }
                     }
                 )
             }
@@ -111,6 +138,11 @@ pipeline {
                         dir("${env.WS_MIN}") {
                             sh "./ci/build-all buildspace \$(basename \$(pwd)) ci"
                         }
+                    },
+                    "mfgtool" : {
+                        dir("${env.WS_MFG}") {
+                            sh "./ci/build-all buildspace \$(basename \$(pwd)) ci"
+                        }
                     }
                 )
             }
@@ -121,11 +153,12 @@ pipeline {
         success {
             archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
+            archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
             wipeOutWs()
         }
         unstable {
             emailext (
-                to: "niebelm@tqsc.de,krummsdorfm@tqsc.de",
+                to: "${env.MAIL_RECIPIENTS}",
                 subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
                 body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
                   Check console output at ${env.BUILD_URL} to view the results.""",
@@ -134,7 +167,7 @@ pipeline {
         }
         failure {
             emailext (
-                to: "niebelm@tqsc.de,krummsdorfm@tqsc.de",
+                to: "${env.MAIL_RECIPIENTS}",
                 subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
                 body: """\
                 ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
