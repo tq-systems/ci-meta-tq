@@ -151,12 +151,6 @@ main () {
 			# force to switch off any network check
 			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
 			# premirrors have to be configured per site ...
-			#echo "PREMIRRORS_prepend = \"\\" | tee -a conf/local.conf
-			#echo "	git://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
-			#echo "	ftp://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
-			#echo "	http://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
-			#echo "	https://.*/.* file:///mnt/git-tqsc/yocto/ \n \\" | tee -a conf/local.conf
-			#echo "	\"" | tee -a conf/local.conf
 		fi
 
 		for t in $TARGETS; do
