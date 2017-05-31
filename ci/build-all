@@ -118,6 +118,23 @@ main () {
 			echo "baking: ${MACHINE} ${IMAGE} with -c fetchall"
 			bitbake -c fetchall ${IMAGE}
 		done
+
+		URL=$(bitbake -e -c fetchall ${IMAGE} | grep ^SOURCE_MIRROR_URL)
+		export ${URL}
+		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
+		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
+		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
+
+		DL_DIR=${DL_DIR#\"*}
+		DL_DIR=${DL_DIR%\"*}
+
+		echo "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
+		FILES=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
+		echo "copy ${FILES}"
+		for f in ${FILES}; do
+			cp ${f} ${DL_DIR}
+		done
+
 	else
 		echo "build images"
 
