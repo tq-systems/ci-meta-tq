@@ -23,7 +23,11 @@ def wipeOutWs(){
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
-
+/*
+ * jenkins environment for this pipeline:
+ * - GIT_URL: git URL for projebt to build
+ * - MAIL_RECIPIENTS: comma separated list of mail recipients
+ */
 pipeline {
     agent {
         label 'master'
