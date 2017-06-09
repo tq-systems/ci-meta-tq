@@ -9,7 +9,7 @@ BBLAYERS = " \
   ${BSPDIR}/sources/poky/meta-poky \
   \
   \
-  ${BSPDIR}/sources/meta-fsl-arm \
+  ${BSPDIR}/sources/meta-freescale \
   \
   ${BSPDIR}/sources/meta-tq \
   ${BSPDIR}/sources/meta-tq-mfgtool \
