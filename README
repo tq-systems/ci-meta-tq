@@ -11,7 +11,9 @@ Quick Start Guide
 
 Clone this repo using git clone --branch=<branch-name> --recurse-submodules <url>
 
-current supported branche(s): krogoth
+current supported branche(s):
+- krogoth
+- morty
 
 When switching branches keep in mind to keep the submodules in sync:
 
