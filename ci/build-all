@@ -132,7 +132,7 @@ main () {
 		FILES=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
 		echo "copy ${FILES}"
 		for f in ${FILES}; do
-			cp ${f} ${DL_DIR}
+			cp ${f} ${SOURCE_MIRROR_URL}
 		done
 
 	else
