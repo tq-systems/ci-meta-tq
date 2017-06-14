@@ -84,7 +84,7 @@ EOF
 
 		sleep 4
 
-		more -d $CWD/sources/meta-fsl-arm/EULA
+		more -d $CWD/sources/meta-freescale/EULA
 		echo
 		REPLY=
 		while [ -z "$REPLY" ]; do
@@ -218,7 +218,7 @@ EOF
     generated_config=1
 fi
 
-grep "meta-fsl-arm" conf/bblayers.conf >> /dev/null
+grep "meta-freescale" conf/bblayers.conf >> /dev/null
 [ "$?" -eq "0" ] && handle_eula
 
 cat <<EOF
