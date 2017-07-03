@@ -98,7 +98,7 @@ main () {
 	# modify local conf as needed before executing bitbake
 	if [ "${MODE}" == "mirror" ]; then
 		echo "build mirror"
-		# poky has per default procompiled native / host packages,
+		# poky has per default precompiled native / host packages,
 		# these have malformed local URIs that prevent usage.
 		echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
 		# we will build a local mirror for usage with buildserver ...
@@ -141,7 +141,7 @@ main () {
 		echo "build images"
 
 		if [ "${MODE}" == "ci" ]; then
-			# poky has per default procompiled native / host packages,
+			# poky has per default precompiled native / host packages,
 			# these have malformed local URIs that prevent usage.
 			echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
 			# need to set SOURCE_MIRROR_URL in a site global config on the build server
