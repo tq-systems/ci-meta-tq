@@ -83,10 +83,12 @@ main () {
 	# filter out machines from the layer 
 	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
 		sed s/\.conf//g | xargs -n1 basename)
-	# tqma6q-mav has no support for mfgtool
+	# tqma6q-mav and tqmls102xa-mbls102xa have no support for mfgtool
 	if [ "${CONFIG}" == "mfgtool" ]; then
-		local EXCLUDE="tqma6q-nav"
-		TARGETS=$(echo ${TARGETS} | sed -e "s/ *$EXCLUDE */ /")
+		local EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
+		for excl in ${EXCLUDE}; do
+			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
+		done
 	fi
 
 	# source the real setup workhorse.
