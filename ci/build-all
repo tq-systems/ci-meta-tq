@@ -167,9 +167,11 @@ main () {
 			echo "BB_FETCH_PREMIRRORONLY = \"1\"" | tee -a conf/local.conf
 			# force to switch off any network check
 			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
-			if ![ -z ${SSTATE_DIR} ]; then
+			if ! [ -z ${SSTATE_DIR} ]; then
 				# add SSTATE dir outside of builddir, optimize global builds
 				echo "SSTATE_DIR = \"${SSTATE_DIR}\"" | tee -a conf/local.conf
+			else
+				echo "SSTATE_DIR empty"
 			fi
 			# premirrors have to be configured per site ...
 		fi
