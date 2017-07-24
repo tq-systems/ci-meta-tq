@@ -86,13 +86,25 @@ main () {
 	# filter out machines from the layer 
 	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
 		sed s/\.conf//g | xargs -n1 basename)
-	# tqma6q-mav and tqmls102xa-mbls102xa have no support for mfgtool
-	if [ "${CONFIG}" == "mfgtool" ]; then
+
+	case ${CONFIG} in
+	"gui" )
+		# tqmls102xa-mbls102xa qspi is to small for large multimedia image
+		local EXCLUDE="tqmls102xa-mbls102xa"
+		for excl in ${EXCLUDE}; do
+			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		;;
+	"mfgtool" )
+		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
 		local EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
 		for excl in ${EXCLUDE}; do
 			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
 		done
-	fi
+		;;
+	* )
+		;;
+	esac
 
 	# source the real setup workhorse.
 	export MACHINE=$(echo $TARGETS | awk '{ print $1 }')
