@@ -20,6 +20,13 @@ def wipeOutWs(){
     }
 }
 
+def wipeOutBuildspace(directoryName){
+    dir("${directoryName}") {
+        echo "Remove ${directoryName}..."
+        deleteDir()
+    }
+}
+
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
@@ -156,9 +163,11 @@ pipeline {
     post {
         success {
             archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
+            wipeOutBuildspace("${env.WS_GUI}")
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
+            wipeOutBuildspace("${env.WS_MIN}")
             archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
-            wipeOutWs()
+            wipeOutBuildspace("${env.WS_MFG}")
         }
         unstable {
             emailext (
