@@ -50,11 +50,14 @@ main () {
 	local IMAGE=core-image-minimal
 	local MODE="normal"
 
-	if ! [ -z "$3" ]
+	if ! [ -z "${3}" ]
 	then
-		if [ "$3" == "mirror" ] || [ "$3" == "ci" ] || [ "$3" == "normal" ]
+		if [ "${3}" == "mirror" ] || [ "${3}" == "ci" ] || [ "${3}" == "normal" ]
 		then
-			MODE=$3
+			MODE=${3}
+		else
+			usage
+			exit 1
 		fi
 	fi
 
