@@ -20,6 +20,16 @@ def wipeOutWs(){
     }
 }
 
+def checkoutMetaLayers(directoryName) {
+    dir("${directoryName}") {
+        sh """
+        rm -rf buildspace
+        git clean -fdx
+        git submodule sync
+        git submodule update --init"""
+    }
+}
+
 def wipeOutBuildspace(directoryName){
     dir("${directoryName}") {
         echo "Remove ${directoryName}..."
@@ -108,31 +118,13 @@ pipeline {
             steps {
                 parallel (
                     "gui" : {
-                        dir("${env.WS_GUI}") {
-                            sh """
-                            rm -rf buildspace
-                            git clean -fdx
-                            git submodule sync
-                            git submodule update --init"""
-                        }
+                        checkoutMetaLayers("${env.WS_GUI}")
                     },
                     "minimal" : {
-                        dir("${env.WS_MIN}") {
-                            sh """
-                            rm -rf buildspace
-                            git clean -fdx
-                            git submodule sync
-                            git submodule update --init"""
-                        }
+                        checkoutMetaLayers("${env.WS_MIN}")
                     },
                     "mfgtool" : {
-                        dir("${env.WS_MFG}") {
-                            sh """
-                            rm -rf buildspace
-                            git clean -fdx
-                            git submodule sync
-                            git submodule update --init"""
-                        }
+                        checkoutMetaLayers("${env.WS_MFG}")
                     }
                 )
             }
