@@ -89,6 +89,20 @@ pipeline {
     }
 
     stages {
+        stage ('Manage sstate cache') {
+            steps {
+                script {
+                    // Get a specific Cause type (in this case the user who kicked off the build),
+                    // if present.
+                    // isStartedByTimer = currentBuild.rawBuild.getCause(hudson.model.Cause$TimerTrigger.TimerTriggerCause) != null
+                    def isStartedByTimer = currentBuild[‘rawBuild’].getCause(hudson.model.Cause$TimerTrigger.TimerTriggerCause) != null
+                    if (isStartedByTimer) {
+//                      sh "./ci/manage-sstate-cache ${env.WORKSPACE}/shared-sstate-cache"
+                        echo "need to manage cache"
+                    }
+                }
+            }
+        }
         stage ('Prepare Workspaces') {
             steps {
                 parallel (
