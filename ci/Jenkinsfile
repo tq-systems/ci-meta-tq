@@ -26,7 +26,6 @@ def wipeOutWs(){
 def checkoutMetaLayers(directoryName) {
     dir("${directoryName}") {
         sh """
-        rm -rf buildspace
         git clean -fdx
         git submodule sync
         git submodule update --init"""
@@ -34,6 +33,18 @@ def checkoutMetaLayers(directoryName) {
 }
 
 def prepareWorkspace(directoryName){
+    dir("${directoryName}@script") {
+        echo "Remove ${directoryName}@script..."
+        deleteDir()
+    }
+    dir("${directoryName}/buildspace") {
+        echo "Remove ${directoryName}/buildspace..."
+        deleteDir()
+    }
+    dir("${directoryName}@tmp") {
+        echo "Remove ${directoryName}@tmp..."
+        deleteDir()
+    }
     checkout([
         $class: 'GitSCM',
         branches: [[name: "${YOCTO_VERSION}"]],
