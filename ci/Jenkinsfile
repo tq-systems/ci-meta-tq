@@ -68,6 +68,20 @@ pipeline {
         label 'master'
     }
 
+    options {
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', 
+                       artifactNumToKeepStr: '3', 
+                       daysToKeepStr: '', 
+                       numToKeepStr: '10')
+        )
+        disableConcurrentBuilds()
+    }
+    triggers {
+            cron('H H(0-4) * * *')
+            pollSCM('''# Alle fünf Minuten von 7.00-20.00 an jedem Wochentag
+                H/5 7-20 * * 1-5''')
+    }
+
     environment {
         WS_MFG = "CONFIGS/mfgtool"
         WS_GUI = "CONFIGS/gui"
