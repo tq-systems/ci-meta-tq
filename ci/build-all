@@ -151,7 +151,6 @@ main () {
 		for f in ${FILES}; do
 			cp ${f} ${SOURCE_MIRROR_URL}
 		done
-
 	else
 		echo "build images"
 
@@ -167,23 +166,30 @@ main () {
 			echo "BB_FETCH_PREMIRRORONLY = \"1\"" | tee -a conf/local.conf
 			# force to switch off any network check
 			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
-			if ! [ -z ${SSTATE_DIR} ]; then
-				# add SSTATE dir outside of builddir, optimize global builds
-				echo "SSTATE_DIR = \"${SSTATE_DIR}\"" | tee -a conf/local.conf
-			else
-				echo "SSTATE_DIR empty"
-			fi
 			# premirrors have to be configured per site ...
 		fi
 
-		for t in $TARGETS; do
+		if ! [ -z ${SSTATE_DIR} ]; then
+			# add SSTATE dir outside of builddir, optimize global builds
+			echo "SSTATE_DIR = \"${SSTATE_DIR}\"" | tee -a conf/local.conf
+		else
+			echo "SSTATE_DIR empty"
+		fi
+		if ! [ -z ${DL_DIR} ]; then
+			# add DL_DIR dir outside of builddir, optimize global builds
+			echo "DL_DIR = \"${DL_DIR}\"" | tee -a conf/local.conf
+		else
+			echo "DL_DIR empty"
+		fi
+
+		for t in ${TARGETS}; do
 			local err;
 			# overwrite MACHINE
-			export MACHINE=$t
+			export MACHINE=${t}
 			echo "baking ${MACHINE} ${IMAGE} ..."
 			# create image for $MACHINE
 			bitbake ${IMAGE}
-			err=$?
+			err=${?}
 			# HACKHACKHACK: fsl-image-mfgtool-initramfs needs linux-mfgtool
 			# this recipe will fail with a diagnostic error, even when
 			# building for mx6sabresd
@@ -203,8 +209,8 @@ main () {
 		if [ "${MODE}" == "ci" ]; then
 			mkdir -p deployment
 			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
-			for t in $TARGETS; do
-				MACHINE=$t
+			for t in ${TARGETS}; do
+				MACHINE=${t}
 				echo "archiving ${MACHINE} ${IMAGE} ..."
 				# create image archive for $MACHINE
 				tar -cvzf deployment/${MACHINE}-${IMAGE}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
