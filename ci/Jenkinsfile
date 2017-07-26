@@ -63,8 +63,16 @@ def prepareWorkspace(directoryName){
 }
 
 def wipeOutBuildspace(directoryName){
-    dir("${directoryName}") {
-        echo "Remove ${directoryName}..."
+    dir("${directoryName}@script") {
+        echo "Remove ${directoryName}@script..."
+        deleteDir()
+    }
+    dir("${directoryName}/buildspace") {
+        echo "Remove ${directoryName}/buildspace..."
+        deleteDir()
+    }
+    dir("${directoryName}@tmp") {
+        echo "Remove ${directoryName}@tmp..."
         deleteDir()
     }
 }
