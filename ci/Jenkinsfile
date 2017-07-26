@@ -33,18 +33,6 @@ def checkoutMetaLayers(directoryName) {
 }
 
 def prepareWorkspace(directoryName){
-    dir("${directoryName}@script") {
-        echo "Remove ${directoryName}@script..."
-        deleteDir()
-    }
-    dir("${directoryName}/buildspace") {
-        echo "Remove ${directoryName}/buildspace..."
-        deleteDir()
-    }
-    dir("${directoryName}@tmp") {
-        echo "Remove ${directoryName}@tmp..."
-        deleteDir()
-    }
     checkout([
         $class: 'GitSCM',
         branches: [[name: "${YOCTO_VERSION}"]],
@@ -143,12 +131,15 @@ pipeline {
             steps {
                 parallel (
                     "gui" : {
+                        wipeOutBuildspace("${env.WS_GUI}")
                         prepareWorkspace("${env.WS_GUI}")
                     },
                     "minimal" : {
+                        wipeOutBuildspace("${env.WS_MIN}")
                         prepareWorkspace("${env.WS_MIN}")
                     },
                     "mfgtool" : {
+                        wipeOutBuildspace("${env.WS_MFG}")
                         prepareWorkspace("${env.WS_MFG}")
                     }
                 )
