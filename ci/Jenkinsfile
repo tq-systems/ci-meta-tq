@@ -165,17 +165,17 @@ pipeline {
                 parallel (
                     "gui" : {
                         dir("${env.WS_GUI}") {
-                            sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
+                            sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
                         }
                     },
                     "minimal" : {
                         dir("${env.WS_MIN}") {
-                            sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
+                            sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
                         }
                     },
                     "mfgtool" : {
                         dir("${env.WS_MFG}") {
-                            sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
+                            sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
                         }
                     }
                 )
