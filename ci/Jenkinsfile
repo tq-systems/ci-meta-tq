@@ -123,6 +123,10 @@ pipeline {
                            echo "clear ${env.WORKSPACE}/shared-sstate-cache ..."
                            deleteDir()
                         }
+                        dir("${env.WORKSPACE}/shared-dl-dir") {
+                           echo "clear ${env.WORKSPACE}/shared-dl-dir ..."
+                           deleteDir()
+                        }
                     }
                 }
             }
