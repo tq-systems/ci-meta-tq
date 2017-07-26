@@ -30,6 +30,24 @@ def checkoutMetaLayers(directoryName) {
     }
 }
 
+def prepareWorkspace(directoryName){
+    checkout([
+        $class: 'GitSCM',
+        branches: [[name: "${YOCTO_VERSION}"]],
+        doGenerateSubmoduleConfigurations: false,
+        extensions: [
+            [$class: 'RelativeTargetDirectory',
+                relativeTargetDir: "${directoryName}"
+            ],
+            [$class: 'PruneStaleBranch'],
+        ],
+        submoduleCfg: [],
+        userRemoteConfigs: [
+            [url: "${env.GIT_URL}"]
+        ]
+    ])
+}
+
 def wipeOutBuildspace(directoryName){
     dir("${directoryName}") {
         echo "Remove ${directoryName}..."
@@ -61,55 +79,13 @@ pipeline {
             steps {
                 parallel (
                     "gui" : {
-                        checkout([
-                            $class: 'GitSCM',
-                            branches: [[name: "${YOCTO_VERSION}"]],
-                            doGenerateSubmoduleConfigurations: false,
-                            extensions: [
-                                [$class: 'RelativeTargetDirectory',
-                                    relativeTargetDir: "${env.WS_GUI}"
-                                ],
-                                [$class: 'PruneStaleBranch'],
-                            ],
-                            submoduleCfg: [],
-                            userRemoteConfigs: [
-                                [url: "${env.GIT_URL}"]
-                            ]
-                        ])
+                        prepareWorkspace("${env.WS_GUI}")
                     },
                     "minimal" : {
-                        checkout([
-                            $class: 'GitSCM',
-                            branches: [[name: "${YOCTO_VERSION}"]],
-                            doGenerateSubmoduleConfigurations: false,
-                            extensions: [
-                                [$class: 'RelativeTargetDirectory',
-                                    relativeTargetDir: "${env.WS_MIN}"
-                                ],
-                                [$class: 'PruneStaleBranch'],
-                            ],
-                            submoduleCfg: [],
-                            userRemoteConfigs: [
-                                [url: "${env.GIT_URL}"]
-                            ]
-                        ])
+                        prepareWorkspace("${env.WS_MIN}")
                     },
                     "mfgtool" : {
-                        checkout([
-                            $class: 'GitSCM',
-                            branches: [[name: "${YOCTO_VERSION}"]],
-                            doGenerateSubmoduleConfigurations: false,
-                            extensions: [
-                                [$class: 'RelativeTargetDirectory',
-                                    relativeTargetDir: "${env.WS_MFG}"
-                                ],
-                                [$class: 'PruneStaleBranch'],
-                            ],
-                            submoduleCfg: [],
-                            userRemoteConfigs: [
-                                [url: "${env.GIT_URL}"]
-                            ]
-                        ])
+                        prepareWorkspace("${env.WS_MFG}")
                     }
                 )
             }
