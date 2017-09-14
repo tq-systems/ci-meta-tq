@@ -25,12 +25,13 @@ ls sources/${LAYER}/conf/machine/*.conf | sed s/\.conf//g | xargs -n1 basename
 
 To help setting up an initial build space, use
 
-MACHINE=<machine> source setup-environment <builddir> <config>
+export MACHINE=<machine> && source setup-environment <builddir> <config>
 
 where config is: minimal | gui | mfgtool
 
 This will use sources/template/conf/bblayers.conf.<config> as initial template
-for your layer configuration.
+for your layer configuration. Internally the oe-init-build-env script from the
+used openembedded / poky meta layer will be sourced.
 
 After this step, everything is setup to build an image using bitbake.
 To use a shared download directory, you can provide $DL_DIR via
