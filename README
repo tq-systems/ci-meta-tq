@@ -1,19 +1,22 @@
-TQMa6[QDL]/6UL/7[DS] Yocto integration test
-===========================================
+TQ ARM modules Yocto integration test
+=====================================
 
 Supported boards
 ----------------
 
-see Readme of TQ Sytems Layers (meta-tq)
+see README of TQ Sytems layer (meta-tq) or use ./ls-machines
 
 Quick Start Guide
 -----------------
 
 Clone this repo using git clone --branch=<branch-name> --recurse-submodules <url>
 
-current supported branche(s):
+current supported branches:
 - krogoth
 - morty
+- pyro
+
+branch names correspond to yocto release names
 
 When switching branches keep in mind to keep the submodules in sync:
 
@@ -22,8 +25,7 @@ git submodule update --init
 
 To list supported machines:
 
-LAYER=meta-tq
-ls sources/${LAYER}/conf/machine/*.conf | sed s/\.conf//g | xargs -n1 basename
+./ls-machines
 
 To help setting up an initial build space, use
 
@@ -32,13 +34,20 @@ export MACHINE=<machine> && source setup-environment <builddir> <config>
 where config is: minimal | gui | mfgtool
 
 This will use sources/template/conf/bblayers.conf.<config> as initial template
-for your layer configuration. Internally the oe-init-build-env script from the
+for your layer configuration. Additionally some config variables are injected:
+
+MACHINE: default tqma6q-mba6x or value from environment
+SDKMACHINE: default i686 or value from environment
+DISTRO: default poky  or value from environment
+
+In case you have ~/.oe or ~/.yocto dir a site.conf file will be symlinked to
+the conf dir of the buildir to allow machine specific overrrides. For instance 
+to use a shared download directory, you can provide $DL_DIR via ~/.yocto/site.conf.
+
+Internally the oe-init-build-env script from the
 used openembedded / poky meta layer will be sourced.
 
 After this step, everything is setup to build an image using bitbake.
-To use a shared download directory, you can provide $DL_DIR via
-~/.yocto/site.conf. This file - if available - will be automatically symlinked
-into the conf dir of the build space.
 
 To force a build of all supported machines in one of the configs, one can
 use the CI helper script:
@@ -48,12 +57,30 @@ ci/build-all <builddir> <config>
 depending on the selected config, the following will be built:
 
 minimal:	core-image-minimal
-gui:		fsl-image-multimedia-full
-mfgtool:	fsl-image-mfgtool-initramfs (meta-fsl-arm)
+gui:		fsl-image-multimedia-full (meta-freescale-distro)
+mfgtool:	fsl-image-mfgtool-initramfs (meta-freescale)
 
 To help to create a package mirror, one can use the CI helper script:
 
 ci/build-all <builddir> <config> mirror
 
-To fill the mirror, copy all archives from DL_DIR to the mirror.
+and define the following stuff in your site.conf:
+
+SOURCE_MIRROR_URL ?= "file://<full path>/"
+INHERIT += "own-mirrors"
+
+PREMIRRORS_prepend = "\
+        git://.*/.* file://full path>/ \n \
+        ftp://.*/.* file://full path>/ \n \
+        http://.*/.* file://full path>/ \n \
+        https://.*/.* file://full path>/ \n \
+        "
+
+To fill the mirror, the script 
+- allows to create also tarballs from SCM using BB_GENERATE_MIRROR_TARBALLS=1 
+- forces downloads for uninative packages by INHERIT_remove = \"uninative\""
+- copies all archives from DL_DIR to the mirror
+
+This way the mirror can be used to do offline builds without downloading anything
+with BB_FETCH_PREMIRRORONLY=1
 
