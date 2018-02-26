@@ -1,0 +1,30 @@
+TQMa57xx core-image test
+===========================
+
+Supported boards
+----------------
+
+SOC		SOM		Base board
+
+AM572x		TQMa572x	MBa57xx
+
+
+Quick Start Guide
+-----------------
+
+Clone this repo using git clone --recurse-submodules <url>
+
+When switching branches keep in mind to keep the submodules in sync.
+
+To help setting up an initial build space, use
+
+source setup-<machine>
+
+or if setup helper not available for the machine:
+
+$: MACHINE=<machine> source setup-environment <build directory>
+
+After this step, everything is setup to build an image using bitbake.
+To use a shared download directory, you can provice $DL_DIR inside
+~/.yocto/site.conf. This will automatically symlinked in the conf dir
+of the build space.
