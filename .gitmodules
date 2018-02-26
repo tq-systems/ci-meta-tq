@@ -1,0 +1,17 @@
+[submodule "sources/meta-ti"]
+	path = sources/meta-ti
+	url = git://git.yoctoproject.org/meta-ti
+[submodule "sources/meta-tq"]
+	path = sources/meta-tq
+	url = ../meta-tq.git
+[submodule "sources/meta-tqma57xx-bsp"]
+	path = sources/meta-tqma57xx-bsp
+	url = ../meta-tqma57xx-bsp
+[submodule "sources/poky"]
+	path = sources/poky
+	url = https://git.yoctoproject.org/git/poky.git
+	branch = morty
+[submodule "sources/meta-openembedded"]
+	path = sources/meta-openembedded
+	url = https://github.com/openembedded/meta-openembedded.git
+	branch = master
