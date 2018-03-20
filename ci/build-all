@@ -89,11 +89,6 @@ main () {
 
 	case ${CONFIG} in
 	"gui" )
-		# tqmls102xa-mbls102xa qspi is to small for large multimedia image
-		local EXCLUDE="tqmls102xa-mbls102xa"
-		for excl in ${EXCLUDE}; do
-			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
-		done
 		;;
 	"mfgtool" )
 		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
