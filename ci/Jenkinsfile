@@ -26,9 +26,11 @@ def wipeOutWs(){
 def checkoutMetaLayers(directoryName) {
     dir("${directoryName}") {
         sh """
-        # git clean -fdx
         git submodule sync
-        git submodule update --init"""
+        git submodule update --init
+        git submodule foreach --recursive git clean -fdx
+        git clean -fdx sources templates
+        git clean -fx"""
     }
 }
 
@@ -58,12 +60,18 @@ def buildConfiguration(directoryName) {
 }
 
 def wipeOutBuildspace(directoryName){
+    Calendar cal=Calendar.getInstance()
+    def hour = cal.get(Calendar.HOUR_OF_DAY)
+    println hour
+    if (hour < 8) {
+        dir("${directoryName}/buildspace") {
+            echo "Remove ${directoryName}/buildspace..."
+            deleteDir()
+        }
+    }
+
     dir("${directoryName}@script") {
         echo "Remove ${directoryName}@script..."
-        deleteDir()
-    }
-    dir("${directoryName}/buildspace") {
-        echo "Remove ${directoryName}/buildspace..."
         deleteDir()
     }
     dir("${directoryName}@tmp") {
@@ -90,6 +98,7 @@ def wipeOutBuildspace(directoryName){
  * jenkins environment for this pipeline:
  * - GIT_URL: git URL for projebt to build
  * - MAIL_RECIPIENTS: comma separated list of mail recipients
+ * - YOCTO_VERSION: git ref to build
  */
 pipeline {
     agent {
@@ -132,7 +141,7 @@ pipeline {
                         }
                     }
                     // unconditionally remove to make sure we got everything
-                    // from mirror
+                    // from mirror, needed for updates of git archives
                     dir("${env.WORKSPACE}/shared-dl-dir") {
                        echo "clear ${env.WORKSPACE}/shared-dl-dir ..."
                        deleteDir()
@@ -144,15 +153,15 @@ pipeline {
             steps {
                 parallel (
                     "gui" : {
-//                        wipeOutBuildspace("${env.WS_GUI}")
+                        wipeOutBuildspace("${env.WS_GUI}")
                         prepareWorkspace("${env.WS_GUI}")
                     },
                     "minimal" : {
-//                        wipeOutBuildspace("${env.WS_MIN}")
+                        wipeOutBuildspace("${env.WS_MIN}")
                         prepareWorkspace("${env.WS_MIN}")
                     },
                     "mfgtool" : {
-//                        wipeOutBuildspace("${env.WS_MFG}")
+                        wipeOutBuildspace("${env.WS_MFG}")
                         prepareWorkspace("${env.WS_MFG}")
                     }
                 )
@@ -201,13 +210,12 @@ pipeline {
     post {
         success {
             archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
-//            wipeOutBuildspace("${env.WS_GUI}")
+            wipeOutBuildspace("${env.WS_GUI}")
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
-//            wipeOutBuildspace("${env.WS_MIN}")
+            wipeOutBuildspace("${env.WS_MIN}")
             archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
-//            wipeOutBuildspace("${env.WS_MFG}")
-            // sh "export STAMP=$(./ci/git-revision-name.sh) && ./ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.${STAMP}/ ci-meta-tq.${STAMP}.tar"
-            archiveArtifacts artifacts: "${env.WORKSPACE}/ci-meta-tq.*.tar.gz"
+            wipeOutBuildspace("${env.WS_MFG}")
+            archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
         unstable {
             emailext (
