@@ -26,7 +26,7 @@ def wipeOutWs(){
 def checkoutMetaLayers(directoryName) {
     dir("${directoryName}") {
         sh """
-        git clean -fdx
+        # git clean -fdx
         git submodule sync
         git submodule update --init"""
     }
@@ -48,6 +48,13 @@ def prepareWorkspace(directoryName){
             [url: "${env.GIT_URL}"]
         ]
     ])
+}
+
+def buildConfiguration(directoryName) {
+    dir("${directoryName}") {
+        echo "build all machines for config ${directoryName} ..."
+        sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
+    }
 }
 
 def wipeOutBuildspace(directoryName){
@@ -137,15 +144,15 @@ pipeline {
             steps {
                 parallel (
                     "gui" : {
-                        wipeOutBuildspace("${env.WS_GUI}")
+//                        wipeOutBuildspace("${env.WS_GUI}")
                         prepareWorkspace("${env.WS_GUI}")
                     },
                     "minimal" : {
-                        wipeOutBuildspace("${env.WS_MIN}")
+//                        wipeOutBuildspace("${env.WS_MIN}")
                         prepareWorkspace("${env.WS_MIN}")
                     },
                     "mfgtool" : {
-                        wipeOutBuildspace("${env.WS_MFG}")
+//                        wipeOutBuildspace("${env.WS_MFG}")
                         prepareWorkspace("${env.WS_MFG}")
                     }
                 )
@@ -170,21 +177,23 @@ pipeline {
             steps {
                 parallel (
                     "gui" : {
-                        dir("${env.WS_GUI}") {
-                            sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
-                        }
+                        buildConfiguration("${env.WS_GUI}")
                     },
                     "minimal" : {
-                        dir("${env.WS_MIN}") {
-                            sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
-                        }
+                        buildConfiguration("${env.WS_MIN}")
                     },
                     "mfgtool" : {
-                        dir("${env.WS_MFG}") {
-                            sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
-                        }
+                        buildConfiguration("${env.WS_MFG}")
                     }
                 )
+            }
+       }
+       stage ('Archive'){
+            steps {
+                script {
+                    checkoutMetaLayers("${env.WORKSPACE}")
+                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh) && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
+                }
             }
         }
     }
@@ -192,11 +201,13 @@ pipeline {
     post {
         success {
             archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
-            wipeOutBuildspace("${env.WS_GUI}")
+//            wipeOutBuildspace("${env.WS_GUI}")
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
-            wipeOutBuildspace("${env.WS_MIN}")
+//            wipeOutBuildspace("${env.WS_MIN}")
             archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
-            wipeOutBuildspace("${env.WS_MFG}")
+//            wipeOutBuildspace("${env.WS_MFG}")
+            // sh "export STAMP=$(./ci/git-revision-name.sh) && ./ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.${STAMP}/ ci-meta-tq.${STAMP}.tar"
+            archiveArtifacts artifacts: "${env.WORKSPACE}/ci-meta-tq.*.tar.gz"
         }
         unstable {
             emailext (
