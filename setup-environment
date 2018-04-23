@@ -189,25 +189,31 @@ generated_config=
 if [ ! -e conf/local.conf.sample ]; then
     mv conf/local.conf conf/local.conf.sample
 
-    # Generate the local.conf based on the Yocto defaults
-    TEMPLATES=$CWD/sources/template/conf 
+    # Generate the local.conf based on the Yocto defaults, throw away comments
+    TEMPLATES=$CWD/sources/template/conf
     grep -v '^#\|^$' conf/local.conf.sample > conf/local.conf
+
+# add DL_DIR and RM_OLD_IMAGE to local.conf
     cat >> conf/local.conf <<EOF
 
 DL_DIR ?= "\${BSPDIR}/downloads/"
 RM_OLD_IMAGE ?= "1"
 EOF
+
+
     # Change settings according environment
     sed -e "s,MACHINE ??=.*,MACHINE ??= '$MACHINE',g" \
         -e "s,SDKMACHINE ??=.*,SDKMACHINE ??= '$SDKMACHINE',g" \
         -e "s,DISTRO ?=.*,DISTRO ?= '$DISTRO',g" \
         -i conf/local.conf
 
+    # copy local bblayers.conf templates
     cp $TEMPLATES/* conf/
     if [ -e conf/${BBLAYERS_TEMPLATE} ]; then
         cp conf/${BBLAYERS_TEMPLATE} conf/bblayers.conf
     fi
 
+    # check for site.conf and create ling if available
     for s in $HOME/.oe $HOME/.yocto; do
         if [ -e $s/site.conf ]; then
             echo "Linking $s/site.conf to conf/site.conf"
@@ -218,9 +224,11 @@ EOF
     generated_config=1
 fi
 
+# call handle_eula if meta-freescale is in conf/bblayers.conf
 grep "meta-freescale" conf/bblayers.conf >> /dev/null
 [ "$?" -eq "0" ] && handle_eula
 
+# print welcome banner ...
 cat <<EOF
 
 Welcome to TQ metalayer test
@@ -243,6 +251,8 @@ Common targets are:
 
 EOF
 
+# finally give info whether we use an existing buildspace or
+# just created a new one ...
 if [ -n "$generated_config" ]; then
     cat <<EOF
 Your build environment has been configured with:
