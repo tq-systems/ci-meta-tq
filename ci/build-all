@@ -162,6 +162,13 @@ main () {
 			# force to switch off any network check
 			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
 			# premirrors have to be configured per site ...
+
+			echo "INHERIT += \"archiver\"" | tee -a  conf/local.conf
+			echo "COPYLEFT_LICENSE_EXCLUDE ?= \"CLOSED Proprietary\"" | tee -a  conf/local.conf
+			## echo "COPYLEFT_LICENSE_INCLUDE ?= \"*\"" | tee -a  conf/local.conf
+			echo "ARCHIVER_MODE[src] ?= \"original\"" | tee -a  conf/local.conf
+			## echo "COPYLEFT_RECIPE_TYPES ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
+			## echo "COPYLEFT_RECIPE_TYPE ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
 		fi
 
 		if ! [ -z ${SSTATE_DIR} ]; then
