@@ -120,7 +120,7 @@ pipeline {
     }
 
     environment {
-        WS_MFG = "CONFIGS/mfgtool"
+/*        WS_MFG = "CONFIGS/mfgtool" */
         WS_GUI = "CONFIGS/gui"
         WS_MIN = "CONFIGS/minimal"
     }
@@ -160,10 +160,12 @@ pipeline {
                         wipeOutBuildspace("${env.WS_MIN}")
                         prepareWorkspace("${env.WS_MIN}")
                     },
+/*
                     "mfgtool" : {
                         wipeOutBuildspace("${env.WS_MFG}")
                         prepareWorkspace("${env.WS_MFG}")
                     }
+*/
                 )
             }
         }
@@ -176,9 +178,11 @@ pipeline {
                     "minimal" : {
                         checkoutMetaLayers("${env.WS_MIN}")
                     },
+/*
                     "mfgtool" : {
                         checkoutMetaLayers("${env.WS_MFG}")
                     }
+*/
                 )
             }
         }
@@ -191,9 +195,11 @@ pipeline {
                     "minimal" : {
                         buildConfiguration("${env.WS_MIN}")
                     },
+/*
                     "mfgtool" : {
                         buildConfiguration("${env.WS_MFG}")
                     }
+*/
                 )
             }
        }
@@ -213,8 +219,10 @@ pipeline {
             wipeOutBuildspace("${env.WS_GUI}")
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_MIN}")
+/*
             archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_MFG}")
+*/
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
         unstable {
