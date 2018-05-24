@@ -16,6 +16,18 @@
 [submodule "sources/meta-dumpling"]
 	path = sources/meta-dumpling
 	url = ../meta-dumpling.git
-[submodule "sources/meta-ti"]
-	path = sources/meta-ti
-	url = https://git.yoctoproject.org/git/meta-ti
+[submodule "sources/meta-qt5"]
+	path = sources/meta-qt5
+	url = git://github.com/meta-qt5/meta-qt5
+[submodule "sources/meta-browser"]
+	path = sources/meta-browser
+	url = git://github.com/OSSystems/meta-browser
+[submodule "sources/meta-fsl-bsp-release"]
+	path = sources/meta-fsl-bsp-release
+	url = https://source.codeaurora.org/external/imx/meta-fsl-bsp-release
+[submodule "sources/base"]
+	path = sources/base
+	url = git://github.com/Freescale/fsl-community-bsp-base
+[submodule "sources/meta-rust"]
+	path = sources/meta-rust
+	url = https://github.com/meta-rust/meta-rust.git
