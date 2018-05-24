@@ -27,6 +27,7 @@
 ###############################################################################
 
 readonly SCRIPTNAME="${0}"
+readonly SCRIPTPATH=$(dirname $(readlink -f "${0}"))
 
 usage()
 {
@@ -93,6 +94,15 @@ main () {
 	export MACHINE=$(echo $TARGETS | awk '{ print $1 }')
 	. ./setup-environment ${BUILD_DIR} ${CONFIG}
 	[ "$?" -ne "0" ] && echo "environment setup failed" && exit 1
+
+	if ! [ -f ./version.info ]; then
+		${SCRIPTPATH}/poky-version-check.sh mkinfo
+		[ "$?" -ne "0" ] && echo "error: failed to create version.info" && exit 1
+	else
+		${SCRIPTPATH}/poky-version-check.sh check
+		[ "$?" -ne "0" ] && echo "error: not clean and version changed" && exit 1
+	fi
+	
 	# modify local conf as needed before executing bitbake
 	if [ "${MODE}" == "mirror" ]; then
 		echo "build mirror"
