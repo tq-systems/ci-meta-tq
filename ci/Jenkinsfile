@@ -125,9 +125,11 @@ pipeline {
     }
 
     environment {
-/*        WS_MFG = "CONFIGS/mfgtool" */
         WS_GUI = "CONFIGS/gui"
+/*
+        WS_MFG = "CONFIGS/mfgtool"
         WS_MIN = "CONFIGS/minimal"
+*/
     }
 
     stages {
@@ -167,6 +169,7 @@ pipeline {
                         wipeOutBuildspace("${env.WS_GUI}")
                         prepareWorkspace("${env.WS_GUI}")
                     },
+/*
                     "minimal" : {
                         wipeOutBuildspace("${env.WS_MIN}")
                         prepareWorkspace("${env.WS_MIN}")
@@ -186,6 +189,7 @@ pipeline {
                     "gui" : {
                         checkoutMetaLayers("${env.WS_GUI}")
                     },
+/*
                     "minimal" : {
                         checkoutMetaLayers("${env.WS_MIN}")
                     },
@@ -203,6 +207,7 @@ pipeline {
                     "gui" : {
                         buildConfiguration("${env.WS_GUI}")
                     },
+/*
                     "minimal" : {
                         buildConfiguration("${env.WS_MIN}")
                     },
@@ -228,6 +233,7 @@ pipeline {
         success {
             archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_GUI}")
+/*
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_MIN}")
 /*
