@@ -47,7 +47,7 @@ IFS='
  	'
 
 # Internal variables and initializations.
-readonly PROGRAM=`basename "$0"`
+readonly PROGRAM=$(basename "$0")
 readonly VERSION=0.1
 
  # Create a place to store our work's progress
