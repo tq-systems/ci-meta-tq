@@ -15,6 +15,7 @@ current supported branches:
 - krogoth
 - morty
 - pyro
+- rocko (currently no i.MX mfgtool support)
 
 branch names correspond to yocto release names
 
@@ -83,4 +84,3 @@ To fill the mirror, the script
 
 This way the mirror can be used to do offline builds without downloading anything
 with BB_FETCH_PREMIRRORONLY=1
-
