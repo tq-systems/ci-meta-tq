@@ -173,6 +173,10 @@ main () {
 			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
 			# premirrors have to be configured per site ...
 
+			# cleanup: rm_work fo package work dir, RM_OLD_IMAGES for last build images
+			echo "INHERIT += \"rm_work\"" | tee -a  conf/local.conf
+			echo "RM_OLD_IMAGE = \"1\""  | tee -a  conf/local.conf
+
 			echo "INHERIT += \"archiver\"" | tee -a  conf/local.conf
 			echo "COPYLEFT_LICENSE_EXCLUDE ?= \"CLOSED Proprietary\"" | tee -a  conf/local.conf
 			## echo "COPYLEFT_LICENSE_INCLUDE ?= \"*\"" | tee -a  conf/local.conf
