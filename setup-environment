@@ -139,7 +139,7 @@ if [ "$(whoami)" = "root" ]; then
 fi
 
 if [ -z "$MACHINE" ]; then
-    MACHINE='tqma6q-mba6x'
+    MACHINE=${DEFAULT_MACHINE}
 fi
 
 if [ -z "$2" ]; then
