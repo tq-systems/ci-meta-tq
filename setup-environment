@@ -218,6 +218,10 @@ EOF
         echo "DISTRO_FEATURES_remove = \"x11\"" | tee -a conf/local.conf
     fi
 
+    if [ "${BBLAYERS_TEMPLATE}" == "bblayers.conf.network" ]; then
+        echo "DISTRO = \"fsl-qoriq\"" | tee -a conf/local.conf
+    fi
+
     # check for site.conf and create link if available
     for s in $HOME/.oe $HOME/.yocto; do
         if [ -e $s/site.conf ]; then
