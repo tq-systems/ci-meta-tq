@@ -10,15 +10,15 @@ import groovy.time.*
 /**********************************************************************/
 def wipeOutWs(){
     dir("${env.WORKSPACE}") {
-        echo "Remove ${env.WORKSPACE}..."
+        echo "Remove ${env.WORKSPACE} ..."
         deleteDir()
     }
     dir("${env.WORKSPACE}@script") {
-        echo "Remove ${env.WORKSPACE}@script..."
+        echo "Remove ${env.WORKSPACE}@script ..."
         deleteDir()
     }
     dir("${env.WORKSPACE}@tmp") {
-        echo "Remove ${env.WORKSPACE}@tmp..."
+        echo "Remove ${env.WORKSPACE}@tmp ..."
         deleteDir()
     }
 }
@@ -72,16 +72,16 @@ def wipeOutBuildspace(directoryName){
 */
     if (params.CLEAN_CACHES == true) {
         dir("${directoryName}/buildspace") {
-            echo "Remove ${directoryName}/buildspace..."
+            echo "Remove ${directoryName}/buildspace ..."
             deleteDir()
         }
     }
     dir("${directoryName}@script") {
-        echo "Remove ${directoryName}@script..."
+        echo "Remove ${directoryName}@script ..."
         deleteDir()
     }
     dir("${directoryName}@tmp") {
-        echo "Remove ${directoryName}@tmp..."
+        echo "Remove ${directoryName}@tmp ..."
         deleteDir()
     }
 }
