@@ -92,17 +92,6 @@ def wipeOutBuildspace(directoryName){
     }
 }
 
-// @NonCPS
-// def manageSstateCache(startTime) {
-    // Get a specific Cause type (in this case the user who kicked off the build),
-    // if present.
-    // def isStartedByTimer = currentBuild.rawBuild.getCause(hudson.model.Cause$TimerTrigger.TimerTriggerCause) != null
-    
-//                      sh "./ci/manage-sstate-cache ${env.WORKSPACE}/shared-sstate-cache"
-//     println startTime
-//    echo "need to manage cache"
-//}
-
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
