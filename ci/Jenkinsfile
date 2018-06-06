@@ -241,8 +241,10 @@ pipeline {
 
     post {
         success {
+/*
             archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_GUI}")
+*/
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_MIN}")
 /*
