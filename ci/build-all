@@ -78,6 +78,11 @@ main () {
 		LAYER="meta-tq"
 		export EULA="y"
 		;;
+	"network" )
+		IMAGE=fsl-image-networking
+		LAYER="meta-tq"
+		export EULA="y"
+		;;
 	* )
 		usage
 		exit 1
@@ -90,6 +95,14 @@ main () {
 
 	case ${CONFIG} in
 	"gui" )
+		;;
+	"network" )
+		# tqmaxx-* have no support for network
+		local EXCLUDE="tqma6dl-mba6x tqma6s-mba6x tqma6q-mba6x tqma6qp-mba6x tqma6ulx-mba6ulx tqma6ulx-lga-mba6ulx tqma7x-mba7 tqma6q-nav"
+		for excl in ${EXCLUDE}; do
+			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		TARGETS+=" ls1012afrdm"
 		;;
 	"mfgtool" )
 		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
