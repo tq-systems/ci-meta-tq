@@ -213,7 +213,7 @@ EOF
         cp conf/${BBLAYERS_TEMPLATE} conf/bblayers.conf
     fi
 
-    # check for site.conf and create ling if available
+    # check for site.conf and create link if available
     for s in $HOME/.oe $HOME/.yocto; do
         if [ -e $s/site.conf ]; then
             echo "Linking $s/site.conf to conf/site.conf"
