@@ -258,8 +258,8 @@ main () {
 			# now force bitbake to do a --runall fetch for the image to generate
 			for t in ${ALL_TARGETS}; do
 				export MACHINE=${t}
-				echo "baking: ${MACHINE} ${img} with -c fetchall"
-				bitbake -c fetchall ${img}
+				echo "baking: ${MACHINE} ${img} with --runall=fetch"
+				bitbake ${img} --runall=fetch
 				[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
 			done
 		done
