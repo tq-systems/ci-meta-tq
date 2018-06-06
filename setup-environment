@@ -201,13 +201,6 @@ DL_DIR ?= "\${BSPDIR}/downloads/"
 RM_OLD_IMAGE ?= "1"
 EOF
 
-
-    # Change settings according environment
-    sed -e "s,MACHINE ??=.*,MACHINE ??= '$MACHINE',g" \
-        -e "s,SDKMACHINE ??=.*,SDKMACHINE ??= '$SDKMACHINE',g" \
-        -e "s,DISTRO ?=.*,DISTRO ?= '$DISTRO',g" \
-        -i conf/local.conf
-
     # copy local bblayers.conf templates
     cp $TEMPLATES/* conf/
     if [ -e conf/${BBLAYERS_TEMPLATE} ]; then
@@ -220,8 +213,18 @@ EOF
     fi
 
     if [ "${BBLAYERS_TEMPLATE}" == "bblayers.conf.network" ]; then
-        echo "DISTRO = \"fsl-qoriq\"" | tee -a conf/local.conf
+        DISTRO="fsl-qoriq"
+        echo "DISTRO_FEATURES_remove = \"x11\"" | tee -a conf/local.conf
+        echo "DISTRO_FEATURES_remove = \"wayland\"" | tee -a conf/local.conf
+        echo "DISTRO_FEATURES_remove = \"opengl\"" | tee -a conf/local.conf
+        echo "DISTRO_FEATURES_remove = \"vulkan\"" | tee -a conf/local.conf
     fi
+
+    # Change settings according environment
+    sed -e "s,MACHINE ??=.*,MACHINE ??= '$MACHINE',g" \
+        -e "s,SDKMACHINE ??=.*,SDKMACHINE ??= '$SDKMACHINE',g" \
+        -e "s,DISTRO ?=.*,DISTRO ?= '$DISTRO',g" \
+        -i conf/local.conf
 
     # check for site.conf and create link if available
     for s in $HOME/.oe $HOME/.yocto; do
