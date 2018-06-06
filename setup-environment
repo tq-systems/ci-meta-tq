@@ -24,6 +24,7 @@
 CWD=$(pwd)
 PROGNAME="setup-environment"
 DEFAULT_MACHINE="tqma6q-mba6x"
+DEFAULT_DISTRO="poky"
 
 usage()
 {
@@ -166,7 +167,7 @@ if [ -z "$SDKMACHINE" ]; then
 fi
 
 if [ -z "$DISTRO" ]; then
-    DISTRO='poky'
+    DISTRO=${DEFAULT_DISTRO}
 fi
 
 OEROOT=$CWD/sources/poky
