@@ -142,6 +142,7 @@ main () {
 		SETTER=$(bitbake -e ${IMAGE} --runall=fetch | grep ^DL_DIR)
 		echo "$SETTER"
 		export ${SETTER}
+		# force to download to generate git tarballs for newest remote ...
 		echo "clean git2 tarballs from ${DL_DIR} ..."
 		rm -f ${DL_DIR}/git2_*.tar.gz
 		rm -f ${DL_DIR}/git2_*.tar.gz.done
