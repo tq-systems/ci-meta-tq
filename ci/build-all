@@ -139,7 +139,7 @@ main () {
 		echo "clean local dirs in $(pwd) ..."
 		rm -rf cache tmp sstate-cache
 		# get DL_DIR from local.conf to cleanup packages generated from git ...
-		SETTER=$(bitbake -e -c fetchall ${IMAGE} | grep ^DL_DIR)
+		SETTER=$(bitbake -e ${IMAGE} --runall=fetch | grep ^DL_DIR)
 		echo "$SETTER"
 		export ${SETTER}
 		echo "clean git2 tarballs from ${DL_DIR} ..."
@@ -147,11 +147,11 @@ main () {
 		rm -f ${DL_DIR}/git2_*.tar.gz.done
 		ls -1 ${DL_DIR}/git2_*
 
-		# now force bitbake to do a fetchall for the image to generate
+		# now force bitbake to do a --runall fetch for the image to generate
 		for t in $TARGETS; do
 			export MACHINE=$t
-			echo "baking: ${MACHINE} ${IMAGE} with -c fetchall"
-			bitbake -c fetchall ${IMAGE}
+			echo "baking: ${MACHINE} ${IMAGE} with --runall=fetch"
+			bitbake ${IMAGE} --runall=fetch
 		done
 
 		URL=$(bitbake -e -c fetchall ${IMAGE} | grep ^SOURCE_MIRROR_URL)
