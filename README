@@ -28,3 +28,10 @@ After this step, everything is setup to build an image using bitbake.
 To use a shared download directory, you can provice $DL_DIR inside
 ~/.yocto/site.conf. This will automatically symlinked in the conf dir
 of the build space.
+
+TODO: 
+- use dynamic-layers in meta-tq to allow integration of modified
+recipes from meta-ti
+- fix setup scripts
+- test and adopt jenkins support
+ 
