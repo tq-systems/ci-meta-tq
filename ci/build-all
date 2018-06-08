@@ -1,0 +1,253 @@
+#!/bin/bash
+#
+# File:        build-all
+# Copyright (C) 2017 TQ Systems GmbH
+# @author Markus Niebel <Markus.Niebel@tq-group.com>
+#
+# Description: build all machines in a layer with a given config
+#
+# License:     GPLv2
+#
+###############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+readonly SCRIPTNAME="${0}"
+readonly SCRIPTPATH=$(dirname $(readlink -f "${0}"))
+
+usage()
+{
+	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> [<mode>] \n \
+	<build-dir>: specifies the build directory location (required) \n \
+	<template>: template bblayers.conf to use \n \
+	mode=normal or not given: do normal build \n
+	mode=mirror: if given, download only and provide mirror tarballs \n
+	mode=ci: if given, use only mirror tarballs to build"
+}
+
+main () {
+	# this disables network check
+	export CONNECTIVITY_CHECK_URIS=" "
+
+	local BUILD_DIR=${1}
+	local LAYER="unknown"
+	local TARGETS="unknown"
+	local CONFIG=${2}
+	local IMAGE=core-image-minimal
+	local MODE="normal"
+
+	if ! [ -z "${3}" ]
+	then
+		if [ "${3}" == "mirror" ] || [ "${3}" == "ci" ] || [ "${3}" == "normal" ]
+		then
+			MODE=${3}
+		else
+			usage
+			exit 1
+		fi
+	fi
+
+	echo $1 $2 $3 $MODE
+
+	case ${CONFIG} in
+	"gui" )
+		IMAGE=fsl-image-multimedia-full
+		LAYER="meta-tq"
+		export EULA="y"
+		;;
+	"minimal" )
+		IMAGE=core-image-minimal
+		LAYER="meta-tq"
+		;;
+	"mfgtool" )
+		IMAGE=fsl-image-mfgtool-initramfs
+		LAYER="meta-tq"
+		export EULA="y"
+		;;
+	* )
+		usage
+		exit 1
+		;;
+	esac
+
+	# filter out machines from the layer 
+	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
+		sed s/\.conf//g | xargs -n1 basename)
+
+	case ${CONFIG} in
+	"gui" )
+		# tqmls102xa-mbls102xa qspi is to small for large multimedia image
+		local EXCLUDE="tqmls102xa-mbls102xa"
+		for excl in ${EXCLUDE}; do
+			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		;;
+	"mfgtool" )
+		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
+		local EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
+		for excl in ${EXCLUDE}; do
+			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		;;
+	* )
+		;;
+	esac
+
+	# source the real setup workhorse.
+	export MACHINE=$(echo $TARGETS | awk '{ print $1 }')
+	. ./setup-environment ${BUILD_DIR} ${CONFIG}
+	[ "$?" -ne "0" ] && echo "environment setup failed" && exit 1
+
+	if ! [ -f ./version.info ]; then
+		${SCRIPTPATH}/poky-version-check.sh mkinfo
+		[ "$?" -ne "0" ] && echo "error: failed to create version.info" && exit 1
+	else
+		${SCRIPTPATH}/poky-version-check.sh check
+		[ "$?" -ne "0" ] && echo "error: not clean and version changed" && exit 1
+	fi
+	
+	# modify local conf as needed before executing bitbake
+	if [ "${MODE}" == "mirror" ]; then
+		echo "build mirror"
+		# poky has per default precompiled native / host packages,
+		# these have malformed local URIs that prevent usage.
+		echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
+		# we will build a local mirror for usage with buildserver ...
+		echo "BB_GENERATE_MIRROR_TARBALLS = \"1\"" | tee -a conf/local.conf
+		echo "clean local dirs in $(pwd) ..."
+		rm -rf cache tmp sstate-cache
+		# get DL_DIR from local.conf to cleanup packages generated from git ...
+		SETTER=$(bitbake -e -c fetchall ${IMAGE} | grep ^DL_DIR)
+		echo "$SETTER"
+		export ${SETTER}
+		echo "clean git2 tarballs from ${DL_DIR} ..."
+		rm -f ${DL_DIR}/git2_*.tar.gz
+		rm -f ${DL_DIR}/git2_*.tar.gz.done
+		ls -1 ${DL_DIR}/git2_*
+
+		# now force bitbake to do a fetchall for the image to generate
+		for t in $TARGETS; do
+			export MACHINE=$t
+			echo "baking: ${MACHINE} ${IMAGE} with -c fetchall"
+			bitbake -c fetchall ${IMAGE}
+		done
+
+		URL=$(bitbake -e -c fetchall ${IMAGE} | grep ^SOURCE_MIRROR_URL)
+		export ${URL}
+		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
+		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
+		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
+
+		DL_DIR=${DL_DIR#\"*}
+		DL_DIR=${DL_DIR%\"*}
+
+		echo "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
+		FILES=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
+		echo "copy ${FILES}"
+		for f in ${FILES}; do
+			cp ${f} ${SOURCE_MIRROR_URL}
+		done
+	else
+		echo "build images"
+
+		if [ "${MODE}" == "ci" ]; then
+			# poky has per default precompiled native / host packages,
+			# these have malformed local URIs that prevent usage.
+			echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
+			# need to set SOURCE_MIRROR_URL in a site global config on the build server
+			# echo "SOURCE_MIRROR_URL ?= \"file:///blabla
+			# used to force to use and generate a mirror config from $SOURCE_MIRROR_URL
+			echo "INHERIT += \"own-mirrors\"" | tee -a conf/local.conf
+			# force to fetch from premirrors only
+			echo "BB_FETCH_PREMIRRORONLY = \"1\"" | tee -a conf/local.conf
+			# force to switch off any network check
+			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
+			# premirrors have to be configured per site ...
+		fi
+
+		if ! [ -z ${SSTATE_DIR} ]; then
+			# add SSTATE dir outside of builddir, optimize global builds
+			echo "SSTATE_DIR = \"${SSTATE_DIR}\"" | tee -a conf/local.conf
+		else
+			echo "SSTATE_DIR empty"
+		fi
+		if ! [ -z ${DL_DIR} ]; then
+			# add DL_DIR dir outside of builddir, optimize global builds
+			echo "DL_DIR = \"${DL_DIR}\"" | tee -a conf/local.conf
+		else
+			echo "DL_DIR empty"
+		fi
+
+		for t in ${TARGETS}; do
+			local err;
+			# overwrite MACHINE
+			export MACHINE=${t}
+			echo "baking ${MACHINE} ${IMAGE} ..."
+			# create image for $MACHINE
+			bitbake ${IMAGE}
+			err=${?}
+			# HACKHACKHACK: fsl-image-mfgtool-initramfs needs linux-mfgtool
+			# this recipe will fail with a diagnostic error, even when
+			# building for mx6sabresd
+			# workaround: check if image exists
+			if [ "${IMAGE}" == "fsl-image-mfgtool-initramfs" ]; then
+				local THELINK="./tmp/deploy/images/${MACHINE}/${IMAGE}-${MACHINE}.cpio.gz.u-boot"
+				if [ -L ${THELINK} ] && [ -e ${THELINK} ]; then
+					echo "ok"
+				else
+					echo "bitbake ${IMAGE} for ${MACHINE} failed, no ${THELINK}" && exit 1
+				fi
+			else
+				[ "${err}" -ne "0" ] && echo "bitbake ${IMAGE} for ${MACHINE} failed" && exit 1
+			fi
+		done
+
+		if [ "${MODE}" == "ci" ]; then
+			mkdir -p deployment
+			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
+			# note: this depends on poky in bblayers.conf
+			local VERSION=$(bitbake -e | grep ^DISTRO_VERSION)
+			export ${VERSION}
+			DISTRO_VERSION=${DISTRO_VERSION#\"*}
+			DISTRO_VERSION=${DISTRO_VERSION%\"*}
+
+			local GITHEAD=$(git rev-parse --verify --short HEAD 2>/dev/null)
+			local GITATAG="$(git describe 2>/dev/null)"
+			local STAMP="git-stamp"
+			if ! [ -z ${GITATAG} ]; then
+				STAMP=$(echo "${GITATAG}" | awk -F- '{printf("%s-%05d-%s", $(NF-2),$(NF-1),$(NF))}')
+			else
+				STAMP=git$(printf "%s%s" -g ${GITHEAD})
+			fi
+
+			for t in ${TARGETS}; do
+				MACHINE=${t}
+				echo "archiving ${MACHINE} ${IMAGE} ..."
+				# create a file containing the version we are build from
+				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP};
+				# create image archive for $MACHINE
+				tar -cvzf deployment/${MACHINE}-${IMAGE}-yocto-${DISTRO_VERSION}-${STAMP}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
+				[ "$?" -ne "0" ] && echo "archiving for ${MACHINE} failed" && exit 1
+			done
+		fi
+	fi
+
+	return 0
+}
+
+main ${@}
+

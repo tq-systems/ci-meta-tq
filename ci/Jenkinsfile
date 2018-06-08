@@ -1,0 +1,252 @@
+/**
+ * Jenkinsfile for Yocto-BSPs using declarative pipeline
+ */
+
+import java.text.*
+import groovy.time.*
+
+/**********************************************************************/
+/*******************         Functions         ************************/
+/**********************************************************************/
+def wipeOutWs(){
+    dir("${env.WORKSPACE}") {
+        echo "Remove ${env.WORKSPACE}..."
+        deleteDir()
+    }
+    dir("${env.WORKSPACE}@script") {
+        echo "Remove ${env.WORKSPACE}@script..."
+        deleteDir()
+    }
+    dir("${env.WORKSPACE}@tmp") {
+        echo "Remove ${env.WORKSPACE}@tmp..."
+        deleteDir()
+    }
+}
+
+def checkoutMetaLayers(directoryName) {
+    dir("${directoryName}") {
+        sh """
+        git submodule sync
+        git submodule update --init
+        git submodule foreach --recursive git clean -fdx
+        git clean -fdx sources templates
+        git clean -fx"""
+    }
+}
+
+def prepareWorkspace(directoryName){
+    checkout([
+        $class: 'GitSCM',
+        branches: [[name: "${YOCTO_VERSION}"]],
+        doGenerateSubmoduleConfigurations: false,
+        extensions: [
+            [$class: 'RelativeTargetDirectory',
+                relativeTargetDir: "${directoryName}"
+            ],
+            [$class: 'PruneStaleBranch'],
+        ],
+        submoduleCfg: [],
+        userRemoteConfigs: [
+            [url: "${env.GIT_URL}"]
+        ]
+    ])
+}
+
+def buildConfiguration(directoryName) {
+    dir("${directoryName}") {
+        echo "build all machines for config ${directoryName} ..."
+        sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
+    }
+}
+
+def wipeOutBuildspace(directoryName){
+/*
+    Calendar cal=Calendar.getInstance()
+    def hour = cal.get(Calendar.HOUR_OF_DAY)
+    if (hour < 8) {
+        dir("${directoryName}/buildspace") {
+            echo "Remove ${directoryName}/buildspace..."
+            deleteDir()
+        }
+    }
+*/
+    if (params.CLEAN_CACHES == true) {
+        dir("${directoryName}/buildspace") {
+            echo "Remove ${directoryName}/buildspace..."
+            deleteDir()
+        }
+    }
+    dir("${directoryName}@script") {
+        echo "Remove ${directoryName}@script..."
+        deleteDir()
+    }
+    dir("${directoryName}@tmp") {
+        echo "Remove ${directoryName}@tmp..."
+        deleteDir()
+    }
+}
+
+// @NonCPS
+// def manageSstateCache(startTime) {
+    // Get a specific Cause type (in this case the user who kicked off the build),
+    // if present.
+    // def isStartedByTimer = currentBuild.rawBuild.getCause(hudson.model.Cause$TimerTrigger.TimerTriggerCause) != null
+    
+//                      sh "./ci/manage-sstate-cache ${env.WORKSPACE}/shared-sstate-cache"
+//     println startTime
+//    echo "need to manage cache"
+//}
+
+/**********************************************************************/
+/*******************         Pipeline         *************************/
+/**********************************************************************/
+/*
+ * jenkins environment for this pipeline:
+ * - GIT_URL: git URL for projebt to build
+ * - MAIL_RECIPIENTS: comma separated list of mail recipients
+ * - YOCTO_VERSION: git ref to build
+ */
+pipeline {
+    agent {
+        label 'master'
+    }
+
+    options {
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', 
+                       artifactNumToKeepStr: '3', 
+                       daysToKeepStr: '', 
+                       numToKeepStr: '10')
+        )
+        disableConcurrentBuilds()
+    }
+    triggers {
+            cron('H H(0-4) * * *')
+            pollSCM('''# Alle fünf Minuten von 7.00-20.00 an jedem Wochentag
+                H/5 7-20 * * 1-5''')
+    }
+
+    environment {
+        WS_MFG = "CONFIGS/mfgtool"
+        WS_GUI = "CONFIGS/gui"
+        WS_MIN = "CONFIGS/minimal"
+    }
+
+    stages {
+        stage ('Manage sstate cache') {
+            steps {
+                // manageSstateCache(currentBuild.startTimeInMillis()) does not work
+                script {
+/*
+                    Calendar cal=Calendar.getInstance()
+                    def hour = cal.get(Calendar.HOUR_OF_DAY)
+                    if (hour < 6) {
+                        dir("${env.WORKSPACE}/shared-sstate-cache") {
+                            echo "clear ${env.WORKSPACE}/shared-sstate-cache ..."
+                            deleteDir()
+                        }
+                    }
+*/
+                    if (params.CLEAN_CACHES == true) {
+                        dir("${env.WORKSPACE}/shared-sstate-cache") {
+                            echo "clear ${env.WORKSPACE}/shared-sstate-cache ..."
+                            deleteDir()
+                        }
+                    }
+                    // unconditionally remove to make sure we got everything
+                    // from mirror, needed for updates of git archives
+                    dir("${env.WORKSPACE}/shared-dl-dir") {
+                       echo "clear ${env.WORKSPACE}/shared-dl-dir ..."
+                       deleteDir()
+                    }
+                }
+            }
+        }
+        stage ('Prepare Workspaces') {
+            steps {
+                parallel (
+                    "gui" : {
+                        wipeOutBuildspace("${env.WS_GUI}")
+                        prepareWorkspace("${env.WS_GUI}")
+                    },
+                    "minimal" : {
+                        wipeOutBuildspace("${env.WS_MIN}")
+                        prepareWorkspace("${env.WS_MIN}")
+                    },
+                    "mfgtool" : {
+                        wipeOutBuildspace("${env.WS_MFG}")
+                        prepareWorkspace("${env.WS_MFG}")
+                    }
+                )
+            }
+        }
+        stage ('Checkout all meta-layers') {
+            steps {
+                parallel (
+                    "gui" : {
+                        checkoutMetaLayers("${env.WS_GUI}")
+                    },
+                    "minimal" : {
+                        checkoutMetaLayers("${env.WS_MIN}")
+                    },
+                    "mfgtool" : {
+                        checkoutMetaLayers("${env.WS_MFG}")
+                    }
+                )
+            }
+        }
+        stage ('Build'){
+            steps {
+                parallel (
+                    "gui" : {
+                        buildConfiguration("${env.WS_GUI}")
+                    },
+                    "minimal" : {
+                        buildConfiguration("${env.WS_MIN}")
+                    },
+                    "mfgtool" : {
+                        buildConfiguration("${env.WS_MFG}")
+                    }
+                )
+            }
+       }
+       stage ('Archive'){
+            steps {
+                script {
+                    checkoutMetaLayers("${env.WORKSPACE}")
+                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh) && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
+            wipeOutBuildspace("${env.WS_GUI}")
+            archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
+            wipeOutBuildspace("${env.WS_MIN}")
+            archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
+            wipeOutBuildspace("${env.WS_MFG}")
+            archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
+        }
+        unstable {
+            emailext (
+                to: "${env.MAIL_RECIPIENTS}",
+                subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
+                body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
+                  Check console output at ${env.BUILD_URL} to view the results.""",
+                attachLog: true,
+            )
+        }
+        failure {
+            emailext (
+                to: "${env.MAIL_RECIPIENTS}",
+                subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
+                body: """\
+                ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
+                Check console output at ${env.BUILD_URL} to view the results.""",
+                attachLog: true,
+            )
+        }
+    }
+}
