@@ -177,10 +177,11 @@ main () {
 			echo "INHERIT += \"rm_work\"" | tee -a  conf/local.conf
 			echo "RM_OLD_IMAGE = \"1\""  | tee -a  conf/local.conf
 
-			echo "INHERIT += \"archiver\"" | tee -a  conf/local.conf
-			echo "COPYLEFT_LICENSE_EXCLUDE ?= \"CLOSED Proprietary\"" | tee -a  conf/local.conf
+			# works not as expected:
+			#echo "INHERIT += \"archiver\"" | tee -a  conf/local.conf
+			#echo "COPYLEFT_LICENSE_EXCLUDE ?= \"CLOSED Proprietary\"" | tee -a  conf/local.conf
 			## echo "COPYLEFT_LICENSE_INCLUDE ?= \"*\"" | tee -a  conf/local.conf
-			echo "ARCHIVER_MODE[src] ?= \"original\"" | tee -a  conf/local.conf
+			#echo "ARCHIVER_MODE[src] ?= \"original\"" | tee -a  conf/local.conf
 			## echo "COPYLEFT_RECIPE_TYPES ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
 			## echo "COPYLEFT_RECIPE_TYPE ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
 		fi
