@@ -80,6 +80,10 @@ def wipeOutBuildspace(directoryName){
             echo "Remove ${directoryName}/buildspace/deployment ..."
             deleteDir()
         }
+        dir("${directoryName}/buildspace/tmp") {
+            echo "Remove ${directoryName}/buildspace/tmp ..."
+            deleteDir()
+        }
     }
     dir("${directoryName}@script") {
         echo "Remove ${directoryName}@script ..."
