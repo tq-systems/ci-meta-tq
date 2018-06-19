@@ -18,10 +18,6 @@ When switching branches keep in mind to keep the submodules in sync.
 
 To help setting up an initial build space, use
 
-source setup-<machine>
-
-or if setup helper not available for the machine:
-
 $: MACHINE=<machine> source setup-environment <build directory>
 
 After this step, everything is setup to build an image using bitbake.
@@ -32,6 +28,7 @@ of the build space.
 TODO: 
 - use dynamic-layers in meta-tq to allow integration of modified
 recipes from meta-ti
+- allow build without meta-ti
 - fix setup scripts
 - test and adopt jenkins support
  
