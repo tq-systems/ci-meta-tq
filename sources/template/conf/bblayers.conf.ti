@@ -10,6 +10,5 @@ BBLAYERS = " \
   \
   ${BSPDIR}/sources/meta-tq \
   ${BSPDIR}/sources/meta-ti \
-  ${BSPDIR}/sources/meta-tqma57xx-bsp \
   ${BSPDIR}/sources/meta-openembedded/meta-oe \
 "
