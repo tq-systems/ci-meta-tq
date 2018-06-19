@@ -1,10 +1,9 @@
-#!/bin/sh
-# -*- mode: shell-script; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+#!/bin/bash
 #
 # Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
 # Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
 #
-# Copyright (C) 2017 Markus Niebel <Markus.Niebel@tq-group.com>
+# Copyright (C) 2017 -2018 Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -22,15 +21,27 @@
 # Add options for the script
 # Copyright (C) 2013 Freescale Semiconductor, Inc.
 
-CWD=`pwd`
-PROGNAME="setup-environment"
+CWD=$(pwd)
+# bashism:
+FULL_PROGNAME=$( readlink -f ${BASH_SOURCE})
+PROGNAME=$(basename ${FULL_PROGNAME})
+DEFAULT_MACHINE="tqma572x-mba57xx"
 
 usage()
 {
-    echo -e "\nUsage: source $PROGNAME <build-dir>
+    echo -e "\nUsage: source $PROGNAME <build-dir> [template]
     <build-dir>: specifies the build directory location (required)
+    <template>: template bblayers.conf to use (optional)
 
-If undefined, this script will set \$MACHINE to 'tqma6q-mba6x'.
+The first usage is for creating a new build directory. In this case, the
+script creates the build directory <build-dir>, configures it for the
+specified <machine> and <distro> using <template>, and prepares the calling shell for running
+bitbake on the build directory.
+
+The second usage is for using an existing build directory. In this case,
+the script prepares the calling shell for running bitbake on the build
+directory <build-dir>. The build directory configuration is unchanged.
+If undefined, this script will set \$MACHINE to '${DEFAULT_MACHINE}'.
 "
 
     ls sources/*/conf/machine/*.conf > /dev/null 2>&1
@@ -85,8 +96,14 @@ if [ "$(whoami)" = "root" ]; then
     echo "ERROR: do not use the BSP as root. Exiting..."
 fi
 
-if [ -z "$MACHINE" ]; then
-    MACHINE='tqma6q-mba6x'
+if [ -z "${MACHINE}" ]; then
+    MACHINE=${DEFAULT_MACHINE}
+fi
+
+if [ -z "$2" ]; then
+    BBLAYERS_TEMPLATE=bblayers.conf.minimal
+else
+    BBLAYERS_TEMPLATE=bblayers.conf.${2}
 fi
 
 # Check the machine type specified
@@ -102,11 +119,11 @@ else
     fi
 fi
 
-if [ -z "$SDKMACHINE" ]; then
+if [ -z "${SDKMACHINE}" ]; then
     SDKMACHINE='i686'
 fi
 
-if [ -z "$DISTRO" ]; then
+if [ -z "${DISTRO}" ]; then
     DISTRO='poky'
 fi
 
@@ -155,6 +172,7 @@ if [ ! -e conf/local.conf.sample ]; then
     cat >> conf/local.conf <<EOF
 
 DL_DIR ?= "\${BSPDIR}/downloads/"
+RM_OLD_IMAGE ?= "1"
 EOF
     # Change settings according environment
     sed -e "s,MACHINE ??=.*,MACHINE ??= '$MACHINE',g" \
@@ -163,6 +181,9 @@ EOF
         -i conf/local.conf
 
     cp $TEMPLATES/* conf/
+    if [ -e conf/${BBLAYERS_TEMPLATE} ]; then
+        cp conf/${BBLAYERS_TEMPLATE} conf/bblayers.conf
+    fi
 
     for s in $HOME/.oe $HOME/.yocto; do
         if [ -e $s/site.conf ]; then
