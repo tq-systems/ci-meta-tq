@@ -127,10 +127,16 @@ main () {
 		# these have malformed local URIs that prevent usage.
 		echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
 		# we will build a local mirror for usage with buildserver ...
+		# so we need to generate tarballs for git repos etc. ...
 		echo "BB_GENERATE_MIRROR_TARBALLS = \"1\"" | tee -a conf/local.conf
+		# force to have a separate DL_DIR to make sure we download all stuff
+		# needed but not available yet
+		echo "DL_DIR = \"\${BSPDIR}/downloads/\"" | tee -a conf/local.conf
 		echo "clean local dirs in $(pwd) ..."
 		rm -rf cache tmp sstate-cache
 		# get DL_DIR from local.conf to cleanup packages generated from git ...
+		# if there is a .done file and / or a git2_*.tar.gz ist seems the
+		# fetcher does not rerun git to update the repo
 		SETTER=$(bitbake -e -c fetchall ${IMAGE} | grep ^DL_DIR)
 		echo "$SETTER"
 		export ${SETTER}
