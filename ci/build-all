@@ -44,6 +44,7 @@ main () {
 	export CONNECTIVITY_CHECK_URIS=" "
 
 	local BUILD_DIR=${1}
+	local DEPLOYDIR=$(readlink -f ./${BUILD_DIR})/deployment
 	local LAYER="unknown"
 	local TARGETS="unknown"
 	local CONFIG=${2}
@@ -160,6 +161,10 @@ main () {
 		echo "build images"
 
 		if [ "${MODE}" == "ci" ]; then
+			if [ -d "${DEPLOYDIR}" ]; then
+				rm -rf "${DEPLOYDIR}"
+			fi
+
 			# poky has per default precompiled native / host packages,
 			# these have malformed local URIs that prevent usage.
 			echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
@@ -224,7 +229,7 @@ main () {
 		done
 
 		if [ "${MODE}" == "ci" ]; then
-			mkdir -p deployment
+			mkdir -p ${DEPLOYDIR}
 			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
 			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh)
 			# note: this depends on poky in bblayers.conf
@@ -239,7 +244,7 @@ main () {
 				# create a file containing the version we are build from
 				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info;
 				# create image archive for $MACHINE
-				tar -cvzf deployment/${MACHINE}-${IMAGE}-yocto-${DISTRO_VERSION}-${STAMP}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
+				tar -cvzf ${DEPLOYDIR}/${MACHINE}-${IMAGE}-yocto-${DISTRO_VERSION}-${STAMP}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
 				[ "$?" -ne "0" ] && echo "archiving for ${MACHINE} failed" && exit 1
 			done
 		fi
