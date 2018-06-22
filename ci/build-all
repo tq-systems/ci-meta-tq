@@ -226,26 +226,18 @@ main () {
 		if [ "${MODE}" == "ci" ]; then
 			mkdir -p deployment
 			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
+			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh)
 			# note: this depends on poky in bblayers.conf
 			local VERSION=$(bitbake -e | grep ^DISTRO_VERSION)
 			export ${VERSION}
 			DISTRO_VERSION=${DISTRO_VERSION#\"*}
 			DISTRO_VERSION=${DISTRO_VERSION%\"*}
 
-			local GITHEAD=$(git rev-parse --verify --short HEAD 2>/dev/null)
-			local GITATAG="$(git describe 2>/dev/null)"
-			local STAMP="git-stamp"
-			if ! [ -z ${GITATAG} ]; then
-				STAMP=$(echo "${GITATAG}" | awk -F- '{printf("%s-%05d-%s", $(NF-2),$(NF-1),$(NF))}')
-			else
-				STAMP=git$(printf "%s%s" -g ${GITHEAD})
-			fi
-
 			for t in ${TARGETS}; do
 				MACHINE=${t}
 				echo "archiving ${MACHINE} ${IMAGE} ..."
 				# create a file containing the version we are build from
-				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP};
+				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info;
 				# create image archive for $MACHINE
 				tar -cvzf deployment/${MACHINE}-${IMAGE}-yocto-${DISTRO_VERSION}-${STAMP}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
 				[ "$?" -ne "0" ] && echo "archiving for ${MACHINE} failed" && exit 1
