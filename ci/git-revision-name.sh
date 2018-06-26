@@ -48,7 +48,7 @@ IFS='
 
 # Internal variables and initializations.
 readonly PROGRAM=$(basename "$0")
-readonly VERSION=0.1
+readonly VERSION=0.2
 
  # Create a place to store our work's progress
 function main () {
@@ -61,8 +61,8 @@ function main () {
 	if [ "${IS_GIT_TAG}" -gt "0" ]; then
 		STAMP=${GITATAG};
 	elif ! [ -z ${GITATAG} ]; then
-		STAMP=$(echo "${GITATAG}" | awk -F- '{ for (i = 1; i <= NF - 2; i++) { if ($i == 1) print $i; else printf("-%s", $i) } }')
-		STAMP+=$(echo "${GITATAG}" | awk -F- '{ if (NF >= 3) printf("-%05d-%s", $(NF-1),$(NF));}')
+		STAMP=$(echo "${GITATAG}" | awk -F- '{ printf("%s", $1); for (i = 2; i <= NF - 2; i++) { printf("-%s", $i) } }')
+		STAMP=${STAMP}$(echo "${GITATAG}" | awk -F- '{ if (NF >= 3) printf("-%05d-%s", $(NF-1),$(NF));}')
 	else
 		STAMP=git$(printf "%s%s" -g ${GITHEAD})
 	fi
