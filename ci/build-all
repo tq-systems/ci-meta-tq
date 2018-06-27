@@ -127,7 +127,7 @@ main () {
 		echo "BB_GENERATE_MIRROR_TARBALLS = \"1\"" | tee -a conf/local.conf
 		# force to have a separate DL_DIR to make sure we download all stuff
 		# needed but not available yet
-		echo "DL_DIR = \"\${BSPDIR}/downloads/\"" | tee -a conf/local.conf
+		echo "DL_DIR = \"\${TOPDIR}/downloads/\"" | tee -a conf/local.conf
 		echo "clean local dirs in $(pwd) ..."
 		rm -rf cache tmp sstate-cache
 		# get DL_DIR from local.conf to cleanup packages generated from git ...
