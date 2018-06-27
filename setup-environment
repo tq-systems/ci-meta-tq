@@ -23,7 +23,7 @@
 
 CWD=$(pwd)
 PROGNAME="setup-environment"
-DEFAULT_MACHINE="tqma6q-mba6x"
+DEFAULT_MACHINE="tqmls1012al-mbls1012al"
 DEFAULT_DISTRO="poky"
 
 usage()
