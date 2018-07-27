@@ -3,7 +3,7 @@
 # Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
 # Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
 #
-# Copyright (C) 2017 Markus Niebel <Markus.Niebel@tq-group.com>
+# Copyright (C) 2017-2018 Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -22,27 +22,51 @@
 # Copyright (C) 2013 Freescale Semiconductor, Inc.
 
 CWD=$(pwd)
-PROGNAME="setup-environment"
-DEFAULT_MACHINE="tqma6q-mba6x"
-DEFAULT_DISTRO="poky"
-
+# bashism:
+FULL_PROGNAME=$( readlink -f ${BASH_SOURCE})
+PROGNAME=$(basename ${FULL_PROGNAME})
+DEFAULT_MACHINE="imx8qxpmek"
 usage()
 {
-    echo -e "\nUsage: source $PROGNAME <build-dir> <template>
-    <build-dir>: specifies the build directory location (required)
+    echo -e "
+Usage: MACHINE=<machine> DISTRO=<distro> source $PROGNAME <build-dir> [<template>]
+Usage:                                   source $PROGNAME <build-dir>
+    <machine>    machine name
+    <distro>     distro name
+    <build-dir>: specifies the build directory (required)
     <template>: template bblayers.conf to use (optional)
 
+The first usage is for creating a new build directory. In this case, the
+script creates the build directory <build-dir>, configures it for the
+specified <machine> and <distro> using <template>, and prepares the calling shell for running
+bitbake on the build directory.
+
+The second usage is for using an existing build directory. In this case,
+the script prepares the calling shell for running bitbake on the build
+directory <build-dir>. The build directory configuration is unchanged.
 If undefined, this script will set \$MACHINE to '${DEFAULT_MACHINE}'.
 "
 
     ls sources/*/conf/machine/*.conf > /dev/null 2>&1
+    ls sources/meta-freescale-distro/conf/distro/fslc-*.conf > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo -e "
-Supported machines: `echo; ls sources/meta-tq/conf/machine/*.conf \
+Supported machines: `echo; ls sources/*/conf/machine/*.conf \
 | sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
 
-To build for a machine listed above, run this script as:
-MACHINE=<machine> source $PROGNAME <build-dir>
+Supported Freescale's distros: `echo; ls sources/meta-freescale-distro/conf/distro/fslc-*.conf \
+| sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+
+Available Poky's distros: `echo; ls sources/poky/meta-poky/conf/distro/*.conf \
+| sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+
+Examples:
+
+- To create a new Yocto build directory:
+  $ MACHINE=imx6qdlsabresd DISTRO=fslc-framebuffer source $PROGNAME build
+
+- To use an existing Yocto build directory:
+  $ source $PROGNAME build
 "
     fi
 }
@@ -139,8 +163,14 @@ if [ "$(whoami)" = "root" ]; then
     echo "ERROR: do not use the BSP as root. Exiting..."
 fi
 
+if [ ! -e $1/conf/local.conf.sample ]; then
+    build_dir_setup_enabled="true"
+else
+    build_dir_setup_enabled="false"
+fi
+
 if [ -z "$MACHINE" ]; then
-    MACHINE='tqma6q-mba6x'
+    MACHINE=${DEFAULT_MACHINE}
 fi
 
 if [ -z "$2" ]; then
@@ -151,6 +181,8 @@ fi
 
 # Check the machine type specified
 LIST_MACHINES=$(ls -1 $CWD/sources/*/conf/machine)
+LIST_MACHINES+=$(ls -1 $CWD/sources/meta-fsl-bsp-release/*/*/conf/machine)
+
 VALID_MACHINE=$(echo -e "$LIST_MACHINES" | grep ${MACHINE}.conf$ | wc -l)
 if [ -z "${MACHINE}" ] || [ "${VALID_MACHINE}" -eq "0" ]; then
     echo -e "\nThe \$MACHINE you have specified ($MACHINE) is not supported by this build setup"
@@ -168,6 +200,13 @@ fi
 
 if [ -z "$DISTRO" ]; then
     DISTRO=${DEFAULT_DISTRO}
+fi
+
+if [ "$build_dir_setup_enabled" = "true" ] && [ -z "$DISTRO" ]; then
+    usage
+    echo -e "ERROR: You must set DISTRO when creating a new build directory."
+    clean_up
+    return 1
 fi
 
 OEROOT=$CWD/sources/poky
