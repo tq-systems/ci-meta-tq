@@ -95,7 +95,7 @@ main () {
 	#TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
 	#	sed s/\.conf//g | xargs -n1 basename)
 	# TODO: find real boards to be build ...
-	TARGETS=imx8qxpmek
+	TARGETS="imx8qxpa0mek tqma8qxa0-mba8qx"
 
 	case ${CONFIG} in
 	"gui" )
