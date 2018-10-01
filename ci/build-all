@@ -48,7 +48,8 @@ main () {
 	local LAYER="unknown"
 	local TARGETS="unknown"
 	local CONFIG=${2}
-	local IMAGE=core-image-minimal
+	local IMAGES=core-image-minimal
+	local MFGTOOL_EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
@@ -66,18 +67,13 @@ main () {
 
 	case ${CONFIG} in
 	"gui" )
-		IMAGE=fsl-image-multimedia-full
+		IMAGES="fsl-image-multimedia-full fsl-image-mfgtool-initramfs"
 		LAYER="meta-tq"
 		export EULA="y"
 		;;
 	"minimal" )
-		IMAGE=core-image-minimal
+		IMAGES=core-image-minimal
 		LAYER="meta-tq"
-		;;
-	"mfgtool" )
-		IMAGE=fsl-image-mfgtool-initramfs
-		LAYER="meta-tq"
-		export EULA="y"
 		;;
 	* )
 		usage
@@ -85,18 +81,19 @@ main () {
 		;;
 	esac
 
-	# filter out machines from the layer 
+	# filter out machines from the ${LAYER}
 	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
 		sed s/\.conf//g | xargs -n1 basename)
+	MINIMAL_TARGETS=${TARGETS}
+	GUI_TARGETS=${TARGETS}
+	MFGTOOL_TARGETS=${TARGETS}
+	TARGETS=
 
 	case ${CONFIG} in
 	"gui" )
-		;;
-	"mfgtool" )
 		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
-		local EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
-		for excl in ${EXCLUDE}; do
-			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
+		for excl in ${MFGTOOL_EXCLUDE}; do
+			MFGTOOL_TARGETS=$(echo ${MFGTOOL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
 		;;
 	* )
@@ -141,14 +138,30 @@ main () {
 		rm -f ${DL_DIR}/git2_*.tar.gz.done
 		ls -1 ${DL_DIR}/git2_*
 
-		# now force bitbake to do a fetchall for the image to generate
-		for t in $TARGETS; do
-			export MACHINE=$t
-			echo "baking: ${MACHINE} ${IMAGE} with -c fetchall"
-			bitbake -c fetchall ${IMAGE}
+		for img in ${IMAGES}; do
+			case ${img} in
+			core-image-minimal )
+				TARGETS=${MINIMAL_TARGETS}
+				;;
+			fsl-image-multimedia-full )
+				TARGETS=${GUI_TARGETS}
+				;;
+			fsl-image-mfgtool-initramfs )
+				TARGETS=${MFGTOOL_TARGETS}
+				;;
+			* )
+				;;
+			esac
+
+			# now force bitbake to do a fetchall for the image to generate
+			for t in $TARGETS; do
+				export MACHINE=$t
+				echo "baking: ${MACHINE} ${img} with -c fetchall"
+				bitbake -c fetchall ${img}
+			done
 		done
 
-		URL=$(bitbake -e -c fetchall ${IMAGE} | grep ^SOURCE_MIRROR_URL)
+		URL=$(bitbake -e -c fetchall core-image-minimal | grep ^SOURCE_MIRROR_URL)
 		export ${URL}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
@@ -209,28 +222,43 @@ main () {
 			echo "DL_DIR empty"
 		fi
 
-		for t in ${TARGETS}; do
-			local err;
-			# overwrite MACHINE
-			export MACHINE=${t}
-			echo "baking ${MACHINE} ${IMAGE} ..."
-			# create image for $MACHINE
-			bitbake ${IMAGE}
-			err=${?}
-			# HACKHACKHACK: fsl-image-mfgtool-initramfs needs linux-mfgtool
-			# this recipe will fail with a diagnostic error, even when
-			# building for mx6sabresd
-			# workaround: check if image exists
-			if [ "${IMAGE}" == "fsl-image-mfgtool-initramfs" ]; then
-				local THELINK="./tmp/deploy/images/${MACHINE}/${IMAGE}-${MACHINE}.cpio.gz.u-boot"
-				if [ -L ${THELINK} ] && [ -e ${THELINK} ]; then
-					echo "ok"
+		for img in ${IMAGES}; do
+			case ${img} in
+			core-image-minimal )
+				TARGETS=${MINIMAL_TARGETS}
+				;;
+			fsl-image-multimedia-full )
+				TARGETS=${GUI_TARGETS}
+				;;
+			fsl-image-mfgtool-initramfs )
+				TARGETS=${MFGTOOL_TARGETS}
+				;;
+			* )
+				;;
+			esac
+
+			# now force bitbake to do a fetchall for the image to generate
+			for t in $TARGETS; do
+				export MACHINE=$t
+				echo "baking ${MACHINE} ${img} ..."
+				# create image for $MACHINE
+				bitbake ${img}
+				err=${?}
+				# HACKHACKHACK: fsl-image-mfgtool-initramfs needs linux-mfgtool
+				# this recipe will fail with a diagnostic error, even when
+				# building for mx6sabresd
+				# workaround: check if image exists
+				if [ "${IMG}" == "fsl-image-mfgtool-initramfs" ]; then
+					local THELINK="./tmp/deploy/images/${MACHINE}/${img}-${MACHINE}.cpio.gz.u-boot"
+					if [ -L ${THELINK} ] && [ -e ${THELINK} ]; then
+						echo "ok"
+					else
+						echo "bitbake ${img} for ${MACHINE} failed, no ${THELINK}" && exit 1
+					fi
 				else
-					echo "bitbake ${IMAGE} for ${MACHINE} failed, no ${THELINK}" && exit 1
+					[ "${err}" -ne "0" ] && echo "bitbake ${img} for ${MACHINE} failed" && exit 1
 				fi
-			else
-				[ "${err}" -ne "0" ] && echo "bitbake ${IMAGE} for ${MACHINE} failed" && exit 1
-			fi
+			done
 		done
 
 		if [ "${MODE}" == "ci" ]; then
@@ -242,6 +270,7 @@ main () {
 			export ${VERSION}
 			DISTRO_VERSION=${DISTRO_VERSION#\"*}
 			DISTRO_VERSION=${DISTRO_VERSION%\"*}
+			TARGETS=${MINIMAL_TARGETS}
 
 			for t in ${TARGETS}; do
 				MACHINE=${t}
@@ -249,7 +278,7 @@ main () {
 				# create a file containing the version we are build from
 				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info;
 				# create image archive for $MACHINE
-				tar -cvzf ${DEPLOYDIR}/${MACHINE}-${IMAGE}-yocto-${DISTRO_VERSION}-${STAMP}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
+				tar -cvzf ${DEPLOYDIR}/${MACHINE}-${CONFIG}-yocto-${DISTRO_VERSION}-${STAMP}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
 				[ "$?" -ne "0" ] && echo "archiving for ${MACHINE} failed" && exit 1
 			done
 		fi
