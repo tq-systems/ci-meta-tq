@@ -60,17 +60,6 @@ def buildConfiguration(directoryName) {
 }
 
 def wipeOutBuildspace(directoryName){
-/*
-    Calendar cal=Calendar.getInstance()
-    def hour = cal.get(Calendar.HOUR_OF_DAY)
-
-    if (hour < 8) {
-        dir("${directoryName}/buildspace") {
-            echo "Remove ${directoryName}/buildspace..."
-            deleteDir()
-        }
-    }
-*/
     if (params.CLEAN_CACHES == true) {
         dir("${directoryName}/buildspace") {
             echo "Remove ${directoryName}/buildspace ... (CLEAN_CACHES)"
@@ -135,16 +124,6 @@ pipeline {
             steps {
                 // manageSstateCache(currentBuild.startTimeInMillis()) does not work
                 script {
-/*
-                    Calendar cal=Calendar.getInstance()
-                    def hour = cal.get(Calendar.HOUR_OF_DAY)
-                    if (hour < 6) {
-                        dir("${env.WORKSPACE}/shared-sstate-cache") {
-                            echo "clear ${env.WORKSPACE}/shared-sstate-cache ..."
-                            deleteDir()
-                        }
-                    }
-*/
                     if (params.CLEAN_CACHES == true) {
                         dir("${env.WORKSPACE}/shared-sstate-cache") {
                             echo "clear ${env.WORKSPACE}/shared-sstate-cache ... (CLEAN_CACHES)"
