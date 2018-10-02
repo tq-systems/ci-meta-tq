@@ -10,10 +10,6 @@
 	path = sources/meta-openembedded
 	url = https://github.com/openembedded/meta-openembedded.git
 	branch = pyro
-[submodule "sources/meta-tq-mfgtool"]
-	path = sources/meta-tq-mfgtool
-	url = ../meta-tq-mfgtool.git
-	branch = pyro
 [submodule "sources/meta-freescale"]
 	path = sources/meta-freescale
 	url = https://git.yoctoproject.org/git/meta-freescale
