@@ -12,5 +12,4 @@ BBLAYERS = " \
   ${BSPDIR}/sources/meta-freescale \
   \
   ${BSPDIR}/sources/meta-tq \
-  ${BSPDIR}/sources/meta-tq-mfgtool \
 "
