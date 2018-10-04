@@ -45,11 +45,12 @@ main () {
 
 	local BUILD_DIR=${1}
 	local DEPLOYDIR=$(readlink -f ./${BUILD_DIR})/deployment
-	local LAYER="unknown"
-	local TARGETS="unknown"
+	local LAYER="meta-tq"
+	local ALL_TARGETS="unknown"
 	local CONFIG=${2}
-	local IMAGES=core-image-minimal
+	local IMAGES="core-image-minimal"
 	local MFGTOOL_EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
+	local GUI_EXCLUDE=""
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
@@ -65,15 +66,38 @@ main () {
 
 	echo $1 $2 $3 $MODE
 
+	# filter out machines from the ${LAYER}
+	ALL_TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
+		sed s/\.conf//g | xargs -n1 basename)
+	local MINIMAL_TARGETS=${ALL_TARGETS}
+	local GUI_TARGETS=${ALL_TARGETS}
+	local MFGTOOL_TARGETS=${ALL_TARGETS}
+
 	case ${CONFIG} in
 	"gui" )
-		IMAGES="fsl-image-multimedia-full fsl-image-mfgtool-initramfs"
-		LAYER="meta-tq"
+		IMAGES="fsl-image-multimedia-full"
+		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
+		for excl in ${GUI_EXCLUDE}; do
+			GUI_TARGETS=$(echo ${GUI_TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		export MACHINE=$(echo $GUI_TARGETS | awk '{ print $1 }')
+		ALL_TARGETS=${GUI_TARGETS}
 		export EULA="y"
 		;;
 	"minimal" )
-		IMAGES=core-image-minimal
-		LAYER="meta-tq"
+		IMAGES="core-image-minimal"
+		export MACHINE=$(echo $MINIMAL_TARGETS | awk '{ print $1 }')
+		ALL_TARGETS=${MINIMAL_TARGETS}
+		;;
+	"mfgtool" )
+		IMAGES="fsl-image-mfgtool-initramfs"
+		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
+		for excl in ${MFGTOOL_EXCLUDE}; do
+			MFGTOOL_TARGETS=$(echo ${MFGTOOL_TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		export MACHINE=$(echo $MFGTOOL_TARGETS | awk '{ print $1 }')
+		ALL_TARGETS=${MFGTOOL_TARGETS}
+		export EULA="y"
 		;;
 	* )
 		usage
@@ -81,27 +105,10 @@ main () {
 		;;
 	esac
 
-	# filter out machines from the ${LAYER}
-	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
-		sed s/\.conf//g | xargs -n1 basename)
-	MINIMAL_TARGETS=${TARGETS}
-	GUI_TARGETS=${TARGETS}
-	MFGTOOL_TARGETS=${TARGETS}
-	TARGETS=
-
-	case ${CONFIG} in
-	"gui" )
-		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
-		for excl in ${MFGTOOL_EXCLUDE}; do
-			MFGTOOL_TARGETS=$(echo ${MFGTOOL_TARGETS} | sed -e "s/ *$excl */ /")
-		done
-		;;
-	* )
-		;;
-	esac
+	# filter out double entries in case we build multiple images per config
+	ALL_TARGETS=$(echo ${ALL_TARGETS} | tr ' ' '\n' | sort -u)
 
 	# source the real setup workhorse.
-	export MACHINE=$(echo $TARGETS | awk '{ print $1 }')
 	. ./setup-environment ${BUILD_DIR} ${CONFIG}
 	[ "$?" -ne "0" ] && echo "environment setup failed" && exit 1
 
@@ -112,7 +119,7 @@ main () {
 		${SCRIPTPATH}/poky-version-check.sh check
 		[ "$?" -ne "0" ] && echo "error: not clean and version changed" && exit 1
 	fi
-	
+
 	# modify local conf as needed before executing bitbake
 	if [ "${MODE}" == "mirror" ]; then
 		echo "build mirror"
@@ -237,8 +244,8 @@ main () {
 				;;
 			esac
 
-			# now force bitbake to do a fetchall for the image to generate
-			for t in $TARGETS; do
+			# now force bitbake to generate images for all targets ...
+			for t in ${TARGETS}; do
 				export MACHINE=$t
 				echo "baking ${MACHINE} ${img} ..."
 				# create image for $MACHINE
@@ -272,9 +279,9 @@ main () {
 			DISTRO_VERSION=${DISTRO_VERSION%\"*}
 			TARGETS=${MINIMAL_TARGETS}
 
-			for t in ${TARGETS}; do
+			for t in ${ALL_TARGETS}; do
 				MACHINE=${t}
-				echo "archiving ${MACHINE} ${IMAGE} ..."
+				echo "archiving ${MACHINE} ..."
 				# create a file containing the version we are build from
 				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info;
 				# create image archive for $MACHINE
