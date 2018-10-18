@@ -131,15 +131,16 @@ main () {
 		echo "BB_GENERATE_MIRROR_TARBALLS = \"1\"" | tee -a conf/local.conf
 		# force to have a separate DL_DIR to make sure we download all stuff
 		# needed but not available yet
-		echo "DL_DIR = \"\${BSPDIR}/downloads/\"" | tee -a conf/local.conf
+		echo "DL_DIR = \"\${TOPDIR}/downloads/\"" | tee -a conf/local.conf
 		echo "clean local dirs in $(pwd) ..."
 		rm -rf cache tmp sstate-cache
 		# get DL_DIR from local.conf to cleanup packages generated from git ...
 		# if there is a .done file and / or a git2_*.tar.gz ist seems the
 		# fetcher does not rerun git to update the repo
-		SETTER=$(bitbake -e -c fetchall ${IMAGE} | grep ^DL_DIR)
+		SETTER=$(bitbake -e | grep ^"DL_DIR=")
 		echo "$SETTER"
 		export ${SETTER}
+		# force to download to generate git tarballs for newest remote ...
 		echo "clean git2 tarballs from ${DL_DIR} ..."
 		rm -f ${DL_DIR}/git2_*.tar.gz
 		rm -f ${DL_DIR}/git2_*.tar.gz.done
@@ -162,13 +163,13 @@ main () {
 
 			# now force bitbake to do a fetchall for the image to generate
 			for t in $TARGETS; do
-				export MACHINE=$t
+				export MACHINE=${t}
 				echo "baking: ${MACHINE} ${img} with -c fetchall"
 				bitbake -c fetchall ${img}
 			done
 		done
 
-		URL=$(bitbake -e -c fetchall core-image-minimal | grep ^SOURCE_MIRROR_URL)
+		URL=$(bitbake -e | grep ^"SOURCE_MIRROR_URL=")
 		export ${URL}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
@@ -274,8 +275,8 @@ main () {
 			mkdir -p ${DEPLOYDIR}
 			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
 			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh)
-			# note: this depends on poky in bblayers.conf
-			local VERSION=$(bitbake -e | grep ^DISTRO_VERSION)
+			# note: this depends on a selected distro
+			local VERSION=$(bitbake -e | grep ^"DISTRO_VERSION=")
 			export ${VERSION}
 			DISTRO_VERSION=${DISTRO_VERSION#\"*}
 			DISTRO_VERSION=${DISTRO_VERSION%\"*}
