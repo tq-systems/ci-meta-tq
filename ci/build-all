@@ -49,10 +49,13 @@ main () {
 
 	local BUILD_DIR=${1}
 	local DEPLOYDIR=$(readlink -f ./${BUILD_DIR})/deployment
-	local LAYER="unknown"
-	local TARGETS="unknown"
+	local LAYER="meta-tq"
+	local ALL_TARGETS="unknown"
 	local CONFIG=${2}
-	local DEFAULT_IMAGE=core-image-minimal
+	local IMAGES="core-image-minimal"
+	local MINIMAL_EXCLUDE="tqmls1012al-mbls1012al"
+	local MFGTOOL_EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
+	local GUI_EXCLUDE="tqmls1012al-mbls1012al"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
@@ -68,22 +71,42 @@ main () {
 
 	echo $1 $2 $3 $MODE
 
+	# filter out machines from the ${LAYER}
+	ALL_TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
+		sed s/\.conf//g | xargs -n1 basename)
+	# TODO: find real boards to be build ...
+	ALL_TARGETS="imx8qxpa0mek tqma8qxa0-mba8qx"
+	local MINIMAL_TARGETS=${ALL_TARGETS}
+	local GUI_TARGETS=${ALL_TARGETS}
+	local MFGTOOL_TARGETS=${ALL_TARGETS}
+
 	case ${CONFIG} in
 	"gui" )
-		IMAGES="core-image-minimal fsl-image-multimedia fsl-image-mfgtool-initramfs"
-		LAYER="meta-tq"
+		IMAGES="fsl-image-multimedia-full"
+		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
+		for excl in ${GUI_EXCLUDE}; do
+			GUI_TARGETS=$(echo ${GUI_TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		export MACHINE=$(echo $GUI_TARGETS | awk '{ print $1 }')
+		ALL_TARGETS=${GUI_TARGETS}
 		export EULA="y"
 		;;
 	"minimal" )
-		IMAGES=${DEFAULT_IMAGE}
-		# TODO: remove when building without meta-freescale is possible
-		export EULA="y"
-		LAYER="meta-tq"
+		IMAGES="core-image-minimal"
+		for excl in ${MINIMAL_EXCLUDE}; do
+			MINIMAL_TARGETS=$(echo ${MINIMAL_TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		export MACHINE=$(echo $MINIMAL_TARGETS | awk '{ print $1 }')
+		ALL_TARGETS=${MINIMAL_TARGETS}
 		;;
 	"mfgtool" )
-		IMAGES=fsl-image-mfgtool-initramfs
-		LAYER="meta-tq"
-		export EULA="y"
+		IMAGES="fsl-image-mfgtool-initramfs"
+		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
+		for excl in ${MFGTOOL_EXCLUDE}; do
+			MFGTOOL_TARGETS=$(echo ${MFGTOOL_TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		export MACHINE=$(echo $MFGTOOL_TARGETS | awk '{ print $1 }')
+		ALL_TARGETS=${MFGTOOL_TARGETS}
 		;;
 	* )
 		usage
@@ -91,33 +114,11 @@ main () {
 		;;
 	esac
 
-	# filter out machines from the layer 
-	#TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
-	#	sed s/\.conf//g | xargs -n1 basename)
-	# TODO: find real boards to be build ...
-	TARGETS="imx8qxpa0mek tqma8qxa0-mba8qx"
-
-	case ${CONFIG} in
-	"gui" )
-		# tqmls102xa-mbls102xa qspi is to small for large multimedia image
-		# local EXCLUDE="tqmls102xa-mbls102xa"
-		# for excl in ${EXCLUDE}; do
-		#	TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
-		#done
-		;;
-	"mfgtool" )
-		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
-		#local EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
-		#for excl in ${EXCLUDE}; do
-		#	TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
-		#done
-		;;
-	* )
-		;;
-	esac
+	# filter out double entries in case we build multiple images per config
+	ALL_TARGETS=$(echo ${ALL_TARGETS} | tr ' ' '\n' | sort -u)
 
 	# source the real setup workhorse.
-	export MACHINE=$(echo $TARGETS | awk '{ print $1 }')
+	export MACHINE=$(echo ${ALL_TARGETS} | awk '{ print $1 }')
 	# TODO: need to call nxp setup script ...
 	#. ./setup-environment ${BUILD_DIR} ${CONFIG}
 	. ./fsl-setup-release.sh -b ${BUILD_DIR} -e wayland
@@ -130,7 +131,7 @@ main () {
 		${SCRIPTPATH}/poky-version-check.sh check
 		[ "$?" -ne "0" ] && error_out "not clean and version changed"
 	fi
-	
+
 	# modify local conf as needed before executing bitbake
 	if [ "${MODE}" == "mirror" ]; then
 		echo "build mirror"
@@ -142,11 +143,11 @@ main () {
 		echo "BB_GENERATE_MIRROR_TARBALLS = \"1\"" | tee -a conf/local.conf
 		# force to have a separate DL_DIR to make sure we download all stuff
 		# needed but not available yet
-		echo "DL_DIR = \"\${BSPDIR}/downloads/\"" | tee -a conf/local.conf
+		echo "DL_DIR = \"\${TOPDIR}/downloads/\"" | tee -a conf/local.conf
 		echo "clean local dirs in $(pwd) ..."
 		rm -rf cache tmp sstate-cache
 		# get DL_DIR from local.conf to cleanup packages generated from git ...
-		SETTER=$(bitbake -e -c fetchall ${DEFAULT_IMAGE} | grep ^DL_DIR)
+		SETTER=$(bitbake -e | grep ^"DL_DIR=")
 		echo "$SETTER"
 		export ${SETTER}
 		# if there is a .done file and / or a git2_*.tar.gz it seems the
@@ -156,20 +157,31 @@ main () {
 		rm -f ${DL_DIR}/git2_*.tar.gz.done
 		ls -1 ${DL_DIR}/git2_*
 
-		# now force bitbake to do a fetchall for the image to generate
-		for t in $TARGETS; do
-			export MACHINE=$t
+		for img in ${IMAGES}; do
+			case ${img} in
+			core-image-minimal )
+				TARGETS=${MINIMAL_TARGETS}
+				;;
+			fsl-image-multimedia-full )
+				TARGETS=${GUI_TARGETS}
+				;;
+			fsl-image-mfgtool-initramfs )
+				TARGETS=${MFGTOOL_TARGETS}
+				;;
+			* )
+				;;
+			esac
 
-			for img in ${IMAGES}; do
+			# now force bitbake to do a -c fetchall for the image to generate
+			for t in $TARGETS; do
+				export MACHINE=${t}
 				echo "baking: ${MACHINE} ${img} with -c fetchall"
 				bitbake -c fetchall ${img}
 				[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
 			done
-
 		done
 
-		URL=$(bitbake -e -c fetchall ${DEFAULT_IMAGE} | grep ^SOURCE_MIRROR_URL)
-
+		URL=$(bitbake -e | grep ^"SOURCE_MIRROR_URL=")
 		export ${URL}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
@@ -192,8 +204,8 @@ main () {
 				rm -rf "${DEPLOYDIR}"
 			fi
 
-			# poky has per default precompiled native / host packages,
-			# these have malformed local URIs that prevent usage.
+			# poky has per default precompiled uninative package,
+			# this has a malformed local URI that prevent usage.
 			echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
 			# need to set SOURCE_MIRROR_URL in a site global config on the build server
 			# echo "SOURCE_MIRROR_URL ?= \"file:///blabla
@@ -205,16 +217,23 @@ main () {
 			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
 			# premirrors have to be configured per site ...
 
-			# cleanup: rm_work fo package work dir, RM_OLD_IMAGES for last build images
+			# cleanup: rm_work for package work dir, RM_OLD_IMAGES for last build images
 			echo "INHERIT += \"rm_work\"" | tee -a  conf/local.conf
 			echo "RM_OLD_IMAGE = \"1\""  | tee -a  conf/local.conf
+
+			echo "INHERIT += \"archiver\"" | tee -a  conf/local.conf
+			echo "COPYLEFT_LICENSE_EXCLUDE ?= \"CLOSED Proprietary\"" | tee -a  conf/local.conf
+			## echo "COPYLEFT_LICENSE_INCLUDE ?= \"*\"" | tee -a  conf/local.conf
+			echo "ARCHIVER_MODE[src] ?= \"original\"" | tee -a  conf/local.conf
+			## echo "COPYLEFT_RECIPE_TYPES ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
+			## echo "COPYLEFT_RECIPE_TYPE ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
 		fi
 
 		if ! [ -z ${SSTATE_DIR} ]; then
 			# add SSTATE dir outside of builddir, optimize global builds
 			echo "SSTATE_DIR = \"${SSTATE_DIR}\"" | tee -a conf/local.conf
 		else
-			echo "SSTATE_DIR empty"
+			echo "env SSTATE_DIR empty, add it to your site.conf"
 		fi
 		if ! [ -z ${DL_DIR} ]; then
 			# add DL_DIR dir outside of builddir, optimize global builds
@@ -223,14 +242,26 @@ main () {
 			echo "DL_DIR empty"
 		fi
 
-		echo "start building $TARGETS"
-		for mach in ${TARGETS}; do
-			local err;
-			# overwrite MACHINE
-			export MACHINE=${mach}
-			echo "overwrite MACHINE: $mach -> $MACHINE"
-			echo "start building $IMAGES"
-			for img in ${IMAGES}; do
+		for img in ${IMAGES}; do
+			case ${img} in
+			core-image-minimal )
+				TARGETS=${MINIMAL_TARGETS}
+				;;
+			fsl-image-multimedia-full )
+				TARGETS=${GUI_TARGETS}
+				;;
+			fsl-image-mfgtool-initramfs )
+				TARGETS=${MFGTOOL_TARGETS}
+				;;
+			* )
+				;;
+			esac
+
+			# now force bitbake to generate images for all targets ...
+			for t in ${TARGETS}; do
+				local err;
+				# overwrite MACHINE
+				export MACHINE=${t}
 				echo "baking ${MACHINE} ${img} ..."
 				# create image for $MACHINE
 				bitbake ${img}
@@ -256,19 +287,20 @@ main () {
 			mkdir -p ${DEPLOYDIR}
 			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
 			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh)
-			# note: this depends on poky in bblayers.conf
-			local VERSION=$(bitbake -e | grep ^DISTRO_VERSION)
+			# note: this depends on a selected distro
+			local VERSION=$(bitbake -e | grep ^"DISTRO_VERSION=")
 			export ${VERSION}
 			DISTRO_VERSION=${DISTRO_VERSION#\"*}
 			DISTRO_VERSION=${DISTRO_VERSION%\"*}
+			TARGETS=${MINIMAL_TARGETS}
 
-			for t in ${TARGETS}; do
+			for t in ${ALL_TARGETS}; do
 				MACHINE=${t}
 				echo "archiving ${MACHINE} ..."
 				# create a file containing the version we are build from
 				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info;
 				# create image archive for $MACHINE
-				tar -cvzf deployment/${MACHINE}-yocto-${DISTRO_VERSION}-${STAMP}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
+				tar -cvzf ${DEPLOYDIR}/${MACHINE}-${CONFIG}-yocto-${DISTRO_VERSION}-${STAMP}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
 				[ "$?" -ne "0" ] && error_out "archiving for ${MACHINE} failed"
 			done
 		fi
