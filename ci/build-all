@@ -148,7 +148,7 @@ main () {
 			bitbake -c fetchall ${IMAGE}
 		done
 
-		URL=$(bitbake -e -c fetchall ${IMAGE} | grep ^SOURCE_MIRROR_URL)
+		URL=$(bitbake -e -c fetchall ${IMAGE} | grep ^"SOURCE_MIRROR_URL=")
 		export ${URL}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
@@ -230,8 +230,8 @@ main () {
 			mkdir -p ${DEPLOYDIR}
 			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
 			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh)
-			# note: this depends on poky in bblayers.conf
-			local VERSION=$(bitbake -e | grep ^DISTRO_VERSION)
+			# note: this depends on a selected distro
+			local VERSION=$(bitbake -e | grep ^"DISTRO_VERSION=")
 			export ${VERSION}
 			DISTRO_VERSION=${DISTRO_VERSION#\"*}
 			DISTRO_VERSION=${DISTRO_VERSION%\"*}
