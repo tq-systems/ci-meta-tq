@@ -257,7 +257,7 @@ main () {
 				# this recipe will fail with a diagnostic error, even when
 				# building for mx6sabresd
 				# workaround: check if image exists
-				if [ "${IMG}" == "fsl-image-mfgtool-initramfs" ]; then
+				if [ "${img}" == "fsl-image-mfgtool-initramfs" ]; then
 					local THELINK="./tmp/deploy/images/${MACHINE}/${img}-${MACHINE}.cpio.gz.u-boot"
 					if [ -L ${THELINK} ] && [ -e ${THELINK} ]; then
 						echo "ok"
