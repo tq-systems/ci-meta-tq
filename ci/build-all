@@ -157,7 +157,7 @@ main () {
 		# get DL_DIR from local.conf to cleanup packages generated from git ...
 		# if there is a .done file and / or a git2_*.tar.gz ist seems the
 		# fetcher does not rerun git to update the repo
-		SETTER=$(bitbake -e ${IMAGE} --runall=fetch | grep ^DL_DIR)
+		SETTER=$(bitbake -e ${IMAGE} --runall=fetch | grep ^"DL_DIR=")
 		echo "$SETTER"
 		export ${SETTER}
 		# force to download to generate git tarballs for newest remote ...
@@ -173,7 +173,7 @@ main () {
 			bitbake ${IMAGE} --runall=fetch
 		done
 
-		URL=$(bitbake -e -c fetchall ${IMAGE} | grep ^SOURCE_MIRROR_URL)
+		URL=$(bitbake -e -c fetchall ${IMAGE} | grep ^"SOURCE_MIRROR_URL=")
 		export ${URL}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
@@ -255,8 +255,8 @@ main () {
 			mkdir -p ${DEPLOYDIR}
 			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
 			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh)
-			# note: this depends on poky in bblayers.conf
-			local VERSION=$(bitbake -e | grep ^DISTRO_VERSION)
+			# note: this depends on a selected distro
+			local VERSION=$(bitbake -e | grep ^"DISTRO_VERSION=")
 			export ${VERSION}
 			DISTRO_VERSION=${DISTRO_VERSION#\"*}
 			DISTRO_VERSION=${DISTRO_VERSION%\"*}
