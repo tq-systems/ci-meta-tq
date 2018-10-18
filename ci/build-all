@@ -246,7 +246,9 @@ main () {
 
 			# now force bitbake to generate images for all targets ...
 			for t in ${TARGETS}; do
-				export MACHINE=$t
+				local err;
+				# overwrite MACHINE
+				export MACHINE=${t}
 				echo "baking ${MACHINE} ${img} ..."
 				# create image for $MACHINE
 				bitbake ${img}
