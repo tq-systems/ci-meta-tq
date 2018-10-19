@@ -29,14 +29,18 @@
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname $(readlink -f "${0}"))
 
-usage()
-{
+usage() {
 	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> [<mode>] \n \
 	<build-dir>: specifies the build directory location (required) \n \
 	<template>: template bblayers.conf to use \n \
 	mode=normal or not given: do normal build \n
 	mode=mirror: if given, download only and provide mirror tarballs \n
 	mode=ci: if given, use only mirror tarballs to build"
+}
+
+error_out () {
+	echo "ERROR: $1"
+	exit 1
 }
 
 main () {
@@ -126,10 +130,10 @@ main () {
 
 	if ! [ -f ./version.info ]; then
 		${SCRIPTPATH}/poky-version-check.sh mkinfo
-		[ "$?" -ne "0" ] && echo "error: failed to create version.info" && exit 1
+		[ "$?" -ne "0" ] && error_out "failed to create version.info"
 	else
 		${SCRIPTPATH}/poky-version-check.sh check
-		[ "$?" -ne "0" ] && echo "error: not clean and version changed" && exit 1
+		[ "$?" -ne "0" ] && error_out "not clean and version changed"
 	fi
 
 	# modify local conf as needed before executing bitbake
@@ -181,6 +185,7 @@ main () {
 				export MACHINE=${t}
 				echo "baking: ${MACHINE} ${img} with --runall=fetch"
 				bitbake ${img} --runall=fetch
+				[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
 			done
 		done
 
@@ -281,10 +286,10 @@ main () {
 					if [ -L ${THELINK} ] && [ -e ${THELINK} ]; then
 						echo "ok"
 					else
-						echo "bitbake ${img} for ${MACHINE} failed, no ${THELINK}" && exit 1
+						error_out "bitbake ${img} for ${MACHINE} failed, no ${THELINK}"
 					fi
 				else
-					[ "${err}" -ne "0" ] && echo "bitbake ${img} for ${MACHINE} failed" && exit 1
+					[ "${err}" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
 				fi
 			done
 		done
@@ -307,7 +312,7 @@ main () {
 				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info;
 				# create image archive for $MACHINE
 				tar -cvzf ${DEPLOYDIR}/${MACHINE}-${CONFIG}-yocto-${DISTRO_VERSION}-${STAMP}.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
-				[ "$?" -ne "0" ] && echo "archiving for ${MACHINE} failed" && exit 1
+				[ "$?" -ne "0" ] && error_out "archiving for ${MACHINE} failed"
 			done
 		fi
 	fi
