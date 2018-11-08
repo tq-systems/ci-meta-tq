@@ -62,7 +62,7 @@ def buildConfiguration(directoryName) {
 def wipeOutBuildspace(directoryName){
     if (params.CLEAN_CACHES == true) {
         dir("${directoryName}/buildspace") {
-            echo "Remove ${directoryName}/buildspace ..."
+            echo "Remove ${directoryName}/buildspace ... (CLEAN_CACHES)"
             deleteDir()
         }
     } else {
@@ -126,7 +126,7 @@ pipeline {
                 script {
                     if (params.CLEAN_CACHES == true) {
                         dir("${env.WORKSPACE}/shared-sstate-cache") {
-                            echo "clear ${env.WORKSPACE}/shared-sstate-cache ..."
+                            echo "clear ${env.WORKSPACE}/shared-sstate-cache ... (CLEAN_CACHES)"
                             deleteDir()
                         }
                     }
