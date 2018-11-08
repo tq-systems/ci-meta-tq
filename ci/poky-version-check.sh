@@ -70,8 +70,8 @@ function main () {
 	which bitbake
 	! [ $? ] && echo "error: bitbake not found" && exit 1
 
-	# note: this depends on poky in bblayers.conf
-	local THE_VERSION=$(bitbake -e | grep ^DISTRO_VERSION)
+	# note: this depends on a selected distro
+	local THE_VERSION=$(bitbake -e | grep ^"DISTRO_VERSION=")
 	export ${THE_VERSION}
 	DISTRO_VERSION=${DISTRO_VERSION#\"*}
 	DISTRO_VERSION=${DISTRO_VERSION%\"*}
