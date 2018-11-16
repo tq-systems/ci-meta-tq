@@ -107,6 +107,7 @@ main () {
 		done
 		export MACHINE=$(echo $MFGTOOL_TARGETS | awk '{ print $1 }')
 		ALL_TARGETS=${MFGTOOL_TARGETS}
+		export EULA="y"
 		;;
 	* )
 		usage
