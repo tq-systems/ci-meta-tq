@@ -53,9 +53,9 @@ main () {
 	local ALL_TARGETS="unknown"
 	local CONFIG=${2}
 	local IMAGES="core-image-minimal"
-	local MINIMAL_EXCLUDE="tqmls1012al-mbls1012al"
+	local MINIMAL_EXCLUDE="tqmls102xa-mbls102xa"
 	local MFGTOOL_EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
-	local GUI_EXCLUDE="tqmls1012al-mbls1012al"
+	local GUI_EXCLUDE="tqmls102xa-mbls102xa"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
