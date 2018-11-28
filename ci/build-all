@@ -212,13 +212,17 @@ main () {
 		echo "build mirror"
 		# poky has per default precompiled native / host packages,
 		# these have malformed local URIs that prevent usage.
-		echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
+		assign_or_replace INHERIT_remove uninative conf/local.conf
+
 		# we will build a local mirror for usage with buildserver ...
 		# so we need to generate tarballs for git repos etc. ...
-		echo "BB_GENERATE_MIRROR_TARBALLS = \"1\"" | tee -a conf/local.conf
+		assign_or_replace BB_GENERATE_MIRROR_TARBALLS 1 conf/local.conf
+
 		# force to have a separate DL_DIR to make sure we download all stuff
 		# needed but not available yet
-		echo "DL_DIR = \"\${TOPDIR}/downloads/\"" | tee -a conf/local.conf
+		# beware: needed quoting for shall and sed!
+		assign_or_replace DL_DIR "\\\${TOPDIR}\/downloads" conf/local.conf
+
 		echo "clean local dirs in $(pwd) ..."
 		rm -rf cache tmp sstate-cache
 		# get DL_DIR from local.conf to cleanup packages generated from git ...
@@ -281,38 +285,45 @@ main () {
 
 			# poky has per default precompiled uninative package,
 			# this has a malformed local URI that prevent usage.
-			echo "INHERIT_remove = \"uninative\"" | tee -a conf/local.conf
+			assign_or_replace INHERIT_remove uninative conf/local.conf
+
 			# need to set SOURCE_MIRROR_URL in a site global config on the build server
 			# echo "SOURCE_MIRROR_URL ?= \"file:///blabla
 			# used to force to use and generate a mirror config from $SOURCE_MIRROR_URL
-			echo "INHERIT += \"own-mirrors\"" | tee -a conf/local.conf
+			assignplus_or_replace INHERIT own-mirrors conf/local.conf
+
 			# force to fetch from premirrors only
-			echo "BB_FETCH_PREMIRRORONLY = \"1\"" | tee -a conf/local.conf
+			assign_or_replace BB_FETCH_PREMIRRORONLY 1 conf/local.conf
+
 			# force to switch off any network check
-			echo "BB_NO_NETWORK = \"1\"" | tee -a conf/local.conf
+			assign_or_replace BB_NO_NETWORK 1 conf/local.conf
+
 			# premirrors have to be configured per site ...
 
 			# cleanup: rm_work for package work dir, RM_OLD_IMAGES for last build images
-			echo "INHERIT += \"rm_work\"" | tee -a  conf/local.conf
-			echo "RM_OLD_IMAGE = \"1\""  | tee -a  conf/local.conf
+			assignplus_or_replace INHERIT rm_work conf/local.conf
+			assign_or_replace RM_OLD_IMAGE 1 conf/local.conf
 
-			echo "INHERIT += \"archiver\"" | tee -a  conf/local.conf
-			echo "COPYLEFT_LICENSE_EXCLUDE ?= \"CLOSED Proprietary\"" | tee -a  conf/local.conf
+			assignplus_or_replace INHERIT archiver conf/local.conf
+			assignopt_or_replace COPYLEFT_LICENSE_EXCLUDE "CLOSED Proprietary" conf/local.conf
+
 			## echo "COPYLEFT_LICENSE_INCLUDE ?= \"*\"" | tee -a  conf/local.conf
-			echo "ARCHIVER_MODE[src] ?= \"original\"" | tee -a  conf/local.conf
+			assignopt_or_replace ARCHIVER_MODE[src] original conf/local.conf
+
 			## echo "COPYLEFT_RECIPE_TYPES ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
 			## echo "COPYLEFT_RECIPE_TYPE ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
 		fi
 
 		if ! [ -z ${SSTATE_DIR} ]; then
 			# add SSTATE dir outside of builddir, optimize global builds
-			echo "SSTATE_DIR = \"${SSTATE_DIR}\"" | tee -a conf/local.conf
+			assign_or_replace SSTATE_DIR ${SSTATE_DIR} conf/local.conf
 		else
 			echo "env SSTATE_DIR empty, add it to your site.conf"
 		fi
 		if ! [ -z ${DL_DIR} ]; then
 			# add DL_DIR dir outside of builddir, optimize global builds
-			echo "DL_DIR = \"${DL_DIR}\"" | tee -a conf/local.conf
+			assign_or_replace DL_DIR ${DL_DIR} conf/local.conf
+
 		else
 			echo "DL_DIR empty"
 		fi
