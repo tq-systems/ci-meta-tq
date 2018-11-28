@@ -28,6 +28,7 @@
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname $(readlink -f "${0}"))
+readonly SCRIPT="$(basename ${0})"
 
 usage() {
 	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> [<mode>] \n \
@@ -38,8 +39,44 @@ usage() {
 	mode=ci: if given, use only mirror tarballs to build"
 }
 
+####
+# func:   __print
+# brief:  print messags
+# param:  $1 - message type (info, err, dbg)
+#         $2 - message
+# return: ---
+####
+__print () {
+	local type="${1}"
+	local msg="${2}"
+
+	case ${type} in
+		info)
+			echo -e "${SCRIPT} [INFO]: ${msg}"
+			;;
+		err)
+			echo -e "${SCRIPT} [ERROR]: ${msg}" >&2
+			;;
+		dbg)
+			[ "${DEBUG}" = "on" ] && echo -e "${SCRIPT} [DEBUG]: ${msg}"
+			;;
+	esac
+}
+
+debug () {
+	__print dbg "$@"
+}
+
+info () {
+	__print info "$@"
+}
+
+error () {
+	__print err "$@"
+}
+
 error_out () {
-	echo "ERROR: $1"
+	echo "FATAL: $1" >&2
 	exit 1
 }
 
