@@ -117,6 +117,24 @@ assignopt_or_replace() {
 	debug "$(cat ${infile})"
 }
 
+function get_md5sum () {
+	MYPWD=$(pwd)
+	DIRECTORY=${1}
+
+	if [ -d ${DIRECTORY} ]; then
+		cd ${DIRECTORY}
+		local FILES=$(find . -maxdepth 1 -type f)
+
+		for file in ${FILES}; do
+			md5sum ${file}
+			if [ "$?" -ne "0" ]; then
+				err "md5sum for ${file}"
+			fi
+		done
+	fi
+	cd ${MYPWD}
+}
+
 main () {
 	# this disables network check
 	export CONNECTIVITY_CHECK_URIS=" "
@@ -397,6 +415,9 @@ main () {
 			for t in ${ALL_TARGETS}; do
 				MACHINE=${t}
 				echo "archiving ${MACHINE} ..."
+				# create a file containing md5sum of files
+				get_md5sum ${ARTIFACTSDIR}/${MACHINE} > ${DEPLOYDIR}/${MACHINE}-${CONFIG}-${DISTRO}-${DISTRO_VERSION}-${STAMP}.md5sum
+				cp ${DEPLOYDIR}/${MACHINE}-${CONFIG}-${DISTRO}-${DISTRO_VERSION}-${STAMP}.md5sum ${ARTIFACTSDIR}/${MACHINE}
 				# create a file containing the version we are build from
 				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info;
 				# create image archive for $MACHINE
