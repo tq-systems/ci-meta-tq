@@ -93,14 +93,14 @@ assign_or_replace() {
 	debug "$(cat ${infile})"
 }
 
-assignplus_or_replace() {
+assignplus() {
 	local var=${1}
 	local val=${2}
 	local infile=${3}
 
-	debug "trying assignplus/replace $1 $2"
+	debug "trying assignplus $1 $2"
 
-	sed -i "/^${var} +=/{h;s/+=.*/+= \"${val}\"/};\${x;/^$/{s//${var} += \"${val}\"/;H};x}" ${infile}
+	grep -q "^${var} += \"${val}\"" "${infile}" || echo "${var} += \"${val}\"" | tee -a "${infile}"
 
 	debug "$(cat ${infile})"
 }
@@ -304,7 +304,7 @@ main () {
 			# need to set SOURCE_MIRROR_URL in a site global config on the build server
 			# echo "SOURCE_MIRROR_URL ?= \"file:///blabla
 			# used to force to use and generate a mirror config from $SOURCE_MIRROR_URL
-			assignplus_or_replace INHERIT own-mirrors conf/local.conf
+			assignplus INHERIT own-mirrors conf/local.conf
 
 			# force to fetch from premirrors only
 			assign_or_replace BB_FETCH_PREMIRRORONLY 1 conf/local.conf
@@ -315,10 +315,10 @@ main () {
 			# premirrors have to be configured per site ...
 
 			# cleanup: rm_work for package work dir, RM_OLD_IMAGES for last build images
-			assignplus_or_replace INHERIT rm_work conf/local.conf
+			assignplus INHERIT rm_work conf/local.conf
 			assign_or_replace RM_OLD_IMAGE 1 conf/local.conf
 
-			assignplus_or_replace INHERIT archiver conf/local.conf
+			assignplus INHERIT archiver conf/local.conf
 			assignopt_or_replace COPYLEFT_LICENSE_EXCLUDE "CLOSED Proprietary" conf/local.conf
 
 			## echo "COPYLEFT_LICENSE_INCLUDE ?= \"*\"" | tee -a  conf/local.conf
