@@ -80,6 +80,43 @@ error_out () {
 	exit 1
 }
 
+assign_or_replace() {
+	local var=${1}
+	local val=${2}
+	local infile=${3}
+
+	debug "trying assign/replace $1 $2:"
+	debug "/^${var} =/{h;s/=.*/= \"${val}\"/};\${x;/^$/{s//${var} = \"${val}\"/;H};x}"
+
+	sed -i "/^${var} =/{h;s/=.*/= \"${val}\"/};\${x;/^$/{s//${var} = \"${val}\"/;H};x}" ${infile}
+
+	debug "$(cat ${infile})"
+}
+
+assignplus_or_replace() {
+	local var=${1}
+	local val=${2}
+	local infile=${3}
+
+	debug "trying assignplus/replace $1 $2"
+
+	sed -i "/^${var} +=/{h;s/+=.*/+= \"${val}\"/};\${x;/^$/{s//${var} += \"${val}\"/;H};x}" ${infile}
+
+	debug "$(cat ${infile})"
+}
+
+assignopt_or_replace() {
+	local var=${1}
+	local val=${2}
+	local infile=${3}
+
+	debug "trying assignopt/replace $1 $2"
+
+	sed -i "/^${var} ?=/{h;s/?=.*/?= \"${val}\"/};\${x;/^$/{s//${var} ?= \"${val}\"/;H};x}" ${infile}
+
+	debug "$(cat ${infile})"
+}
+
 main () {
 	# this disables network check
 	export CONNECTIVITY_CHECK_URIS=" "
