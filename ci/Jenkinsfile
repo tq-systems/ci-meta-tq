@@ -35,6 +35,12 @@ def checkoutMetaLayers(directoryName) {
 }
 
 def prepareWorkspace(directoryName){
+    if (params.CLEAN_CACHES == true) {
+        dir("${directoryName}/buildspace") {
+            echo "Remove ${directoryName}/buildspace ... (CLEAN_CACHES)"
+            deleteDir()
+        }
+    }
     checkout([
         $class: 'GitSCM',
         branches: [[name: "${YOCTO_VERSION}"]],
@@ -60,20 +66,9 @@ def buildConfiguration(directoryName) {
 }
 
 def wipeOutBuildspace(directoryName){
-    if (params.CLEAN_CACHES == true) {
-        dir("${directoryName}/buildspace") {
-            echo "Remove ${directoryName}/buildspace ... (CLEAN_CACHES)"
-            deleteDir()
-        }
-    } else {
-        dir("${directoryName}/buildspace/deployment") {
-            echo "Remove ${directoryName}/buildspace/deployment ..."
-            deleteDir()
-        }
-        dir("${directoryName}/buildspace/tmp") {
-            echo "Remove ${directoryName}/buildspace/tmp ..."
-            deleteDir()
-        }
+    dir("${directoryName}/buildspace/deployment") {
+        echo "Remove ${directoryName}/buildspace/deployment ..."
+        deleteDir()
     }
     dir("${directoryName}@script") {
         echo "Remove ${directoryName}@script ..."
