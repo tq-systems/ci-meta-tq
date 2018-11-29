@@ -1,5 +1,6 @@
 /**
  * Jenkinsfile for Yocto-BSPs using declarative pipeline
+ *
  */
 
 import java.text.*
@@ -81,7 +82,10 @@ def wipeOutBuildspace(directoryName){
 }
 
 /*
+ * delete tmp dir only for nightlies and manual triggered builds
  * use shell rm in favour of dir/deleteDir
+ * needs to be implemented as non serializable funtion
+ * currentBuild.rawBuild.getCauses needs to be accepted by script security plugin
  */
 @NonCPS
 def handleBuildCause() {
@@ -99,20 +103,17 @@ def handleBuildCause() {
             println "build cause : " + reason
         }
     }
-    echo "finished cause handling"
-
     causes = null
-
-    echo "leave cause handling"
 }
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
 /*
  * jenkins environment for this pipeline:
- * - GIT_URL: git URL for projebt to build
- * - MAIL_RECIPIENTS: comma separated list of mail recipients
- * - YOCTO_VERSION: git ref to build
+ * - GIT_URL: git URL for project to build (job config)
+ * - MAIL_RECIPIENTS: comma separated list of mail recipients (jenkins global config)
+ * - YOCTO_VERSION: git ref to build (job config)
+ * - CLEAN_CACHES (job config)
  */
 pipeline {
     agent {
@@ -144,7 +145,10 @@ pipeline {
     stages {
         stage ('Manage sstate cache') {
             steps {
-                // manageSstateCache(currentBuild.startTimeInMillis()) does not work
+                /*
+                 * manageSstateCache(currentBuild.startTimeInMillis()) does not work
+                 * this helps to explicit clean state cache
+                 */
                 script {
                     if (params.CLEAN_CACHES == true) {
                         dir("${env.WORKSPACE}/shared-sstate-cache") {
@@ -152,8 +156,10 @@ pipeline {
                             deleteDir()
                         }
                     }
-                    // unconditionally remove to make sure we got everything
-                    // from mirror, needed for updates of git archives
+                    /*
+                     * unconditionally remove DL_DIR to make sure we got everything
+                     * from mirror, needed for updates of git archives
+                     */
                     dir("${env.WORKSPACE}/shared-dl-dir") {
                        echo "clear ${env.WORKSPACE}/shared-dl-dir ..."
                        deleteDir()
