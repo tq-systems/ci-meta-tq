@@ -131,6 +131,10 @@ pipeline {
                        echo "clear ${env.WORKSPACE}/shared-dl-dir ..."
                        deleteDir()
                     }
+                    dir("${env.WORKSPACE}") {
+                       echo "clear ${env.WORKSPACE}/ci-meta-tq.*.tar.gz ... "
+                       sh "rm -f ci-meta-tq.*.tar.gz"
+                    }
                 }
             }
         }
