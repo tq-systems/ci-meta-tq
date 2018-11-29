@@ -81,8 +81,8 @@ error_out () {
 }
 
 assign_or_replace() {
-	local var=${1}
-	local val=${2}
+	local var=${1////\\/}
+	local val=${2////\\/}
 	local infile=${3}
 
 	debug "trying assign/replace $1 $2:"
@@ -235,7 +235,7 @@ main () {
 		# force to have a separate DL_DIR to make sure we download all stuff
 		# needed but not available yet
 		# beware: needed quoting for shall and sed!
-		assign_or_replace DL_DIR "\\\${TOPDIR}\/downloads" conf/local.conf
+		assign_or_replace DL_DIR "\\\${TOPDIR}/downloads" conf/local.conf
 
 		echo "clean local dirs in $(pwd) ..."
 		rm -rf cache tmp sstate-cache
