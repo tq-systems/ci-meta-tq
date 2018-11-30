@@ -156,7 +156,7 @@ fi
 
 META_FSL_BSP_RELEASE="${CWD}/sources/meta-fsl-bsp-release/imx/meta-bsp"
 
-echo "" >> $BUILD_DIR/conf/bblayers.conf
+echo "# start fsl-setup-release-magic" >> $BUILD_DIR/conf/bblayers.conf
 echo "# i.MX Yocto Project Release layers" >> $BUILD_DIR/conf/bblayers.conf
 hook_in_layer meta-fsl-bsp-release/imx/meta-bsp
 hook_in_layer meta-fsl-bsp-release/imx/meta-sdk
@@ -170,16 +170,23 @@ echo "BBLAYERS += \" \${BSPDIR}/sources/meta-openembedded/meta-filesystems \"" >
 
 echo "BBLAYERS += \" \${BSPDIR}/sources/meta-qt5 \"" >> $BUILD_DIR/conf/bblayers.conf
 
+echo "# end fsl-setup-release-magic" >> $BUILD_DIR/conf/bblayers.conf
+
 echo BSPDIR=$BSPDIR
 echo BUILD_DIR=$BUILD_DIR
 
 # Support integrating community meta-freescale instead of meta-fsl-arm
-if [ -d ../sources/meta-freescale ]; then
-    echo meta-freescale directory found
-    # Change settings according to environment
-    sed -e "s,meta-fsl-arm\s,meta-freescale ,g" -i conf/bblayers.conf
-    sed -e "s,\$.BSPDIR./sources/meta-fsl-arm-extra\s,,g" -i conf/bblayers.conf
-fi
+# no changes needed, we use mata-freescale anyway ...
+#if [ -d ../sources/meta-freescale ]; then
+#    echo meta-freescale directory found
+#    # Change settings according to environment
+#    sed -e "s,meta-fsl-arm\s,meta-freescale ,g" -i conf/bblayers.conf
+#    sed -e "s,\$.BSPDIR./sources/meta-fsl-arm-extra\s,,g" -i conf/bblayers.conf
+#fi
+
+# since we bring in the layers needed, just restore $BUILD_DIR/conf/bblayers.conf
+sed -i '1,/# start fsl-setup-release-magic/!d' $BUILD_DIR/conf/bblayers.conf
+sed -i '$ d' $BUILD_DIR/conf/bblayers.conf
 
 cd  $BUILD_DIR
 clean_up
