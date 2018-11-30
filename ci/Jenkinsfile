@@ -88,17 +88,17 @@ def wipeOutBuildspace(directoryName){
  * currentBuild.rawBuild.getCauses needs to be accepted by script security plugin
  */
 @NonCPS
-def handleBuildCause() {
+def handleBuildCause(directoryName) {
     def causes = currentBuild.rawBuild.getCauses()
     for(cause in causes) {
         def reason = cause.class.toString()
         cause = null
         if (reason.contains("TimerTriggerCause")) {
-            println "This job was caused by Timer ... (NIGHTLY)"
-            sh "rm -rf ${env.WS_GUI}/buildspace/tmp"
+            println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
+            sh "rm -rf ${directoryName}/buildspace/tmp"
         } else if (reason.contains("UserIdCause")) {
-            println "This job was caused by user ... (RELEASE)"
-            sh "rm -rf ${env.WS_GUI}/buildspace/tmp"
+            println "This job was caused by user, rm buildspace ... (RELEASE)"
+            sh "rm -rf ${directoryName}/buildspace"
         } else {
             println "build cause : " + reason
         }
@@ -199,17 +199,20 @@ pipeline {
         stage('handle build cause') {
             steps {
                 parallel (
-                    "gui" : {
-                        handleBuildCause()
-                    },
 /*
+                    "gui" : {
+                        handleBuildCause("${env.WS_GUI}")
+                    },
                     "minimal" : {
-                        handleBuildCause()
+                        handleBuildCause("${env.WS_MIN}")
                     },
                     "mfgtool" : {
-                        handleBuildCause()
+                        handleBuildCause("${env.WS_MFG}")
                     },
 */
+                    "network" : {
+                        handleBuildCause("${env.WS_NET}")
+                    }
                 )
             }
         }
