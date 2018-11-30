@@ -80,6 +80,31 @@ def wipeOutBuildspace(directoryName){
     }
 }
 
+/*
+ * use shell rm in favour of dir/deleteDir
+ */
+@NonCPS
+def handleBuildCause() {
+    def causes = currentBuild.rawBuild.getCauses()
+    for(cause in causes) {
+        def reason = cause.class.toString()
+        cause = null
+        if (reason.contains("TimerTriggerCause")) {
+            println "This job was caused by Timer ... (NIGHTLY)"
+            sh "rm -rf ${env.WS_GUI}/buildspace/tmp"
+        } else if (reason.contains("UserIdCause")) {
+            println "This job was caused by user ... (RELEASE)"
+            sh "rm -rf ${env.WS_GUI}/buildspace/tmp"
+        } else {
+            println "build cause : " + reason
+        }
+    }
+    echo "finished cause handling"
+
+    causes = null
+
+    echo "leave cause handling"
+}
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
@@ -162,27 +187,16 @@ pipeline {
             steps {
                 parallel (
                     "gui" : {
-                        script {
-                            def causes = currentBuild.rawBuild.getCauses()
-                            for(cause in causes) {
-                                if (cause.class.toString().contains("TimerTriggerCause")) {
-                                    println "This job was caused by Timer ... (NIGHTLY)"
-                                    dir("${env.WS_GUI}/buildspace/tmp") {
-                                        echo "Remove ${env.WS_GUI}/buildspace/tmp ... (NIGHTLY)"
-                                        deleteDir()
-                                    }
-                                } else if (cause.class.toString().contains("UserIdCause")) {
-                                    println "This job was caused by user ... (RELEASE)"
-                                    dir("${env.WS_GUI}/buildspace/tmp") {
-                                        echo "Remove ${env.WS_GUI}/buildspace/tmp ... (RELEASE)"
-                                        deleteDir()
-                                    }
-                                } else {
-                                    println "build cause : " + cause.toString()
-                                }
-                            }
-                        }
+                        handleBuildCause()
                     },
+/*
+                    "minimal" : {
+                        handleBuildCause()
+                    },
+                    "mfgtool" : {
+                        handleBuildCause()
+                    },
+*/
                 )
             }
         }
