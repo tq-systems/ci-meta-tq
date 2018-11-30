@@ -209,9 +209,9 @@ EOF
         -i conf/local.conf
 
     # copy local bblayers.conf templates
-    cp $TEMPLATES/* conf/
-    if [ -e conf/${BBLAYERS_TEMPLATE} ]; then
-        cp conf/${BBLAYERS_TEMPLATE} conf/bblayers.conf
+    if [ -e ${TEMPLATES}/${BBLAYERS_TEMPLATE} ]; then
+        ln -s ${TEMPLATES}/${BBLAYERS_TEMPLATE} conf/bblayers.conf.tmpl
+        cp ${TEMPLATES}/${BBLAYERS_TEMPLATE} conf/bblayers.conf
     fi
 
     if [ "${BBLAYERS_TEMPLATE}" == "bblayers.conf.gui" ]; then
@@ -270,6 +270,8 @@ Your build environment has been configured with:
 EOF
 else
     echo "Your configuration files at $1 have not been touched."
+    cmp conf/bblayers.conf conf/bblayers.conf.tmpl > /dev/null
+    [ "$?" -ne "0" ] && echo "Your conf/bblayers.conf (or the template changed)"
 fi
 
 clean_up
