@@ -211,7 +211,7 @@ main () {
 	# source the real setup workhorse.
 	export MACHINE=$(echo ${ALL_TARGETS} | awk '{ print $1 }')
 	. ./setup-environment ${BUILD_DIR} ${CONFIG}
-	[ "$?" -ne "0" ] && echo "environment setup failed" && exit 1
+	[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
 
 	if ! [ -f ./version.info ]; then
 		${SCRIPTPATH}/poky-version-check.sh mkinfo
