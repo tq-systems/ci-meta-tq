@@ -221,6 +221,9 @@ main () {
 		[ "$?" -ne "0" ] && error_out "not clean and version changed"
 	fi
 
+	cmp conf/bblayers.conf conf/bblayers.conf.tmpl > /dev/null
+	[ "$?" -ne "0" ] && error_out "Your conf/bblayers.conf (or the template changed)"
+
 	# modify local conf as needed before executing bitbake
 	if [ "${MODE}" == "mirror" ]; then
 		echo "build mirror"
