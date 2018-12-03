@@ -195,7 +195,7 @@ main () {
 		done
 		;;
 	"network" )
-		IMAGES=fsl-image-networking
+		IMAGES="tq-image-network"
 		ALL_TARGETS="tqmls102xa-mbls102xa ls1012afrdm ls1012ardb"
 		export EULA="y"
 		;;
