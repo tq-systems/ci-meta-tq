@@ -4,6 +4,9 @@
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
+[submodule "sources/meta-dumpling"]
+	path = sources/meta-dumpling
+	url = ../meta-dumpling.git
 [submodule "sources/meta-openembedded"]
 	path = sources/meta-openembedded
 	url = https://github.com/openembedded/meta-openembedded.git
