@@ -23,4 +23,5 @@ BBLAYERS ?= " \
   ${BSPDIR}/sources/meta-freescale-distro \
   ${BSPDIR}/sources/meta-qoriq-demos \
   ${BSPDIR}/sources/meta-tq \
+  ${BSPDIR}/sources/meta-dumpling \
   "
