@@ -376,6 +376,9 @@ main () {
 			for t in ${ALL_TARGETS}; do
 				MACHINE=${t}
 				echo "archiving ${MACHINE} ..."
+				# we create some files in ${ARTIFACTSDIR}/${MACHINE}, clean them before recreate
+				rm -f ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info
+				rm -f ${ARTIFACTSDIR}/${MACHINE}/*.md5sum
 				# create a file containing md5sum of files
 				get_md5sum ${ARTIFACTSDIR}/${MACHINE} > ${DEPLOYDIR}/${MACHINE}-${CONFIG}-${DISTRO_CODENAME}-${DISTRO_VERSION}-${STAMP}.md5sum
 				cp ${DEPLOYDIR}/${MACHINE}-${CONFIG}-${DISTRO_CODENAME}-${DISTRO_VERSION}-${STAMP}.md5sum ${ARTIFACTSDIR}/${MACHINE}
