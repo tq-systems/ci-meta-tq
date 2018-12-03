@@ -25,3 +25,6 @@
 [submodule "sources/base"]
 	path = sources/base
 	url = git://github.com/Freescale/fsl-community-bsp-base
+[submodule "sources/meta-dumpling"]
+	path = sources/meta-dumpling
+	url = ../meta-dumpling.git
