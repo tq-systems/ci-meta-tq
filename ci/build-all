@@ -175,28 +175,22 @@ main () {
 		IMAGES="fsl-image-multimedia-full"
 		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
 		for excl in ${GUI_EXCLUDE}; do
-			GUI_TARGETS=$(echo ${GUI_TARGETS} | sed -e "s/ *$excl */ /")
+			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
-		export MACHINE=$(echo $GUI_TARGETS | awk '{ print $1 }')
-		ALL_TARGETS=${GUI_TARGETS}
 		export EULA="y"
 		;;
 	"minimal" )
 		IMAGES="core-image-minimal"
 		for excl in ${MINIMAL_EXCLUDE}; do
-			MINIMAL_TARGETS=$(echo ${MINIMAL_TARGETS} | sed -e "s/ *$excl */ /")
+			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
-		export MACHINE=$(echo $MINIMAL_TARGETS | awk '{ print $1 }')
-		ALL_TARGETS=${MINIMAL_TARGETS}
 		;;
 	"mfgtool" )
 		IMAGES="fsl-image-mfgtool-initramfs"
 		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
 		for excl in ${MFGTOOL_EXCLUDE}; do
-			MFGTOOL_TARGETS=$(echo ${MFGTOOL_TARGETS} | sed -e "s/ *$excl */ /")
+			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
-		export MACHINE=$(echo $MFGTOOL_TARGETS | awk '{ print $1 }')
-		ALL_TARGETS=${MFGTOOL_TARGETS}
 		export EULA="y"
 		;;
 	* )
@@ -254,22 +248,8 @@ main () {
 		ls -1 ${DL_DIR}/git2_*
 
 		for img in ${IMAGES}; do
-			case ${img} in
-			core-image-minimal )
-				TARGETS=${MINIMAL_TARGETS}
-				;;
-			fsl-image-multimedia-full )
-				TARGETS=${GUI_TARGETS}
-				;;
-			fsl-image-mfgtool-initramfs )
-				TARGETS=${MFGTOOL_TARGETS}
-				;;
-			* )
-				;;
-			esac
-
-			# now force bitbake to do a -c fetchall for the image to generate
-			for t in $TARGETS; do
+			# now force bitbake to do a --runall fetch for the image to generate
+			for t in ${ALL_TARGETS}; do
 				export MACHINE=${t}
 				echo "baking: ${MACHINE} ${img} with -c fetchall"
 				bitbake -c fetchall ${img}
@@ -346,22 +326,8 @@ main () {
 		fi
 
 		for img in ${IMAGES}; do
-			case ${img} in
-			core-image-minimal )
-				TARGETS=${MINIMAL_TARGETS}
-				;;
-			fsl-image-multimedia-full )
-				TARGETS=${GUI_TARGETS}
-				;;
-			fsl-image-mfgtool-initramfs )
-				TARGETS=${MFGTOOL_TARGETS}
-				;;
-			* )
-				;;
-			esac
-
 			# now force bitbake to generate images for all targets ...
-			for t in ${TARGETS}; do
+			for t in ${ALL_TARGETS}; do
 				local err;
 				# overwrite MACHINE
 				export MACHINE=${t}
@@ -399,7 +365,6 @@ main () {
 			export ${CODENAME}
 			DISTRO_CODENAME=${DISTRO_CODENAME#\"*}
 			DISTRO_CODENAME=${DISTRO_CODENAME%\"*}
-			TARGETS=${MINIMAL_TARGETS}
 
 			for t in ${ALL_TARGETS}; do
 				MACHINE=${t}
@@ -422,4 +387,3 @@ main () {
 }
 
 main ${@}
-
