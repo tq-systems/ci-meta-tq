@@ -95,10 +95,10 @@ def handleBuildCause(directoryName) {
         cause = null
         if (reason.contains("TimerTriggerCause")) {
             println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
-            sh "rm -rf ${directoryName}/buildspace/tmp"
+            sh "pwd; ls -al; rm -rf ./${directoryName}/buildspace/tmp"
         } else if (reason.contains("UserIdCause")) {
             println "This job was caused by user, rm buildspace ... (RELEASE)"
-            sh "rm -rf ${directoryName}/buildspace"
+            sh "pwd; ls -al; rm -rf ./${directoryName}/buildspace"
         } else {
             println "build cause : " + reason
         }
