@@ -174,8 +174,8 @@ main () {
 
 	case ${CONFIG} in
 	"gui" )
-		IMAGES="fsl-image-multimedia-full"
-		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
+		IMAGES="tq-image-qt5"
+		# tqmls102xa-mbls102xa has no gpu
 		for excl in ${GUI_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
