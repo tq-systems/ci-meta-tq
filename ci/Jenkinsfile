@@ -98,7 +98,7 @@ def handleBuildCause(directoryName) {
             sh "pwd; ls -al; rm -rf ./${directoryName}/buildspace/tmp"
         } else if (reason.contains("UserIdCause")) {
             println "This job was caused by user, rm buildspace ... (RELEASE)"
-            sh "pwd; ls -al; rm -rf ./${directoryName}/buildspace"
+            sh "pwd; ls -al; time rm -rf ./${directoryName}/buildspace; ls -1"
         } else {
             println "build cause : " + reason
         }
