@@ -180,7 +180,7 @@ main () {
 		export EULA="y"
 		;;
 	"minimal" )
-		IMAGES="core-image-minimal"
+		IMAGES="tq-image-generic"
 		for excl in ${MINIMAL_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
