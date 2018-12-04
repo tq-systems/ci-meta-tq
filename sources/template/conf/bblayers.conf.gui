@@ -15,6 +15,7 @@ BBLAYERS = " \
   ${BSPDIR}/sources/meta-freescale-distro \
   \
   ${BSPDIR}/sources/meta-tq \
+  ${BSPDIR}/sources/meta-dumpling \
 "
 
 # i.MX Yocto Project Release layers
