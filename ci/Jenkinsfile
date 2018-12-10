@@ -82,7 +82,8 @@ def wipeOutBuildspace(directoryName){
 }
 
 /*
- * delete tmp dir only for nightlies and manual triggered builds
+ * delete complete build dir for manual triggered builds (RELEASE) and nightly
+ * builds (timer triggered)
  * use shell rm in favour of dir/deleteDir
  * needs to be implemented as non serializable funtion
  * currentBuild.rawBuild.getCauses needs to be accepted by script security plugin
