@@ -106,6 +106,29 @@ def handleBuildCause(directoryName) {
     }
     causes = null
 }
+
+@NonCPS
+def handleGlobalData(directoryName) {
+    def causes = currentBuild.rawBuild.getCauses()
+    for(cause in causes) {
+        def reason = cause.class.toString()
+        cause = null
+        if (!reason.contains("SCMTriggerCause")) {
+            println "clear ./${directoryName}/shared-dl-dir ..."
+            sh "pwd; ls -al; time rm -rf ./${directoryName}/shared-dl-dir; ls -1"
+        }
+    }
+    causes = null
+
+    if (params.CLEAN_CACHES == true) {
+        echo "clear ./${directoryName}/shared-state-dir ... (CLEAN_CACHES)"
+        sh "pwd; ls -al; time rm -rf ./${directoryName}/shared-state-dir; ls -1"
+    }
+    dir("./${directoryName}") {
+       echo "clear ./${directoryName}/ci-meta-tq.*.tar.gz ... "
+       sh "rm -f ./ci-meta-tq.*.tar.gz"
+    }
+}
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
@@ -151,26 +174,7 @@ pipeline {
                  * manageSstateCache(currentBuild.startTimeInMillis()) does not work
                  * this helps to explicit clean state cache
                  */
-                script {
-                    if (params.CLEAN_CACHES == true) {
-                        dir("${env.WORKSPACE}/shared-sstate-cache") {
-                            echo "clear ${env.WORKSPACE}/shared-sstate-cache ... (CLEAN_CACHES)"
-                            deleteDir()
-                        }
-                    }
-                    /*
-                     * unconditionally remove DL_DIR to make sure we got everything
-                     * from mirror, needed for updates of git archives
-                     */
-                    dir("${env.WORKSPACE}/shared-dl-dir") {
-                       echo "clear ${env.WORKSPACE}/shared-dl-dir ..."
-                       deleteDir()
-                    }
-                    dir("${env.WORKSPACE}") {
-                       echo "clear ${env.WORKSPACE}/ci-meta-tq.*.tar.gz ... "
-                       sh "rm -f ci-meta-tq.*.tar.gz"
-                    }
-                }
+                handleGlobalData("${env.WORKSPACE}")
             }
         }
         stage ('Prepare Workspaces') {
