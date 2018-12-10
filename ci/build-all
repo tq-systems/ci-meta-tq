@@ -227,11 +227,14 @@ main () {
 
 		# we will build a local mirror for usage with buildserver ...
 		# so we need to generate tarballs for git repos etc. ...
-		assign_or_replace BB_GENERATE_MIRROR_TARBALLS 1 conf/local.conf
+		# therefore enable shallow support ...
+		assign_or_replace BB_GENERATE_SHALLOW_TARBALLS 1 conf/local.conf
+		assign_or_replace BB_GIT_SHALLOW 1 conf/local.conf
+		assign_or_replace BB_GIT_SHALLOW_DEPTH 1 conf/local.conf
 
 		# force to have a separate DL_DIR to make sure we download all stuff
 		# needed but not available yet
-		# beware: needed quoting for shall and sed!
+		# beware: needed quoting for shell and sed!
 		assign_or_replace DL_DIR "\\\${TOPDIR}/downloads" conf/local.conf
 
 		echo "clean local dirs in $(pwd) ..."
@@ -291,6 +294,8 @@ main () {
 
 			# force to fetch from premirrors only
 			assign_or_replace BB_FETCH_PREMIRRORONLY 1 conf/local.conf
+			assign_or_replace BB_GIT_SHALLOW 1 conf/local.conf
+			assign_or_replace BB_GIT_SHALLOW_DEPTH 1 conf/local.conf
 
 			# force to switch off any network check
 			assign_or_replace BB_NO_NETWORK 1 conf/local.conf
