@@ -227,7 +227,7 @@ main () {
 		echo "build mirror"
 		# poky has per default precompiled native / host packages,
 		# these have malformed local URIs that prevent usage.
-		assign_or_replace INHERIT_remove uninative conf/local.conf
+		# assign_or_replace INHERIT_remove uninative conf/local.conf
 
 		# we will build a local mirror for usage with buildserver ...
 		# so we need to generate tarballs for git repos etc. ...
@@ -276,6 +276,16 @@ main () {
 		for f in ${FILES}; do
 			cp ${f} ${SOURCE_MIRROR_URL}
 		done
+
+		CWD=$(pwd)
+		cd ${DL_DIR}
+		FILES=$(find uninative -maxdepth 2 -type f -not -name "*.done")
+		for f in ${FILES}; do
+			DIR=$(dirname ${f})
+			mkdir -p ${SOURCE_MIRROR_URL}/${DIR}
+			cp ${f} ${SOURCE_MIRROR_URL}/${DIR}
+		done
+		cd ${CWD}
 	else
 		echo "build images"
 
@@ -286,7 +296,7 @@ main () {
 
 			# poky has per default precompiled uninative package,
 			# this has a malformed local URI that prevent usage.
-			assign_or_replace INHERIT_remove uninative conf/local.conf
+			# assign_or_replace INHERIT_remove uninative conf/local.conf
 
 			# need to set SOURCE_MIRROR_URL in a site global config on the build server
 			# echo "SOURCE_MIRROR_URL ?= \"file:///blabla
