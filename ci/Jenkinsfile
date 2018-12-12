@@ -124,10 +124,9 @@ def handleGlobalData(directoryName) {
         echo "clear ./${directoryName}/shared-state-dir ... (CLEAN_CACHES)"
         sh "pwd; ls -al; time rm -rf ./${directoryName}/shared-state-dir; ls -1"
     }
-    dir("${directoryName}") {
-       echo "clear ${directoryName}/ci-meta-tq.*.tar.gz ... "
-       sh "rm -f ./ci-meta-tq.*.tar.gz"
-    }
+
+    echo "clear ${directoryName}/ci-meta-tq.*.tar.gz ... "
+    sh "rm -f ${directoryName}/ci-meta-tq.*.tar.gz"
 }
 /**********************************************************************/
 /*******************         Pipeline         *************************/
