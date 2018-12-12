@@ -96,10 +96,10 @@ def handleBuildCause(directoryName) {
         cause = null
         if (reason.contains("TimerTriggerCause")) {
             println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
-            sh "pwd; ls -al; rm -rf ./${directoryName}/buildspace/tmp"
+            sh "pwd; ls -al; rm -rf ${directoryName}/buildspace/tmp"
         } else if (reason.contains("UserIdCause")) {
             println "This job was caused by user, rm buildspace ... (RELEASE)"
-            sh "pwd; ls -al; time rm -rf ./${directoryName}/buildspace; ls -1"
+            sh "pwd; ls -al; time rm -rf ${directoryName}/buildspace; ls -1"
         } else {
             println "build cause : " + reason
         }
@@ -121,8 +121,8 @@ def handleGlobalData(directoryName) {
     causes = null
 
     if (params.CLEAN_CACHES == true) {
-        echo "clear ./${directoryName}/shared-state-dir ... (CLEAN_CACHES)"
-        sh "pwd; ls -al; time rm -rf ./${directoryName}/shared-state-dir; ls -1"
+        println "clear ${directoryName}/shared-state-dir ... (CLEAN_CACHES)"
+        sh "pwd; ls -al; time rm -rf ${directoryName}/shared-state-dir; ls -1"
     }
 
     echo "clear ${directoryName}/ci-meta-tq.*.tar.gz ... "
