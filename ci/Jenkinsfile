@@ -114,18 +114,18 @@ def handleGlobalData(directoryName) {
         def reason = cause.class.toString()
         cause = null
         if (!reason.contains("SCMTriggerCause")) {
-            println "clear ./${directoryName}/shared-dl-dir ..."
-            sh "pwd; ls -al; time rm -rf ./${directoryName}/shared-dl-dir; ls -1"
+            println "clear ${directoryName}/shared-dl-dir ..."
+            sh "pwd; ls -al; time rm -rf ${directoryName}/shared-dl-dir; ls -1"
         }
     }
     causes = null
 
     if (params.CLEAN_CACHES == true) {
-        echo "clear ./${directoryName}/shared-state-dir ... (CLEAN_CACHES)"
-        sh "pwd; ls -al; time rm -rf ./${directoryName}/shared-state-dir; ls -1"
+        println "clear ${directoryName}/shared-state-dir ... (CLEAN_CACHES)"
+        sh "pwd; ls -al; time rm -rf ${directoryName}/shared-state-dir; ls -1"
     }
-    dir("./${directoryName}") {
-       echo "clear ./${directoryName}/ci-meta-tq.*.tar.gz ... "
+    dir("${directoryName}") {
+       println "clear ${directoryName}/ci-meta-tq.*.tar.gz ... "
        sh "rm -f ./ci-meta-tq.*.tar.gz"
     }
 }
