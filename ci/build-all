@@ -135,6 +135,18 @@ function get_md5sum () {
 	cd ${MYPWD}
 }
 
+#
+# link conf/auto.conf to conf/auto.conf.tmpl
+#
+function do_link_auto_conf () {
+	local PWD=$(pwd)
+	local MODE=${1}
+
+	rm -rf ${PWD}/conf/auto.conf
+	ln -s ${PWD}/conf/auto.conf.${MODE} ${PWD}/conf/auto.conf
+	! [ -e ${PWD}/conf/auto.conf ] && error_out "missing auto.conf"
+}
+
 main () {
 	# this disables network check
 	export CONNECTIVITY_CHECK_URIS=" "
