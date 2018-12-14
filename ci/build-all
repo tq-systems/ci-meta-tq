@@ -233,24 +233,9 @@ main () {
 	# modify local conf as needed before executing bitbake
 	if [ "${MODE}" == "mirror" ]; then
 		echo "build mirror"
-		# poky has per default precompiled native / host packages,
-		# these have malformed local URIs that prevent usage.
-		# assign_or_replace INHERIT_remove uninative conf/local.conf
-
-		# we will build a local mirror for usage with buildserver ...
-		# so we need to generate tarballs for git repos etc. ...
-		# therefore enable shallow support ...
-		assign_or_replace BB_GENERATE_SHALLOW_TARBALLS 1 conf/local.conf
-		assign_or_replace BB_GIT_SHALLOW 1 conf/local.conf
-		assign_or_replace BB_GIT_SHALLOW_DEPTH 1 conf/local.conf
-
-		# force to have a separate DL_DIR to make sure we download all stuff
-		# needed but not available yet
-		# beware: needed quoting for shell and sed!
-		assign_or_replace DL_DIR "\\\${TOPDIR}/downloads" conf/local.conf
-
+		do_link_auto_conf ${MODE}
 		echo "clean local dirs in $(pwd) ..."
-		rm -rf cache tmp sstate-cache
+		rm -rf ./cache ./tmp ./sstate-cache
 		# get DL_DIR from local.conf to cleanup packages generated from git ...
 		SETTER=$(bitbake -e | grep ^"DL_DIR=")
 		echo "$SETTER"
@@ -304,45 +289,15 @@ main () {
 			if [ -d "${DEPLOYDIR}" ]; then
 				rm -rf "${DEPLOYDIR}"
 			fi
-
-			# poky has per default precompiled uninative package,
-			# this has a malformed local URI that prevent usage.
-			# assign_or_replace INHERIT_remove uninative conf/local.conf
-
-			# need to set SOURCE_MIRROR_URL in a site global config on the build server
-			# echo "SOURCE_MIRROR_URL ?= \"file:///blabla
-			# used to force to use and generate a mirror config from $SOURCE_MIRROR_URL
-			assignplus INHERIT own-mirrors conf/local.conf
-
-			# force to fetch from premirrors only
-			assign_or_replace BB_FETCH_PREMIRRORONLY 1 conf/local.conf
-			assign_or_replace BB_GIT_SHALLOW 1 conf/local.conf
-			assign_or_replace BB_GIT_SHALLOW_DEPTH 1 conf/local.conf
-
-			# force to switch off any network check
-			assign_or_replace BB_NO_NETWORK 1 conf/local.conf
-
-			# premirrors have to be configured per site ...
-
-			# cleanup: rm_work for package work dir, RM_OLD_IMAGES for last build images
-			assignplus INHERIT rm_work conf/local.conf
-			assign_or_replace RM_OLD_IMAGE 1 conf/local.conf
-
-			assignplus INHERIT archiver conf/local.conf
-			assignopt_or_replace COPYLEFT_LICENSE_EXCLUDE "CLOSED Proprietary" conf/local.conf
-
-			## echo "COPYLEFT_LICENSE_INCLUDE ?= \"*\"" | tee -a  conf/local.conf
-			assignopt_or_replace ARCHIVER_MODE[src] original conf/local.conf
-
-			## echo "COPYLEFT_RECIPE_TYPES ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
-			## echo "COPYLEFT_RECIPE_TYPE ?= \"\${COPYLEFT_AVAILABLE_RECIPE_TYPES}\"" | tee -a  conf/local.conf
 		fi
+
+		do_link_auto_conf ${MODE}
 
 		if ! [ -z ${SSTATE_DIR} ]; then
 			# add SSTATE dir outside of builddir, optimize global builds
 			assign_or_replace SSTATE_DIR ${SSTATE_DIR} conf/local.conf
 		else
-			echo "env SSTATE_DIR empty, add it to your site.conf"
+			echo "env SSTATE_DIR empty, add it to your site.conf / auto.conf"
 		fi
 		if ! [ -z ${DL_DIR} ]; then
 			# add DL_DIR dir outside of builddir, optimize global builds
