@@ -294,11 +294,12 @@ main () {
 		echo "build images"
 
 		if [ "${MODE}" == "ci" ]; then
-			do_link_auto_conf ${MODE}
 			if [ -d "${DEPLOYDIR}" ]; then
 				rm -rf "${DEPLOYDIR}"
 			fi
 		fi
+
+		do_link_auto_conf ${MODE}
 
 		if ! [ -z ${SSTATE_DIR} ]; then
 			# add SSTATE dir outside of builddir, optimize global builds
