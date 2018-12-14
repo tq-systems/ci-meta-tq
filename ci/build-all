@@ -118,8 +118,8 @@ assignopt_or_replace() {
 }
 
 function get_md5sum () {
-	MYPWD=$(pwd)
-	DIRECTORY=${1}
+	local MYPWD=$(pwd)
+	local DIRECTORY=${1}
 
 	if [ -d ${DIRECTORY} ]; then
 		cd ${DIRECTORY}
