@@ -19,3 +19,6 @@
 [submodule "sources/meta-dumpling"]
 	path = sources/meta-dumpling
 	url = ssh://git@tq-git-pr1.tq-net.de/tq-embedded/tqmaxx/meta-dumpling.git
+[submodule "sources/meta-ti"]
+	path = sources/meta-ti
+	url = git://git.yoctoproject.org/meta-ti
