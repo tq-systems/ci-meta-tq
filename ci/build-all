@@ -160,6 +160,7 @@ main () {
 	local MINIMAL_EXCLUDE="tqma6q-nav"
 	local MFGTOOL_EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa tqmls1046a-mbls10xxa tqma571x-mba57xx tqma572x-mba57xx tqma574x-mba57xx"
 	local GUI_EXCLUDE="tqma6q-nav tqmls1046a-mbls10xxa tqma571x-mba57xx tqma572x-mba57xx tqma574x-mba57xx"
+	local TI_EXCLUDE="tqma6q-nav tqma6s-mba6x tqma6dl-mba6x tqma6q-mba6x tqma6qp-mba6x tqma6ulx-mba6ulx tqma6ulxl-mba6ulx tqma7x-mba7 tqmls1046a-mbls10xxa tqmls102xa-mbls102xa"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
@@ -194,6 +195,12 @@ main () {
 	"minimal" )
 		IMAGES="tq-image-generic"
 		for excl in ${MINIMAL_EXCLUDE}; do
+			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		;;
+	"ti" )
+		IMAGES="tq-image-generic"
+		for excl in ${TI_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
 		;;
