@@ -12,11 +12,6 @@ BB_GIT_SHALLOW_DEPTH = "1"
 INHERIT += "rm_work"
 RM_OLD_IMAGE = "1"
 
-# generate source and license dir for deployment
-INHERIT += "archiver"
-COPYLEFT_LICENSE_EXCLUDE ?= "CLOSED Proprietary"
-ARCHIVER_MODE[src] ?= "original"
-
 # only for poky-based DISTRO
 # or if DISTRO includes uninative config data - otherwise build fails with missing
 # UNINATIVE_CHECKSUM[arch]
