@@ -96,6 +96,17 @@ main () {
 
 	case ${CONFIG} in
 	"gui" )
+		local EXCLUDE="tqmls1012al-mbls1012al"
+		for excl in ${EXCLUDE}; do
+			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		;;
+	"minimal" )
+		# tqmaxx-* have no support for network
+		local EXCLUDE="tqma6dl-mba6x tqma6s-mba6x tqma6qp-mba6x tqma6ulx-lga-mba6ulx tqma6q-nav"
+		for excl in ${EXCLUDE}; do
+			TARGETS=$(echo ${TARGETS} | sed -e "s/ *$excl */ /")
+		done
 		;;
 	"network" )
 		# tqmaxx-* have no support for network
