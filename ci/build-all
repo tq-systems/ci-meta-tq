@@ -158,7 +158,7 @@ main () {
 	local CONFIG=${2}
 	local IMAGES="core-image-minimal"
 	local MINIMAL_EXCLUDE="tqmls1012al-mbls1012al"
-	local MFGTOOL_EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
+	local MFGTOOL_EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa tqmls1012al-mbls1012al"
 	local GUI_EXCLUDE="tqmls1012al-mbls1012al tqmls102xa-mbls102xa"
 	local NETWORK_EXCLUDE="tqma6q-nav"
 	local MODE="normal"
