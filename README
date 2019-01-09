@@ -32,7 +32,7 @@ To help setting up an initial build space, use
 
 export MACHINE=<machine> && source setup-environment <builddir> <config>
 
-where config is: minimal | gui | mfgtool
+where config is: minimal | gui | mfgtool | network
 
 This will use sources/template/conf/bblayers.conf.<config> as initial template
 for your layer configuration. Additionally some config variables are injected:
@@ -57,9 +57,13 @@ ci/build-all <builddir> <config>
 
 depending on the selected config, the following will be built:
 
-minimal:	core-image-minimal
+minimal:	tq-image-generic (from meta-dumpling, depends on core-image-minimal)
 gui:		fsl-image-multimedia-full (meta-freescale-distro)
 mfgtool:	fsl-image-mfgtool-initramfs (meta-freescale)
+network:	tq-image-network (from meta-dumpling, depends on fsl-image-networking)
+
+Note, that not all machines will be built in all configurations. Exclusions can
+be found in ci/build-all script.
 
 To help to create a package mirror, one can use the CI helper script:
 
