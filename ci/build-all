@@ -179,7 +179,7 @@ main () {
 	ALL_TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
 		sed s/\.conf//g | xargs -n1 basename)
 	# TODO: find real boards to be build ...
-	ALL_TARGETS="imx8qxpa0mek tqma8qx-mba8qx tqma8qxs-mb-smarc-2"
+	ALL_TARGETS="tqma8qx-mba8qx tqma8qxs-mb-smarc-2 tqma8mq-mba8mx"
 	local MINIMAL_TARGETS=${ALL_TARGETS}
 	local GUI_TARGETS=${ALL_TARGETS}
 	local MFGTOOL_TARGETS=${ALL_TARGETS}
