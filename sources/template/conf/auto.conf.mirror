@@ -12,11 +12,6 @@ BB_GIT_SHALLOW_DEPTH = "1"
 INHERIT += "rm_work"
 RM_OLD_IMAGE = "1"
 
-# generate source and license dir for deployment
-INHERIT += "archiver"
-COPYLEFT_LICENSE_EXCLUDE ?= "CLOSED Proprietary"
-ARCHIVER_MODE[src] ?= "original"
-
 # force to have a separate DL_DIR to make sure we download all stuff
 # needed but not available yet
 DL_DIR = "${TOPDIR}/downloads"
