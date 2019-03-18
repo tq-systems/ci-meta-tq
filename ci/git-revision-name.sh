@@ -1,20 +1,11 @@
 #!/bin/bash -
 #
-# File:        git-archive-all.sh
+# File:        git-revision-name.sh
 # Copyright (C) 2014 - 2018 TQ Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
-# Description: A utility script that builds an archive file(s) of all
-#              git repositories and submodules in the current path.
-#              Useful for creating a single tarfile of a git super-
-#              project that contains other submodules.
-#
-# Examples:    Use git-archive-all.sh to create archive distributions
-#              from git repositories. To use, simply do:
-#
-#                  cd $GIT_DIR; git-archive-all.sh
-#
-#              where $GIT_DIR is the root of your git superproject.
+# Description: A utility to get a pretty string for
+#              current revision of your project.
 #
 # License:     GPLv2
 #
@@ -70,4 +61,3 @@ function main () {
 }
 
 main $@
-
