@@ -23,7 +23,6 @@ BBLAYERS += " ${BSPDIR}/sources/meta-fsl-bsp-release/imx/meta-bsp "
 BBLAYERS += " ${BSPDIR}/sources/meta-fsl-bsp-release/imx/meta-sdk "
 
 BBLAYERS += " ${BSPDIR}/sources/meta-browser "
-BBLAYERS += " ${BSPDIR}/sources/meta-openembedded/meta-gnome "
 BBLAYERS += " ${BSPDIR}/sources/meta-openembedded/meta-networking "
 BBLAYERS += " ${BSPDIR}/sources/meta-openembedded/meta-python "
 BBLAYERS += " ${BSPDIR}/sources/meta-openembedded/meta-filesystems "
