@@ -60,7 +60,6 @@ depending on the selected config, the following will be built:
 minimal:	tq-image-generic (based on core-image-minimal)
 ti:		tq-image-generic (based on core-image-minimal)
 gui:		fsl-image-multimedia-full (meta-freescale-distro)
-mfgtool:	fsl-image-mfgtool-initramfs (meta-freescale) - not tested with rocko
 
 this is used by TQ for automated builds, therefore some predefined auto.conf files
 bring in additional settings for the build space.

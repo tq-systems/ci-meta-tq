@@ -183,7 +183,6 @@ main () {
 	case ${CONFIG} in
 	"gui" )
 		IMAGES="fsl-image-multimedia-full"
-		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
 		for excl in ${GUI_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
@@ -201,14 +200,14 @@ main () {
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
 		;;
-	"mfgtool" )
-		IMAGES="fsl-image-mfgtool-initramfs"
-		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
-		for excl in ${MFGTOOL_EXCLUDE}; do
-			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
-		done
-		export EULA="y"
-		;;
+#	"mfgtool" )
+#		IMAGES="fsl-image-mfgtool-initramfs"
+#		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
+#		for excl in ${MFGTOOL_EXCLUDE}; do
+#			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
+#		done
+#		export EULA="y"
+#		;;
 	* )
 		usage
 		exit 1
