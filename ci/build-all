@@ -162,7 +162,7 @@ main () {
 	local IMAGES="core-image-minimal"
 	local MINIMAL_EXCLUDE="tqma6q-nav"
 	local MFGTOOL_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS}"
-	local GUI_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS}"
+	local IMX_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS}"
 	local TI_EXCLUDE="tqma6q-nav ${IMX_TARGETS} ${LS_TARGETS}"
 	local MODE="normal"
 
@@ -181,9 +181,9 @@ main () {
 
 	# filter out machines from the ${LAYER} based on ${CONFIG}
 	case ${CONFIG} in
-	"gui" )
+	"imx" )
 		IMAGES="fsl-image-multimedia-full"
-		for excl in ${GUI_EXCLUDE}; do
+		for excl in ${IMX_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
 		export EULA="y"
