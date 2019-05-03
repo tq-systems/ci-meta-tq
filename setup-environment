@@ -211,7 +211,7 @@ if [ ! -e conf/local.conf.sample ]; then
         cp ${TEMPLATES}/${BBLAYERS_TEMPLATE} conf/bblayers.conf
     fi
 
-    if [ "${BBLAYERS_TEMPLATE}" == "bblayers.conf.gui" ]; then
+    if [ "${BBLAYERS_TEMPLATE}" == "bblayers.conf.imx" ]; then
         echo "DISTRO_FEATURES_append = \"wayland\"" | tee -a conf/local.conf
         echo "DISTRO_FEATURES_remove = \"x11\"" | tee -a conf/local.conf
     fi

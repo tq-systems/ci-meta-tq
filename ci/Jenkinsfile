@@ -160,7 +160,7 @@ pipeline {
 
     environment {
 /*        WS_MFG = "CONFIGS/mfgtool" */
-        WS_GUI = "CONFIGS/gui"
+        WS_IMX = "CONFIGS/imx"
         WS_MIN = "CONFIGS/minimal"
         WS_TI = "CONFIGS/ti"
     }
@@ -178,9 +178,9 @@ pipeline {
         stage ('Prepare Workspaces') {
             steps {
                 parallel (
-                    "gui" : {
-                        wipeOutBuildspace("${env.WS_GUI}")
-                        prepareWorkspace("${env.WS_GUI}")
+                    "imx" : {
+                        wipeOutBuildspace("${env.WS_IMX}")
+                        prepareWorkspace("${env.WS_IMX}")
                     },
                     "minimal" : {
                         wipeOutBuildspace("${env.WS_MIN}")
@@ -202,8 +202,8 @@ pipeline {
         stage('handle build cause') {
             steps {
                 parallel (
-                    "gui" : {
-                        handleBuildCause("${env.WS_GUI}")
+                    "imx" : {
+                        handleBuildCause("${env.WS_IMX}")
                     },
                     "minimal" : {
                         handleBuildCause("${env.WS_MIN}")
@@ -222,8 +222,8 @@ pipeline {
         stage ('Checkout all meta-layers') {
             steps {
                 parallel (
-                    "gui" : {
-                        checkoutMetaLayers("${env.WS_GUI}")
+                    "imx" : {
+                        checkoutMetaLayers("${env.WS_IMX}")
                     },
                     "minimal" : {
                         checkoutMetaLayers("${env.WS_MIN}")
@@ -242,8 +242,8 @@ pipeline {
         stage ('Build'){
             steps {
                 parallel (
-                    "gui" : {
-                        buildConfiguration("${env.WS_GUI}")
+                    "imx" : {
+                        buildConfiguration("${env.WS_IMX}")
                     },
                     "minimal" : {
                         buildConfiguration("${env.WS_MIN}")
@@ -271,8 +271,8 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
-            wipeOutBuildspace("${env.WS_GUI}")
+            archiveArtifacts artifacts: "${env.WS_IMX}/buildspace/deployment/*"
+            wipeOutBuildspace("${env.WS_IMX}")
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_MIN}")
             archiveArtifacts artifacts: "${env.WS_TI}/buildspace/deployment/*"
