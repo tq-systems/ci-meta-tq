@@ -32,7 +32,11 @@ To help setting up an initial build space, use
 
 export MACHINE=<machine> && source setup-environment <builddir> <config>
 
-where config is: minimal | gui | ti | mfgtool
+where config is:
+
+minimal: usable for all supported machines, only minimal layer dependencies
+imx: usable for all machines with i.MX CPU, supports FSL community BSP via meta-freessale
+ti: usable for all machines with TQ AM57xx CPU, uses meta-ti
 
 This will use sources/template/conf/bblayers.conf.<config> as initial template
 for your layer configuration. Additionally some config variables are injected:
@@ -59,7 +63,7 @@ depending on the selected config, the following will be built:
 
 minimal:	tq-image-generic (based on core-image-minimal)
 ti:		tq-image-generic (based on core-image-minimal)
-gui:		fsl-image-multimedia-full (meta-freescale-distro)
+imx:		fsl-image-multimedia-full (meta-freescale-distro)
 
 this is used by TQ for automated builds, therefore some predefined auto.conf files
 bring in additional settings for the build space.
