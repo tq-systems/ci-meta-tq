@@ -39,6 +39,9 @@ SDKMACHINE: default i686 or value from environment
 DISTRO: default fsl-imx-wayland or value from environment, only the default
 is tested
 
+Attention: setup logic from NXP BSP will change / overwrite some definitions
+in meta-freescale
+
 In case you have ~/.oe or ~/.yocto dir a site.conf file will be symlinked to
 the conf dir of the buildir to allow machine specific overrrides. For instance 
 to use a shared download directory, you can provide $DL_DIR via ~/.yocto/site.conf.
