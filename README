@@ -16,6 +16,8 @@ current supported branches:
 - morty
 - pyro
 - rocko (currently no i.MX mfgtool support)
+- rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP)
+- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
 
 branch names correspond to yocto release names
 
