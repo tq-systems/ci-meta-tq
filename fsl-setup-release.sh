@@ -23,7 +23,7 @@
 
 CWD=`pwd`
 PROGNAME="setup-environment"
-DEFAULT_MACHINE="imx8qxpmek"
+DEFAULT_MACHINE="tqma8mq-mba8mx"
 DEFAULT_DISTRO="fsl-imx-wayland"
 
 exit_message ()
