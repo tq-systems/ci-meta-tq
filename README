@@ -30,36 +30,34 @@ To list supported machines:
 
 To help setting up an initial build space, use
 
-export MACHINE=<machine> && source setup-environment <builddir> <config>
+export MACHINE=<machine> && source fsl-setup-release -b <builddir>
 
-where config is: minimal | gui | mfgtool
-
-This will use sources/template/conf/bblayers.conf.<config> as initial template
-for your layer configuration. Additionally some config variables are injected:
-
-MACHINE: default tqma6q-mba6x or value from environment
+MACHINE: default tqma8mq-mba8mx or value from environment
 SDKMACHINE: default i686 or value from environment
-DISTRO: default poky  or value from environment
+DISTRO: default fsl-imx-wayland or value from environment, only the default
+is tested
 
 In case you have ~/.oe or ~/.yocto dir a site.conf file will be symlinked to
 the conf dir of the buildir to allow machine specific overrrides. For instance 
 to use a shared download directory, you can provide $DL_DIR via ~/.yocto/site.conf.
 
 Internally the oe-init-build-env script from the
-used openembedded / poky meta layer will be sourced.
+used openembedded / poky meta layer will be sourced indirectly
+via setup-environment
+
+To return to a initially setup build space, use
+
+source setup-environment <builddir>
 
 After this step, everything is setup to build an image using bitbake.
 
 To force a build of all supported machines in one of the configs, one can
 use the CI helper script:
 
-ci/build-all <builddir> <config>
+ci/build-all <builddir> gui
 
-depending on the selected config, the following will be built:
-
-minimal:	core-image-minimal
-gui:		fsl-image-multimedia-full (meta-freescale-distro)
-mfgtool:	fsl-image-mfgtool-initramfs (meta-freescale)
+only gui config is supported, it will build an image based on the qt5 demo
+image defined in meta-fsl-bsp-release/imx/meta-bsp
 
 To help to create a package mirror, one can use the CI helper script:
 
