@@ -3,7 +3,8 @@
 # Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
 # Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
 #
-# Copyright (C) 2017 Markus Niebel <Markus.Niebel@tq-group.com>
+# Copyright (C) TQ Systems GmbH
+# 2017 - 2019 Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -23,8 +24,14 @@
 
 CWD=$(pwd)
 PROGNAME="setup-environment"
-DEFAULT_MACHINE="tqma6q-mba6x"
-DEFAULT_DISTRO="poky"
+LIST_TQ_MACHINES=$(${CWD}/ci/ls-machines meta-tq)
+DEFAULT_MACHINE=$(echo ${LIST_TQ_MACHINES} | awk '{ print $1 }')
+CONFIG_TEMPLATE=minimal
+
+DEFAULT_DISTRO_minimal="poky"
+# use for linux-imx based kernel
+DEFAULT_DISTRO_imx="fsl-wayland"
+DEFAULT_DISTRO_ti="poky"
 
 usage()
 {
@@ -146,11 +153,11 @@ if [ -z "${MACHINE}" ]; then
     MACHINE=${DEFAULT_MACHINE}
 fi
 
-if [ -z "$2" ]; then
-    BBLAYERS_TEMPLATE=bblayers.conf.minimal
-else
-    BBLAYERS_TEMPLATE=bblayers.conf.${2}
+if ! [ -z "${2}" ]; then
+    CONFIG_TEMPLATE=${2}
 fi
+
+BBLAYERS_TEMPLATE=bblayers.conf.${CONFIG_TEMPLATE}
 
 # Check the machine type specified
 LIST_MACHINES=$(ls -1 ${CWD}/sources/*/conf/machine)
@@ -169,8 +176,10 @@ if [ -z "${SDKMACHINE}" ]; then
     SDKMACHINE="i686"
 fi
 
+echo "DISTRO: ${DISTRO}"
 if [ -z "${DISTRO}" ]; then
-    DISTRO=${DEFAULT_DISTRO}
+    DISTRO_VAR=DEFAULT_DISTRO_${CONFIG_TEMPLATE}
+    eval DISTRO=\$$DISTRO_VAR
 fi
 
 OEROOT=${CWD}/sources/poky
