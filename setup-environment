@@ -29,8 +29,8 @@ DEFAULT_MACHINE=$(echo ${LIST_TQ_MACHINES} | awk '{ print $1 }')
 CONFIG_TEMPLATE=minimal
 
 DEFAULT_DISTRO_minimal="poky"
-# use for linux-imx based kernel
-DEFAULT_DISTRO_imx="fsl-wayland"
+# use for linux-imx based kernel, should this be fsl[c]-wayland?
+DEFAULT_DISTRO_imx="poky"
 DEFAULT_DISTRO_ti="poky"
 
 usage()
