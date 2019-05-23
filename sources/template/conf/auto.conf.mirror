@@ -4,6 +4,7 @@ ACCEPT_FSL_EULA = "y"
 # control usage of mirrors
 # PREMIRRORS should be setup in site.conf
 INHERIT += "own-mirrors"
+BB_GENERATE_MIRROR_TARBALLS = "1"
 #BB_GENERATE_SHALLOW_TARBALLS = "1"
 #BB_GIT_SHALLOW = "1"
 #BB_GIT_SHALLOW_DEPTH = "1"
