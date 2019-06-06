@@ -160,10 +160,10 @@ main () {
 	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma[6,7])
 	local CONFIG=${2}
 	local IMAGES="core-image-minimal"
-	local MINIMAL_EXCLUDE="tqma6q-nav"
-	local MFGTOOL_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS}"
-	local IMX_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS}"
-	local TI_EXCLUDE="tqma6q-nav ${IMX_TARGETS} ${LS_TARGETS}"
+	local MINIMAL_EXCLUDE=""
+	local MFGTOOL_EXCLUDE="${LS_TARGETS} ${TI_TARGETS}"
+	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS}"
+	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS}"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
