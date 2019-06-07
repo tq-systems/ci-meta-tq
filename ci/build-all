@@ -368,7 +368,9 @@ main () {
 				get_md5sum ${ARTIFACTSDIR}/${MACHINE} > ${DEPLOYDIR}/${MACHINE_ARCHIVE}.md5sum
 				cp ${DEPLOYDIR}/${MACHINE_ARCHIVE}.md5sum ${ARTIFACTSDIR}/${MACHINE}
 				# create a file containing the version we are build from
-				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info;
+				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info
+				echo "submodules:" >> git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info
+				git submodule >> ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info
 				# create image archive for $MACHINE
 				tar -cvzf ${DEPLOYDIR}/${MACHINE_ARCHIVE}.BIN.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
 				[ "$?" -ne "0" ] && error_out "archiving for ${MACHINE} failed"
