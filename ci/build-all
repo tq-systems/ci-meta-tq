@@ -358,15 +358,15 @@ main () {
 				local MACHINE_ARCHIVE=${MACHINE}_${ARCHIVE_BASENAME}
 				echo "archiving ${MACHINE} ..."
 				# we create some files in ${ARTIFACTSDIR}/${MACHINE}, clean them before recreate
-				rm -f ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info
+				rm -f ${ARTIFACTSDIR}/${MACHINE}/*.info
 				rm -f ${ARTIFACTSDIR}/${MACHINE}/*.md5sum
 				# create a file containing md5sum of files
 				get_md5sum ${ARTIFACTSDIR}/${MACHINE} > ${DEPLOYDIR}/${MACHINE_ARCHIVE}.md5sum
 				cp ${DEPLOYDIR}/${MACHINE_ARCHIVE}.md5sum ${ARTIFACTSDIR}/${MACHINE}
 				# create a file containing the version we are build from
-				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info
-				echo "submodules:" >> git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info
-				git submodule >> ${ARTIFACTSDIR}/${MACHINE}/${STAMP}.info
+				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
+				echo "submodules info:" ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
+				git submodule >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
 				# create image archive for $MACHINE
 				tar -cvzf ${DEPLOYDIR}/${MACHINE_ARCHIVE}.BIN.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
 				[ "$?" -ne "0" ] && error_out "archiving for ${MACHINE} failed"
