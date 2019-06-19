@@ -7,9 +7,9 @@ BB_FETCH_PREMIRRORONLY = "1"
 
 # control usage of mirrors
 # PREMIRRORS should be setup in site.conf
-#INHERIT += "own-mirrors"
-#BB_GIT_SHALLOW = "1"
-#BB_GIT_SHALLOW_DEPTH = "1"
+INHERIT += "own-mirrors"
+BB_GIT_SHALLOW = "1"
+BB_GIT_SHALLOW_DEPTH = "1"
 
 # lean after build to save space
 INHERIT += "rm_work"
