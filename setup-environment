@@ -211,6 +211,9 @@ if [ ! -e conf/local.conf.sample ]; then
         ln -s ${f} conf/$(basename ${f})
     done
 
+    ln -s ${TEMPLATES}/auto.conf.normal ./conf/auto.conf
+    ! [ -e ./conf/auto.conf ] && "missing auto.conf" && clean_up && return 1
+
     # copy local bblayers.conf templates
     if [ -e ${TEMPLATES}/${BBLAYERS_TEMPLATE} ]; then
         ln -s ${TEMPLATES}/${BBLAYERS_TEMPLATE} conf/bblayers.conf.tmpl
