@@ -206,6 +206,13 @@ if [ ! -e conf/local.conf.sample ]; then
     TEMPLATES=${CWD}/sources/template/conf
     grep -v '^#\|^$' conf/local.conf.sample > conf/local.conf
 
+    echo "link additional includes from ${TEMPLATES} to ./conf/ ..."
+    FILES=$(find ${TEMPLATES} -maxdepth 1 -type f -name "*.inc")
+    echo "link ${FILES}"
+    for f in ${FILES}; do
+        ln -s ${f} conf/$(basename ${f})
+    done
+
     echo "link auto.conf templates from ${TEMPLATES} to ./conf/ ..."
     FILES=$(find ${TEMPLATES} -maxdepth 1 -type f -name "auto.conf*")
     echo "link ${FILES}"
