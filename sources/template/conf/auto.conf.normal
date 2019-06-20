@@ -1,6 +1,5 @@
+require init-manager.inc
 
-# control usage of mirrors
-# PREMIRRORS should be setup in site.conf
-INHERIT += "own-mirrors"
-BB_GIT_SHALLOW = "1"
-BB_GIT_SHALLOW_DEPTH = "1"
+require mirror.inc
+
+require uninative-mirror.inc

@@ -1,16 +1,17 @@
-# allow automatic building
+require init-manager.inc
+
+# allow automatic building with meta-freescale
 ACCEPT_FSL_EULA = "y"
 
 # control usage of mirrors
-# PREMIRRORS should be setup in site.conf
-INHERIT += "own-mirrors"
 BB_GENERATE_SHALLOW_TARBALLS = "1"
-BB_GIT_SHALLOW = "1"
-BB_GIT_SHALLOW_DEPTH = "1"
+require conf/mirror.inc
 
 # lean after build to save space
 INHERIT += "rm_work"
 RM_OLD_IMAGE = "1"
+
+require uninative-mirror.inc
 
 # force to have a separate DL_DIR to make sure we download all stuff
 # needed but not available yet
