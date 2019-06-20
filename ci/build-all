@@ -365,6 +365,8 @@ main () {
 				cp ${DEPLOYDIR}/${MACHINE_ARCHIVE}.md5sum ${ARTIFACTSDIR}/${MACHINE}
 				# create a file containing the version we are build from
 				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
+				printf "\ngit submodule url:\n\n" >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
+				git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
 				printf "\ngit submodule info:\n\n" >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
 				git submodule >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
 				# create image archive for $MACHINE
