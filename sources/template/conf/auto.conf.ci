@@ -1,9 +1,6 @@
 # from meta-dumpling
 require init-manager.inc
 
-# allow automatic building
-ACCEPT_FSL_EULA = "y"
-
 # restrict network access
 BB_NO_NETWORK = "1"
 BB_FETCH_PREMIRRORONLY = "1"
@@ -11,13 +8,11 @@ BB_FETCH_PREMIRRORONLY = "1"
 # control usage of mirrors
 require mirror.inc
 
-# lean after build to save space
-INHERIT += "rm_work"
-RM_OLD_IMAGE = "1"
-
 # generate source and license dir for deployment
 INHERIT += "archiver"
 COPYLEFT_LICENSE_EXCLUDE ?= "CLOSED Proprietary"
 ARCHIVER_MODE[src] ?= "original"
 
 require uninative-mirror.inc
+
+require ci-helper.inc
