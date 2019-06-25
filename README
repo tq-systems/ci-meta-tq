@@ -12,10 +12,15 @@ Quick Start Guide
 Clone this repo using git clone --branch=<branch-name> --recurse-submodules <url>
 
 current supported branches:
+
+- rocko (currently no i.MX mfgtool support)
+- warrior (currently no i.MX mfgtool support)
+
+not longer supported branches
+
 - krogoth
 - morty
 - pyro
-- rocko (currently no i.MX mfgtool support)
 
 branch names correspond to yocto release names
 
