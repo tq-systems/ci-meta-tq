@@ -162,7 +162,7 @@ pipeline {
 /*        WS_MFG = "CONFIGS/mfgtool" */
         WS_IMX = "CONFIGS/imx"
         WS_MIN = "CONFIGS/minimal"
-/*        WS_TI = "CONFIGS/ti" */
+        WS_TI = "CONFIGS/ti"
     }
 
     stages {
@@ -186,12 +186,10 @@ pipeline {
                         wipeOutBuildspace("${env.WS_MIN}")
                         prepareWorkspace("${env.WS_MIN}")
                     },
-/*
                     "ti" : {
                         wipeOutBuildspace("${env.WS_TI}")
                         prepareWorkspace("${env.WS_TI}")
                     },
-*/
 /*
                     "mfgtool" : {
                         wipeOutBuildspace("${env.WS_MFG}")
@@ -210,11 +208,9 @@ pipeline {
                     "minimal" : {
                         handleBuildCause("${env.WS_MIN}")
                     },
-/*
                     "ti" : {
                         handleBuildCause("${env.WS_TI}")
                     },
-*/
 /*
                     "mfgtool" : {
                         handleBuildCause("${env.WS_MFG}")
@@ -232,11 +228,9 @@ pipeline {
                     "minimal" : {
                         checkoutMetaLayers("${env.WS_MIN}")
                     },
-/*
                     "ti" : {
                         checkoutMetaLayers("${env.WS_TI}")
                     },
-*/
 /*
                     "mfgtool" : {
                         checkoutMetaLayers("${env.WS_MFG}")
@@ -254,11 +248,9 @@ pipeline {
                     "minimal" : {
                         buildConfiguration("${env.WS_MIN}")
                     },
-/*
                     "ti" : {
                         buildConfiguration("${env.WS_TI}")
                     },
-*/
 /*
                     "mfgtool" : {
                         buildConfiguration("${env.WS_MFG}")
@@ -283,10 +275,8 @@ pipeline {
             wipeOutBuildspace("${env.WS_IMX}")
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_MIN}")
-/*
             archiveArtifacts artifacts: "${env.WS_TI}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_TI}")
-*/
 /*
             archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_MFG}")
