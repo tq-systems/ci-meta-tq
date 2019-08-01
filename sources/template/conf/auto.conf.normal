@@ -2,4 +2,6 @@ require init-manager.inc
 
 require mirror.inc
 
+require image-features.inc
+
 require uninative-mirror.inc
