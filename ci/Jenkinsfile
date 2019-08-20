@@ -86,32 +86,11 @@ def wipeOutBuildspace(directoryName){
  * delete complete build dir for manual triggered builds (RELEASE) and nightly
  * builds (timer triggered)
  * use shell rm in favour of dir/deleteDir
- * needs to be implemented as non serializable funtion
- * currentBuild.rawBuild.getCauses needs to be accepted by script security plugin
  *
  * since version 2.24 of workflow-support plugin currentBuild.getBuildCauses()
  * can be used. as an additional benefit - this method is whitelisted  - no need
  * for manual script security exclusions
  */
-@NonCPS
-def handleBuildCauseOld(directoryName) {
-    def causes = currentBuild.rawBuild.getCauses()
-    for(cause in causes) {
-        def reason = cause.class.toString()
-        cause = null
-        if (reason.contains("TimerTriggerCause")) {
-            println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
-            sh "rm -rf ${directoryName}/buildspace/tmp"
-        } else if (reason.contains("UserIdCause")) {
-            println "This job was caused by user, rm buildspace ... (RELEASE)"
-            sh "rm -rf ${directoryName}/buildspace"
-        } else {
-            println "build cause : " + reason
-        }
-    }
-    causes = null
-}
-
 def handleBuildCause(directoryName) {
     def causes = currentBuild.getBuildCauses()
     println causes.toString()
