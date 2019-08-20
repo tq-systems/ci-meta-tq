@@ -179,11 +179,7 @@ main () {
 
 	echo $1 $2 $3 $MODE
 
-	# filter out machines from the ${LAYER}
-	local MINIMAL_TARGETS=${ALL_TARGETS}
-	local GUI_TARGETS=${ALL_TARGETS}
-	local MFGTOOL_TARGETS=${ALL_TARGETS}
-
+	# filter out machines from the ${LAYER} based on ${CONFIG}
 	case ${CONFIG} in
 	"gui" )
 		IMAGES="fsl-image-multimedia-full"
