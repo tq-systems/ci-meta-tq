@@ -1,6 +1,6 @@
 [submodule "sources/poky"]
 	path = sources/poky
-	url = git://git.yoctoproject.org/poky
+	url = https://git.yoctoproject.org/git/poky
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
@@ -18,4 +18,4 @@
 	url = ../meta-dumpling.git
 [submodule "sources/meta-ti"]
 	path = sources/meta-ti
-	url = git://git.yoctoproject.org/meta-ti
+	url = https://git.yoctoproject.org/git/meta-ti
