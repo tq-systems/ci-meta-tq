@@ -93,30 +93,6 @@ assign_or_replace() {
 	debug "$(cat ${infile})"
 }
 
-assignplus() {
-	local var=${1}
-	local val=${2}
-	local infile=${3}
-
-	debug "trying assignplus $1 $2"
-
-	grep -q "^${var} += \"${val}\"" "${infile}" || echo "${var} += \"${val}\"" | tee -a "${infile}"
-
-	debug "$(cat ${infile})"
-}
-
-assignopt_or_replace() {
-	local var=${1}
-	local val=${2}
-	local infile=${3}
-
-	debug "trying assignopt/replace $1 $2"
-
-	sed -i "/^${var} ?=/{h;s/?=.*/?= \"${val}\"/};\${x;/^$/{s//${var} ?= \"${val}\"/;H};x}" ${infile}
-
-	debug "$(cat ${infile})"
-}
-
 function get_md5sum () {
 	local MYPWD=$(pwd)
 	local DIRECTORY=${1}
