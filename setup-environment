@@ -176,7 +176,6 @@ if [ -z "${SDKMACHINE}" ]; then
     SDKMACHINE="i686"
 fi
 
-echo "DISTRO: ${DISTRO}"
 if [ -z "${DISTRO}" ]; then
     DISTRO_VAR=DEFAULT_DISTRO_${CONFIG_TEMPLATE}
     eval DISTRO=\$$DISTRO_VAR
