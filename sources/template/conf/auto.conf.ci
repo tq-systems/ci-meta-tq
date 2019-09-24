@@ -1,33 +1,18 @@
-# allow automatic building
-ACCEPT_FSL_EULA = "y"
+# from meta-dumpling
+require init-manager.inc
 
 # restrict network access
 BB_NO_NETWORK = "1"
 BB_FETCH_PREMIRRORONLY = "1"
 
 # control usage of mirrors
-# PREMIRRORS should be setup in site.conf
-INHERIT += "own-mirrors"
-BB_GIT_SHALLOW = "1"
-BB_GIT_SHALLOW_DEPTH = "1"
-
-# lean after build to save space
-INHERIT += "rm_work"
-RM_OLD_IMAGE = "1"
+require mirror.inc
 
 # generate source and license dir for deployment
 INHERIT += "archiver"
 COPYLEFT_LICENSE_EXCLUDE ?= "CLOSED Proprietary"
 ARCHIVER_MODE[src] ?= "original"
 
-# only for poky-based DISTRO
-# or if DISTRO includes uninative config data - otherwise build fails with missing
-# UNINATIVE_CHECKSUM[arch]
-INHERIT += "uninative"
+require uninative-mirror.inc
 
-UNINATIVE_SUBDIR = "uninative/${@d.getVarFlag('UNINATIVE_CHECKSUM', d.getVar('BUILD_ARCH', True), True)}"
-UNINATIVE_MIRRORDIR = "${SOURCE_MIRROR_URL}/${UNINATIVE_SUBDIR}"
-
-PREMIRRORS_prepend = "\
-${UNINATIVE_URL}${UNINATIVE_TARBALL} ${UNINATIVE_MIRRORDIR}/${UNINATIVE_TARBALL} \n \
- "
+require ci-helper.inc
