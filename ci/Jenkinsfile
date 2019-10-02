@@ -163,7 +163,7 @@ pipeline {
 
     environment {
         WS_IMX = "CONFIGS/imx"
-        WS_MIN = "CONFIGS/minimal"
+/*        WS_MIN = "CONFIGS/minimal" */
 /*        WS_TI = "CONFIGS/ti" */
     }
 
@@ -184,11 +184,11 @@ pipeline {
                         wipeOutBuildspace("${env.WS_IMX}")
                         prepareWorkspace("${env.WS_IMX}")
                     },
+/*
                     "minimal" : {
                         wipeOutBuildspace("${env.WS_MIN}")
                         prepareWorkspace("${env.WS_MIN}")
                     },
-/*
                     "ti" : {
                         wipeOutBuildspace("${env.WS_TI}")
                         prepareWorkspace("${env.WS_TI}")
@@ -203,10 +203,10 @@ pipeline {
                     "imx" : {
                         handleBuildCause("${env.WS_IMX}")
                     },
+/*
                     "minimal" : {
                         handleBuildCause("${env.WS_MIN}")
                     },
-/*
                     "ti" : {
                         handleBuildCause("${env.WS_TI}")
                     },
@@ -220,10 +220,10 @@ pipeline {
                     "imx" : {
                         checkoutMetaLayers("${env.WS_IMX}")
                     },
+/*
                     "minimal" : {
                         checkoutMetaLayers("${env.WS_MIN}")
                     },
-/*
                     "ti" : {
                         checkoutMetaLayers("${env.WS_TI}")
                     },
@@ -237,10 +237,10 @@ pipeline {
                     "imx" : {
                         buildConfiguration("${env.WS_IMX}")
                     },
+/*
                     "minimal" : {
                         buildConfiguration("${env.WS_MIN}")
                     },
-/*
                     "ti" : {
                         buildConfiguration("${env.WS_TI}")
                     },
@@ -262,9 +262,9 @@ pipeline {
         success {
             archiveArtifacts artifacts: "${env.WS_IMX}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_IMX}")
+/*
             archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_MIN}")
-/*
             archiveArtifacts artifacts: "${env.WS_TI}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_TI}")
 */
