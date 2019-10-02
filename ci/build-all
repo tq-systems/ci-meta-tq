@@ -133,12 +133,13 @@ main () {
 	local ALL_TARGETS=$(${SCRIPTPATH}/ls-machines)
 	local TI_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma57)
 	local LS_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmls)
-	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma[6,7,8])
+	local IMX6_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma6)
+	local IMX7_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma7)
 	local IMX8_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8)
 	local CONFIG=${2}
 	local IMAGES="core-image-minimal"
 	local MINIMAL_EXCLUDE="tqma6q-nav ${IMX8_TARGETS}"
-	local IMX_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS}"
+	local IMX8_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS} ${IMX6_TARGETS} ${IMX7_TARGETS}"
 	local TI_EXCLUDE="tqma6q-nav ${IMX_TARGETS} ${LS_TARGETS}"
 	local MODE="normal"
 
@@ -159,7 +160,7 @@ main () {
 	case ${CONFIG} in
 	"imx" )
 		IMAGES="fsl-image-multimedia-full"
-		for excl in ${IMX_EXCLUDE}; do
+		for excl in ${IMX8_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
 		export EULA="y"
