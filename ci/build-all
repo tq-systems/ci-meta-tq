@@ -159,7 +159,8 @@ main () {
 	# filter out machines from the ${LAYER} based on ${CONFIG}
 	case ${CONFIG} in
 	"imx" )
-		IMAGES="fsl-image-multimedia-full"
+#		IMAGES="fsl-image-multimedia-full"
+		IMAGES="tq-image-wayland"
 		for excl in ${IMX8_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
