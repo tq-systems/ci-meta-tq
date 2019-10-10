@@ -117,9 +117,18 @@ def handleGlobalData(directoryName) {
     for(cause in causes) {
         def reason = cause.toString()
         cause = null
+
         if (!reason.contains("SCMTriggerCause")) {
             println "clear ${directoryName}/shared-dl-dir ..."
-            sh "pwd; ls -al; time rm -rf ${directoryName}/shared-dl-dir; ls -1"
+            sh "pwd; time rm -rf ${directoryName}/shared-dl-dir"
+        } else {
+          /*
+           * thud screwed up the gitsmshallow fetcher logic - no shallow clones
+           * for git submodules. Therefore we need to clean at least the git2
+           * subdir in the download dir
+           */
+          println "clear ${directoryName}/shared-dl-dir/git2 ..."
+          sh "pwd; time rm -rf ${directoryName}/shared-dl-dir/git2"
         }
     }
     causes = null
