@@ -137,6 +137,32 @@ EOF
 	fi
 }
 
+###
+# if someone resets or changes the checkout and manipulation of mete-freescale
+# we restore it here. To be checked when updating meta-fsl-bsp-release
+# first function shamelessly borrowed from meta-fsl-bsp-release/imx/tools
+###
+
+restore_hooked_layer() {
+	layer=$1
+	upstream_layers="meta-freescale"
+
+	for upstream_layer in $upstream_layers; do
+		machine_overrides $layer $upstream_layer
+		bbclass_overrides $layer $upstream_layer
+	done
+}
+
+handle_fsl_bsp_release () {
+    echo $(pwd)
+    grep "meta-fsl-bsp-release/imx/meta-bsp" conf/bblayers.conf  >> /dev/null
+    [ "$?" -eq "0" ] && restore_hooked_layer meta-fsl-bsp-release/imx/meta-bsp
+    grep "meta-fsl-bsp-release/imx/meta-sdk" conf/bblayers.conf  >> /dev/null
+    [ "$?" -eq "0" ] && restore_hooked_layer meta-fsl-bsp-release/imx/meta-sdk
+    grep "meta-fsl-bsp-release/imx/meta-ml" conf/bblayers.conf  >> /dev/null
+    [ "$?" -eq "0" ] && restore_hooked_layer meta-fsl-bsp-release/imx/meta-ml
+}
+
 # get command line options
 SHORTOPTS="h"
 LONGOPTS="help"
@@ -325,6 +351,15 @@ else
     echo "Your configuration files at $1 have not been touched."
     cmp conf/bblayers.conf conf/bblayers.conf.tmpl > /dev/null
     [ "$?" -ne "0" ] && echo "Your conf/bblayers.conf (or the template changed)"
+
+	# only if using with meta-fsl-bsp-release
+	# see handle_fsl_bsp_release
+	if [ -e ${CWD}/sources/meta-fsl-bsp-release/imx/meta-bsp ]; then
+		. ${CWD}/sources/meta-fsl-bsp-release/imx/tools/setup-utils.sh
+	fi
+
+	grep "meta-fsl-bsp-release/imx/meta-bsp" conf/bblayers.conf  >> /dev/null
+	[ "$?" -eq "0" ] && handle_fsl_bsp_release
 fi
 
 clean_up
