@@ -212,7 +212,7 @@ main () {
 	export MACHINE=$(echo ${ALL_TARGETS} | awk '{ print $1 }')
 	# TODO: need to call nxp setup script ...
 	#. ./setup-environment ${BUILD_DIR} ${CONFIG}
-	. ./fsl-setup-release.sh -b ${BUILD_DIR} -e wayland
+	. ./fsl-setup-release.sh -b ${BUILD_DIR}
 	[ "$?" -ne "0" ] && error_out "sourcing fsl-setup-release.sh failed"
 
 	if ! [ -f ./version.info ]; then
