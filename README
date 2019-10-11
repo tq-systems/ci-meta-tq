@@ -1,13 +1,8 @@
 TQ ARM modules Yocto integration test
 =====================================
 
-Supported boards
-----------------
-
-see README of TQ Sytems layer (meta-tq) or use ./ls-machines
-
-Quick Start Guide
------------------
+General
+-------
 
 Clone this repo using git clone --branch=<branch-name> --recurse-submodules <url>
 
@@ -16,8 +11,12 @@ current supported branches:
 - morty
 - pyro
 - rocko (currently no i.MX mfgtool support)
+- warrior (dropped i.MX mfgtool support)
 - rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP)
 - sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
+- thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
+
+please use README from used Branch for details.
 
 branch names correspond to yocto release names
 
@@ -26,37 +25,81 @@ When switching branches keep in mind to keep the submodules in sync:
 git submodule sync
 git submodule update --init
 
-To list supported machines:
+Supported boards
+----------------
+
+see README of TQ Sytems layer (meta-tq) or use ./ls-machines to list machines
+from meta-tq:
 
 ./ls-machines
 
+note: only TQMa8 boards from meta-tq supported with this branch.
+
+Quick Start Guide
+-----------------
+
 To help setting up an initial build space, use
 
-export MACHINE=<machine> && source fsl-setup-release -b <builddir>
+. ./fsl-setup-release.sh -b <builddir>
 
-MACHINE: default tqma8mq-mba8mx or value from environment
-SDKMACHINE: default i686 or value from environment
-DISTRO: default fsl-imx-wayland or value from environment, only the default
-is tested
+you can override defaults with:
 
-Attention: setup logic from NXP BSP will change / overwrite some definitions
-in meta-freescale. Therefore you will notice changes in meta-freescale.
+export MACHINE=<machine> (default is first tqma8* MACHINE from meta-tq)
+export DISTRO=<distro> (tested is fsl-imx-wayland from meta-fsl-bsp-release, only
+DISTROS with wayland support from meta-fsl-bsp-release/imx/meta-sdk are supported
+with this release)
+
+before sourcing the script. The script sources setup-environment, which uses
+the imx configuration sources/template/conf/bblayers.conf.imx as initial template
+for your layer configuration.
+
+Additionally some config variables are injected via auto.conf.normal from
+sources/template/conf/
 
 In case you have ~/.oe or ~/.yocto dir a site.conf file will be symlinked to
 the conf dir of the buildir to allow machine specific overrrides. For instance 
 to use a shared download directory, you can provide $DL_DIR via ~/.yocto/site.conf.
 
-Internally the oe-init-build-env script from the
-used openembedded / poky meta layer will be sourced indirectly
-via setup-environment
-
-To return to a initially setup build space, use
-
-source setup-environment <builddir>
+Internally the oe-init-build-env script from the used openembedded / poky
+meta layer will be sourced to get the bitbake environment
 
 After this step, everything is setup to build an image using bitbake.
 
-================================================================================
+To return to an existing buildspace simply
+
+. ./setup-environment <builddir>
+
+ATTENTION: meta-fsl-bsp-release needs to overwrite some files in meta-freescale:
+
+conf/machines/* and conf/machines/include/imx-base.include
+
+this leads to uncommitted changes in meta-freescale.
+
+Configs:
+........
+
+Under sources/templates several configs are supplied as starting point for own
+bblayers.conf
+
+minimal: usable for all supported machines, only minimal layer dependencies
+- not tested in this release
+
+imx: usable for all machines with i.MX CPU, supports NXP reference BSP
+via meta-freessale / meta-fsl-bsp-release
+- only tested for tqma8* MACHINES in this release
+
+ti: usable for all machines with TQ AM57xx CPU, uses meta-ti
+- not tested in this release
+
+MACHINE: default from fsl-setup-release or value from environment
+SDKMACHINE: default i686 or value from environment
+DISTRO: default from fsl-setup-release or value from environment
+
+Building multiple boards:
+.........................
+
+To force a build of all supported machines in one of the configs, one can
+use the CI helper script:
 
 Support for reproducible build environment
 
@@ -65,12 +108,21 @@ Devolopment and automated builds are supported by the scripts under ci
 1) To build all supported machines in one of the configs, one can
 use the CI helper script:
 
-ci/build-all <builddir> gui
+minimal:
+
+tq-image-generic (meta-dumpling, based on poky core-image-minimal)
+not supported in this release
+
+gui:
+tq-image-qt5 (meta-dumpling)
 
 Note: only gui config is supported for this branch, it will build tq-image-qt5
 (based on the qt5 demo image defined in meta-fsl-bsp-release/imx/meta-bsp)
 
-2) To help to create a package mirror, one can use the CI helper script:
+Building package mirror:
+........................
+
+To help to create a package mirror, one can use the CI helper script:
 
 ci/build-all <builddir> <config> mirror
 
