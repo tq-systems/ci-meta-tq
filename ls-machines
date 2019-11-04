@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # File:        ls-machines
-# Copyright (C) 2017 TQ Systems GmbH
+# Copyright (C) 2017 - 2019 TQ Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # Description: build all machines in a layer with a given config
@@ -44,9 +44,8 @@ main() {
 	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
 		sed s/\.conf//g | xargs -n1 basename)
 
-	echo "Supported machines:"
 	for t in ${TARGETS}; do
-		echo "\t${t}"
+		echo "${t}"
 	done
 
 	return 0
