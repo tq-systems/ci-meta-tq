@@ -156,12 +156,13 @@ main () {
 	local LAYER="meta-tq"
 	local ALL_TARGETS=$(${SCRIPTPATH}/ls-machines)
 	local LS_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmls)
-	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma[6,7,8])
+	local IMX6_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma6)
+	local IMX7_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma7)
 	local IMX8_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8)
 	local CONFIG=${2}
 	local IMAGES="tq-image-generic"
 	local MINIMAL_EXCLUDE="tqma6q-nav ${IMX8_TARGETS}"
-	local IMX_EXCLUDE="tqma6q-nav ${LS_TARGETS}"
+	local IMX8_EXCLUDE="${LS_TARGETS} ${IMX6_TARGETS} ${IMX7_TARGETS}"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
@@ -186,9 +187,8 @@ main () {
 
 	case ${CONFIG} in
 	"gui" )
-		IMAGES="tq-image-qt5"
-		# tqmls102xa-mbls102xa has no gpu
-		for excl in ${GUI_EXCLUDE}; do
+		IMAGES="fsl-image-multimedia-full"
+		for excl in ${IMX8_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
 		export EULA="y"
