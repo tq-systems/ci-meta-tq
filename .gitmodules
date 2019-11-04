@@ -1,6 +1,6 @@
 [submodule "sources/poky"]
 	path = sources/poky
-	url = git://git.yoctoproject.org/poky
+	url = https://git.yoctoproject.org/git/poky
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
@@ -15,16 +15,16 @@
 	url = https://github.com/Freescale/meta-freescale-distro.git
 [submodule "sources/meta-qt5"]
 	path = sources/meta-qt5
-	url = git://github.com/meta-qt5/meta-qt5
+	url = https://github.com/meta-qt5/meta-qt5.git
 [submodule "sources/meta-browser"]
 	path = sources/meta-browser
-	url = git://github.com/OSSystems/meta-browser
+	url = https://github.com/OSSystems/meta-browser.git
 [submodule "sources/meta-fsl-bsp-release"]
 	path = sources/meta-fsl-bsp-release
 	url = https://source.codeaurora.org/external/imx/meta-fsl-bsp-release
 [submodule "sources/base"]
 	path = sources/base
-	url = git://github.com/Freescale/fsl-community-bsp-base
+	url = https://github.com/Freescale/fsl-community-bsp-base.git
 [submodule "sources/meta-dumpling"]
 	path = sources/meta-dumpling
 	url = ../meta-dumpling.git
