@@ -161,9 +161,7 @@ pipeline {
 
     environment {
         WS_GUI = "CONFIGS/gui"
-/*
         WS_MIN = "CONFIGS/minimal"
-*/
     }
 
     stages {
