@@ -5,6 +5,8 @@
 # Copyright (C) 2011-2016 Freescale Semiconductor
 # Copyright 2017 NXP
 #
+# 2018-2019 Markus Niebel <Markus.Niebel@tq-group.com>
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -23,7 +25,10 @@
 
 CWD=`pwd`
 PROGNAME="setup-environment"
-DEFAULT_MACHINE="tqma8mq-mba8mx"
+# get first tqma8 machine from meta-tq
+DEFAULT_MACHINE=$(./ls-machines | grep tqma8 | head -1 | awk '{$1=$1;print}')
+SUPPORTED_DISTROS=$(ls sources/meta-fsl-bsp-release/imx/meta-sdk/conf/distro/*.conf \
+	| sed s/\.conf//g | xargs -n1 basename )
 DEFAULT_DISTRO="fsl-imx-wayland"
 
 exit_message ()
