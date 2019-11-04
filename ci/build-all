@@ -291,14 +291,14 @@ main () {
 			# add SSTATE dir outside of builddir, optimize global builds
 			assign_or_replace SSTATE_DIR ${SSTATE_DIR} conf/local.conf
 		else
-			echo "env SSTATE_DIR empty, add it to your site.conf / auto.conf"
+			echo "env SSTATE_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 		if ! [ -z ${DL_DIR} ]; then
 			# add DL_DIR dir outside of builddir, optimize global builds
 			assign_or_replace DL_DIR ${DL_DIR} conf/local.conf
 
 		else
-			echo "DL_DIR empty"
+			echo "env DL_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 
 		for img in ${IMAGES}; do
