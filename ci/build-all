@@ -158,7 +158,6 @@ main () {
 	local CONFIG=${2}
 	local IMAGES="core-image-minimal"
 	local MINIMAL_EXCLUDE="tqmls102xa-mbls102xa"
-	local MFGTOOL_EXCLUDE="tqma6q-nav tqmls102xa-mbls102xa"
 	local GUI_EXCLUDE="tqmls102xa-mbls102xa"
 	local MODE="normal"
 
@@ -181,7 +180,6 @@ main () {
 	# TODO: find real boards to be build ...
 	local MINIMAL_TARGETS=${ALL_TARGETS}
 	local GUI_TARGETS=${ALL_TARGETS}
-	local MFGTOOL_TARGETS=${ALL_TARGETS}
 
 	case ${CONFIG} in
 	"gui" )
@@ -197,14 +195,6 @@ main () {
 		for excl in ${MINIMAL_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
-		;;
-	"mfgtool" )
-		IMAGES="fsl-image-mfgtool-initramfs"
-		# tqma6q-nav and tqmls102xa-mbls102xa have no support for mfgtool
-		for excl in ${MFGTOOL_EXCLUDE}; do
-			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
-		done
-		export EULA="y"
 		;;
 	* )
 		usage
@@ -321,20 +311,7 @@ main () {
 				# create image for $MACHINE
 				bitbake ${img}
 				err=${?}
-				# HACKHACKHACK: fsl-image-mfgtool-initramfs needs linux-mfgtool
-				# this recipe will fail with a diagnostic error, even when
-				# building for mx6sabresd
-				# workaround: check if image exists
-				if [ "${img}" == "fsl-image-mfgtool-initramfs" ]; then
-					local THELINK="./tmp/deploy/images/${MACHINE}/${img}-${MACHINE}.cpio.gz.u-boot"
-					if [ -L ${THELINK} ] && [ -e ${THELINK} ]; then
-						echo "ok"
-					else
-						error_out "bitbake ${img} for ${MACHINE} failed, no ${THELINK}"
-					fi
-				else
-					[ "${err}" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
-				fi
+				[ "${err}" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
 			done
 		done
 
