@@ -367,7 +367,6 @@ main () {
 				[ "$?" -ne "0" ] && error_out "archiving for ${MACHINE} failed"
 			done
 			tar -cvzf ${DEPLOYDIR}/${ARCHIVE_BASENAME}.LIC.tar.gz -C $(pwd)/tmp/deploy licenses
-			tar -cvzf ${DEPLOYDIR}/${ARCHIVE_BASENAME}.SRC.tar.gz -C $(pwd)/tmp/deploy sources
 
 			# create a mirror archive
 			mkdir ${DEPLOYDIR}/${ARCHIVE_BASENAME}.MIRROR.SRC
