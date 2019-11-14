@@ -87,7 +87,7 @@ Under sources/templates several configs are supplied as starting point for own
 bblayers.conf
 
 * minimal: usable for all supported machines, only minimal layer dependencies
-(not tested in this release)
+(not tested in this release, not usable for tqma8* MACHINES)
 
 * gui: usable for all machines with i.MX CPU, supports NXP reference BSP
 via meta-freessale / meta-fsl-bsp-release
@@ -102,6 +102,8 @@ configuration under ./sources/templates, notably
 - sample auto.conf files and inclusion fragments (see Yocto Project doc for
   local.conf and auto.conf
 
+### Build all supported machines
+
 To build all supported machines in one of the configs, one can
 use the CI helper script:
 
@@ -115,9 +117,16 @@ meta-fsl-bsp-release/imx/meta-bsp)
 
 **Note:** only gui config is supported for this branch.
 
+### Clean build
+
+To force a clean build of all supported machines and generate archives, do
+
+`ci/build-all <builddir> <config> ci`
+
 ### Building package premirror
 
-To help to create a package premirror, one can use the CI helper script:
+To help to create a package premirror (to support offline builds),
+one can use the CI helper script:
 
 `ci/build-all <builddir> <config> mirror`
 
@@ -143,12 +152,6 @@ To fill the mirror, the script
 
 This way the mirror can be used to do offline builds without downloading anything
 with `BB_FETCH_PREMIRRORONLY=1`
-
-### Clean build
-
-To force a clean build of all supported machines and generate archives, do
-
-`ci/build-all <builddir> <config> ci`
 
 ## Security
 
