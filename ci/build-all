@@ -293,6 +293,9 @@ main () {
 	else
 		echo "build images"
 
+		#
+		# clean deploydir for CI builds
+		#
 		if [ "${MODE}" == "ci" ]; then
 			if [ -d "${DEPLOYDIR}" ]; then
 				rm -rf "${DEPLOYDIR}"
@@ -321,6 +324,16 @@ main () {
 				local err;
 				# overwrite MACHINE
 				export MACHINE=${t}
+
+				#
+				# do a fetchall to force filling DL_DIR
+				#
+				if [ "${MODE}" == "ci" ]; then
+					echo "baking: ${MACHINE} ${img} with --runall=fetch"
+					bitbake ${img} --runall=fetch
+					[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
+				fi
+
 				echo "baking ${MACHINE} ${img} ..."
 				# create image for $MACHINE
 				bitbake ${img}
