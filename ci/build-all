@@ -193,6 +193,7 @@ main () {
 
 	# filter out double entries in case we build multiple images per config
 	ALL_TARGETS=$(echo ${ALL_TARGETS} | tr ' ' '\n' | sort -u)
+	debug "Targets to build: ${ALL_TARGETS}"
 
 	# source the real setup workhorse.
 	export MACHINE=$(echo ${ALL_TARGETS} | awk '{ print $1 }')
