@@ -133,13 +133,14 @@ main () {
 	local ALL_TARGETS=$(${SCRIPTPATH}/ls-machines)
 	local TI_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma57)
 	local LS_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmls)
+	local PPC_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmt)
 	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma[6,7])
 	local CONFIG=${2}
 	local IMAGES="core-image-minimal"
 	local MINIMAL_EXCLUDE=""
 	local MFGTOOL_EXCLUDE="${LS_TARGETS} ${TI_TARGETS}"
-	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS}"
-	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS}"
+	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS} ${PPC_TARGETS}"
+	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS} ${PPC_TARGETS}"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
