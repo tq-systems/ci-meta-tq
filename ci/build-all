@@ -30,6 +30,8 @@ readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname $(readlink -f "${0}"))
 readonly SCRIPT="$(basename ${0})"
 
+DEBUG="off"
+
 usage() {
 	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> [<mode>] \n \
 	<build-dir>: specifies the build directory location (required) \n \
