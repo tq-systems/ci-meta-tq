@@ -5,19 +5,19 @@ Releases are named with thefollowing scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
-## Unreleased
+## warrior.MBa6ULxL.BSP.SW.0101
 
 ### Added
 
-### Removed
+meta-tq: experimental support for TQMT104x
 
 ### Changed
 
 ci: better approach to archive source packages
 doc: change README to markdown
 doc: add CHANGELOG
-
-### Fixed
+meta-tq: update for new kernel / u-boot releases for MBa6ULxL
+meta-dumpling: cleanup and doc improvements
 
 ## warrior.TQMLS102xA.BSP.SW.0112
 
@@ -47,7 +47,7 @@ templates: use own-mirrors only if SOURCE_MIRROR_URL is set
 git: use https submodule url
 git: use relative url for TQ meta layers
 
-## warrior.TQMa7x.BSP.SW.0108 / warrior.TQMa6ULx.BSP.SW.0108
+## warrior.TQMa7x.BSP.SW.0108 / warrior.TQMa6ULx.BSP.SW.0107
 
 ### Added
 
