@@ -361,7 +361,7 @@ main () {
 				if [ -e ${FILENAME} ]; then
 					cp "${FILENAME}" ${DEPLOYDIR}/${ARCHIVE_BASENAME}.MIRROR.SRC;
 				else
-					echo "$f has no counterpart ${FILENAME}"
+					debug "$f has no counterpart ${FILENAME}"
 				fi
 			done
 			tar -cvzf ${DEPLOYDIR}/${ARCHIVE_BASENAME}.MIRROR.SRC.tar.gz -C ${DEPLOYDIR} ${ARCHIVE_BASENAME}.MIRROR.SRC
