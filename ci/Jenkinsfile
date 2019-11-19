@@ -162,7 +162,6 @@ pipeline {
     }
 
     environment {
-/*        WS_MFG = "CONFIGS/mfgtool" */
         WS_IMX = "CONFIGS/imx"
         WS_MIN = "CONFIGS/minimal"
         WS_TI = "CONFIGS/ti"
@@ -193,12 +192,6 @@ pipeline {
                         wipeOutBuildspace("${env.WS_TI}")
                         prepareWorkspace("${env.WS_TI}")
                     },
-/*
-                    "mfgtool" : {
-                        wipeOutBuildspace("${env.WS_MFG}")
-                        prepareWorkspace("${env.WS_MFG}")
-                    }
-*/
                 )
             }
         }
@@ -214,11 +207,6 @@ pipeline {
                     "ti" : {
                         handleBuildCause("${env.WS_TI}")
                     },
-/*
-                    "mfgtool" : {
-                        handleBuildCause("${env.WS_MFG}")
-                    },
-*/
                 )
             }
         }
@@ -234,11 +222,6 @@ pipeline {
                     "ti" : {
                         checkoutMetaLayers("${env.WS_TI}")
                     },
-/*
-                    "mfgtool" : {
-                        checkoutMetaLayers("${env.WS_MFG}")
-                    }
-*/
                 )
             }
         }
@@ -254,11 +237,6 @@ pipeline {
                     "ti" : {
                         buildConfiguration("${env.WS_TI}")
                     },
-/*
-                    "mfgtool" : {
-                        buildConfiguration("${env.WS_MFG}")
-                    }
-*/
                 )
             }
        }
@@ -280,10 +258,6 @@ pipeline {
             wipeOutBuildspace("${env.WS_MIN}")
             archiveArtifacts artifacts: "${env.WS_TI}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_TI}")
-/*
-            archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
-            wipeOutBuildspace("${env.WS_MFG}")
-*/
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
         unstable {
