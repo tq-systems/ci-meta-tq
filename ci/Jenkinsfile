@@ -38,8 +38,8 @@ def checkoutMetaLayers(directoryName) {
 
 def prepareWorkspace(directoryName){
     if (params.CLEAN_CACHES == true) {
-        dir("${directoryName}/buildspace") {
-            echo "Remove ${directoryName}/buildspace ... (CLEAN_CACHES)"
+        dir("${directoryName}/${env.BUILD_DIR}") {
+            echo "Remove ${directoryName}/${env.BUILD_DIR} ... (CLEAN_CACHES)"
             deleteDir()
         }
     }
@@ -63,13 +63,13 @@ def prepareWorkspace(directoryName){
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
-        sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
+        sh "export SSTATE_DIR=${env.WORKSPACE}/${env.SSTATE_DIR} && export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build-all ${env.BUILD_DIR} \$(basename \$(pwd)) ci"
     }
 }
 
 def wipeOutBuildspace(directoryName){
-    dir("${directoryName}/buildspace/deployment") {
-        echo "Remove ${directoryName}/buildspace/deployment ..."
+    dir("${directoryName}/${env.BUILD_DIR}/${env.DEPLOY_DIR}") {
+        echo "Remove ${directoryName}/${env.BUILD_DIR}/${env.DEPLOY_DIR} ..."
         deleteDir()
     }
     dir("${directoryName}@script") {
@@ -100,10 +100,10 @@ def handleBuildCause(directoryName) {
         cause = null
         if (reason.contains("TimerTriggerCause")) {
             println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
-            sh "rm -rf ${directoryName}/buildspace/tmp"
+            sh "rm -rf ${directoryName}/${env.BUILD_DIR}/tmp"
         } else if (reason.contains("UserIdCause")) {
-            println "This job was caused by user, rm buildspace ... (RELEASE)"
-            sh "rm -rf ${directoryName}/buildspace"
+            println "This job was caused by user, rm ${env.BUILD_DIR} ... (RELEASE)"
+            sh "rm -rf ${directoryName}/${env.BUILD_DIR}"
         } else {
             println "build cause : " + reason
         }
@@ -118,19 +118,19 @@ def handleGlobalData(directoryName) {
         def reason = cause.toString()
         cause = null
         if (!reason.contains("SCMTriggerCause")) {
-            println "clear ${directoryName}/shared-dl-dir ..."
-            sh "pwd; ls -al; time rm -rf ${directoryName}/shared-dl-dir; ls -1"
+            println "clear ${directoryName}/${env.DL_DIR} ..."
+            sh "pwd; ls -al; time rm -rf ${directoryName}/${env.DL_DIR}; ls -1"
         }
     }
     causes = null
 
     if (params.CLEAN_CACHES == true) {
-        println "clear ${directoryName}/shared-state-dir ... (CLEAN_CACHES)"
-        sh "pwd; ls -al; time rm -rf ${directoryName}/shared-state-dir; ls -1"
+        println "clear ${directoryName}/${env.SSTATE_DIR} ... (CLEAN_CACHES)"
+        sh "pwd; ls -al; time rm -rf ${directoryName}/${env.SSTATE_DIR}; ls -1"
     }
 
-    echo "clear ${directoryName}/ci-meta-tq.*.tar.gz ... "
-    sh "rm -f ${directoryName}/ci-meta-tq.*.tar.gz"
+    echo "clear ${directoryName}/*.tar.gz ... "
+    sh "rm -f ${directoryName}/*.tar.gz"
 }
 /**********************************************************************/
 /*******************         Pipeline         *************************/
@@ -162,9 +162,16 @@ pipeline {
     }
 
     environment {
+        /*
+         * workspace name for config must be identical to config name
+         */
         WS_IMX = "CONFIGS/imx"
         WS_MIN = "CONFIGS/minimal"
         WS_TI = "CONFIGS/ti"
+        DL_DIR = "shared-dl-dir"
+        SSTATE_DIR = "shared-sstate-cache"
+        BUILD_DIR = "buildspace"
+        DEPLOY_DIR = "deployment"
     }
 
     stages {
@@ -252,11 +259,11 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: "${env.WS_IMX}/buildspace/deployment/*"
+            archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_IMX}")
-            archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
+            archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_MIN}")
-            archiveArtifacts artifacts: "${env.WS_TI}/buildspace/deployment/*"
+            archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_TI}")
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
