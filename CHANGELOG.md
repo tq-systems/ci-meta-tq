@@ -13,11 +13,16 @@ meta-tq: experimental support for TQMT104x
 
 ### Changed
 
+ci: Jenkinsfile: remove unused configuration
 ci: better approach to archive source packages
 doc: change README to markdown
 doc: add CHANGELOG
 meta-tq: update for new kernel / u-boot releases for MBa6ULxL
 meta-dumpling: cleanup and doc improvements
+
+### Fixed
+
+ci: Jenkinsfile: shared sstate handling with wrong var name
 
 ## warrior.TQMLS102xA.BSP.SW.0112
 
