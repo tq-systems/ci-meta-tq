@@ -1,21 +1,28 @@
 [submodule "sources/poky"]
 	path = sources/poky
 	url = https://git.yoctoproject.org/git/poky
+	branch = warrior
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
+	branch = warrior
 [submodule "sources/meta-openembedded"]
 	path = sources/meta-openembedded
 	url = https://github.com/openembedded/meta-openembedded.git
+	branch = warrior
 [submodule "sources/meta-freescale"]
 	path = sources/meta-freescale
 	url = https://git.yoctoproject.org/git/meta-freescale
+	branch = warrior
 [submodule "sources/meta-freescale-distro"]
 	path = sources/meta-freescale-distro
 	url = https://github.com/Freescale/meta-freescale-distro.git
+	branch = warrior
 [submodule "sources/meta-dumpling"]
 	path = sources/meta-dumpling
 	url = ../meta-dumpling.git
+	branch = warrior
 [submodule "sources/meta-ti"]
 	path = sources/meta-ti
 	url = https://git.yoctoproject.org/git/meta-ti
+	branch = master
