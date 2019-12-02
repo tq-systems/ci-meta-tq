@@ -5,6 +5,18 @@ Releases are named with thefollowing scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## sumo.TQMa8.BSP.SW.0014
+
+### Changed
+
+* ci: improve Jenkinsfile
+* meta-tq: doc fixes
+* meta-tq: new RAM timing for TQMa8Mx
+
+### Fixed:
+
+* ci: prevent QA errors from buildhistory
+
 ## sumo.TQMa8.BSP.SW.0013
 
 ### Changed
