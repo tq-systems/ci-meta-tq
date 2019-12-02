@@ -37,8 +37,8 @@ def checkoutMetaLayers(directoryName) {
 
 def prepareWorkspace(directoryName){
     if (params.CLEAN_CACHES == true) {
-        dir("${directoryName}/buildspace") {
-            echo "Remove ${directoryName}/buildspace ... (CLEAN_CACHES)"
+        dir("${directoryName}/${env.BUILD_DIR}") {
+            echo "Remove ${directoryName}/${env.BUILD_DIR} ... (CLEAN_CACHES)"
             deleteDir()
         }
     }
@@ -62,13 +62,13 @@ def prepareWorkspace(directoryName){
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
-        sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
+        sh "export SSTATE_DIR=${env.WORKSPACE}/${env.SSTATE_DIR} && export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build-all ${env.BUILD_DIR} \$(basename \$(pwd)) ci"
     }
 }
 
 def wipeOutBuildspace(directoryName){
-    dir("${directoryName}/buildspace/deployment") {
-        echo "Remove ${directoryName}/buildspace/deployment ..."
+    dir("${directoryName}/${env.BUILD_DIR}/${env.DEPLOY_DIR}") {
+        echo "Remove ${directoryName}/${env.BUILD_DIR}/${env.DEPLOY_DIR} ..."
         deleteDir()
     }
     dir("${directoryName}@script") {
@@ -81,36 +81,6 @@ def wipeOutBuildspace(directoryName){
     }
 }
 
-/*
- * delete complete build dir for manual triggered builds (RELEASE) and nightly
- * builds (timer triggered)
- * use shell rm in favour of dir/deleteDir
- * needs to be implemented as non serializable funtion
- * currentBuild.rawBuild.getCauses needs to be accepted by script security plugin
- *
- * since version 2.24 of workflow-support plugin currentBuild.getBuildCauses()
- * can be used. as an additional benefit - this method is whitelisted  - no need
- * for manual script security exclusions
- */
-@NonCPS
-def handleBuildCauseOld(directoryName) {
-    def causes = currentBuild.rawBuild.getCauses()
-    for(cause in causes) {
-        def reason = cause.class.toString()
-        cause = null
-        if (reason.contains("TimerTriggerCause")) {
-            println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
-            sh "pwd; ls -al; rm -rf ${directoryName}/buildspace/tmp"
-        } else if (reason.contains("UserIdCause")) {
-            println "This job was caused by user, rm buildspace ... (RELEASE)"
-            sh "pwd; ls -al; time rm -rf ${directoryName}/buildspace; ls -1"
-        } else {
-            println "build cause : " + reason
-        }
-    }
-    causes = null
-}
-
 def handleBuildCause(directoryName) {
     def causes = currentBuild.getBuildCauses()
     println causes.toString()
@@ -120,15 +90,23 @@ def handleBuildCause(directoryName) {
         cause = null
         if (reason.contains("TimerTriggerCause")) {
             println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
-            sh "rm -rf ${directoryName}/buildspace/tmp"
+            sh "rm -rf ${directoryName}/${env.BUILD_DIR}/tmp"
         } else if (reason.contains("UserIdCause")) {
-            println "This job was caused by user, rm buildspace ... (RELEASE)"
-            sh "rm -rf ${directoryName}/buildspace"
+            println "This job was caused by user, rm ${env.BUILD_DIR} ... (RELEASE)"
+            sh "rm -rf ${directoryName}/${env.BUILD_DIR}"
         } else {
             println "build cause : " + reason
         }
     }
     causes = null
+
+    if (params.CLEAN_CACHES == true) {
+        println "clear ${directoryName}/${env.SSTATE_DIR} ... (CLEAN_CACHES)"
+        sh "pwd; ls -al; time rm -rf ${directoryName}/${env.SSTATE_DIR}; ls -1"
+    }
+
+    echo "clear ${directoryName}/*.tar.gz ... "
+    sh "rm -f ${directoryName}/*.tar.gz"
 }
 
 @NonCPS
@@ -186,9 +164,14 @@ pipeline {
         WS_GUI = "CONFIGS/gui"
         WS_MFG = "CONFIGS/mfgtool"
         WS_MIN = "CONFIGS/minimal"
+<<<<<<< HEAD
 */
         WS_NET = "CONFIGS/network"
-    }
+        DL_DIR = "shared-dl-dir"
+        SSTATE_DIR = "shared-sstate-cache"
+        BUILD_DIR = "buildspace"
+        DEPLOY_DIR = "deployment"
+   }
 
     stages {
         stage ('Manage sstate cache') {
@@ -297,14 +280,10 @@ pipeline {
     post {
         success {
 /*
-            archiveArtifacts artifacts: "${env.WS_GUI}/buildspace/deployment/*"
-            wipeOutBuildspace("${env.WS_GUI}")
-            archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
             wipeOutBuildspace("${env.WS_MIN}")
-            archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
-            wipeOutBuildspace("${env.WS_MFG}")
+            archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
 */
-            archiveArtifacts artifacts: "${env.WS_NET}/buildspace/deployment/*"
+            archiveArtifacts artifacts: "${env.WS_NET}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_NET}")
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
