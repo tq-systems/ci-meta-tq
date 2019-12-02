@@ -5,6 +5,24 @@ Releases are named with thefollowing scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## warrior.TQMLS10xx.BSP.SW.0100
+
+### Added
+
+* meta-tq: support for TQMLS1046 8G variant
+* meta-tq: support for TQMLS1088
+
+### Changed
+
+* meta-freescale: update to latest warrior
+* meta-openembedded: update to latest warrior
+* meta-ti: update to latest master (warrior compatible)
+* poky: update to latest warrior
+
+### Fixed
+
+* ci: buildhistroy QA errors
+
 ## warrior.MBa6ULxL.BSP.SW.0101
 
 ### Added
