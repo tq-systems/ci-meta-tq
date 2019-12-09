@@ -5,6 +5,17 @@ Releases are named with thefollowing scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## Next release
+
+### Added
+
+* meta-tq: initial support for MBa8Mx REV020x
+* meta-tq: TQMa8Mx u-boot / kernel improvements
+
+### Removed
+
+* meta-tq: support for MBa8Mx REV010x
+
 ## sumo.TQMa8.BSP.SW.0014
 
 ### Changed
