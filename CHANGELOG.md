@@ -7,14 +7,22 @@ Releases are named with thefollowing scheme:
 
 ## Next release
 
+### Changed
+
+* meta-tq: TQMa8Mx u-boot / kernel improvements
+
 ### Added
 
-* meta-tq: initial support for MBa8Mx REV020x
-* meta-tq: TQMa8Mx u-boot / kernel improvements
+* meta-tq: CAN support for TQMa8XxS
+* meta-tq: initial support for TQMa8Mx + MBa8Mx REV020x
+
+### Fixed
+
+* meta-tq: QSPI fixes for TQMa8Xx and TQMa8XxS
 
 ### Removed
 
-* meta-tq: support for MBa8Mx REV010x
+* meta-tq: support for TQMa8Mx + MBa8Mx REV010x
 
 ## sumo.TQMa8.BSP.SW.0014
 
