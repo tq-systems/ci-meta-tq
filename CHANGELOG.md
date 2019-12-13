@@ -5,6 +5,19 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## next release
+
+### Added
+
+* meta-tq: update to BSP.0008 for TQMa57xx
+* meta-tq: support for TQMa6ULLxL
+
+### Changed
+
+* ci: improve support scripts
+* meta-tq: TQMa6x devicetree and defconfig updates
+* meta-tq: TQMa57xx machine names
+
 ## warrior.TQMLS10xx.BSP.SW.0100
 
 ### Added
