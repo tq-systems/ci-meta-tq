@@ -5,6 +5,15 @@ Releases are named with thefollowing scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## Next release
+
+* meta-tq: TQMa8x memory size fix
+* meta-tq: TQMa8x 8 GB RAM variant
+* meta-tq: SCU firmware update
+* meta-tq: TQMa8xx / TQMa8x: QSPI fixes + boot support
+* meta-tq: LVDS support for TQMa8XxS
+* meta-tq: TQMa8x initial USB, SPI, PCIe support
+
 ## sumo.TQMa8.BSP.SW.0015
 
 ### Changed
