@@ -5,6 +5,21 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## warrior.TQMa6ULx.BSP.SW.0110
+
+### Added
+
+* meta-tq: support for TQMa6UL\[L\]x 512 MB variants
+
+### Changed
+
+* ci: improve mirror source archiving
+
+### Fixed
+
+* meta-tq: i.MX SOM - missing SDMA firmware when building without meta-freescale
+* meta-tq: i.MX SOM - default Kernel / Bootloader providers not assigned using "?="
+
 ## warrior.TQMa57xx.BSP.SW.0008
 
 ### Added
