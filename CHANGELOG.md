@@ -9,14 +9,16 @@ Releases are named with the following scheme:
 
 ### Added
 
-* meta-tq: update to BSP.0008 for TQMa57xx
 * meta-tq: support for TQMa6ULLxL
 
 ### Changed
 
+* meta-tq: update to BSP.0008 for TQMa57xx
+* meta-tq: doc fixes for TQMa57xx
+* meta-ti: update to latest master (warrior compatible)
 * ci: improve support scripts
 * meta-tq: TQMa6x devicetree and defconfig updates
-* meta-tq: TQMa57xx machine names
+* meta-tq: change TQMa57xx machine names
 
 ## warrior.TQMLS10xx.BSP.SW.0100
 
