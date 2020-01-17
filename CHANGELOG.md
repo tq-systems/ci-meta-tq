@@ -5,7 +5,7 @@ Releases are named with thefollowing scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
-## Next release
+## sumo.TQMa8.BSP.SW.0016
 
 * meta-tq: TQMa8x memory size fix
 * meta-tq: TQMa8x 8 GB RAM variant
