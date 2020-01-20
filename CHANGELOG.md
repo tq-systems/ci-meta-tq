@@ -5,6 +5,10 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## warrior.TQMa6x.BSP.SW.0115
+
+* meta-tq: u-boot changes for TQMa7x and TQMa6x
+
 ## warrior.TQMa6ULx.BSP.SW.0110
 
 ### Added
