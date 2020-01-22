@@ -1,6 +1,6 @@
 [submodule "sources/poky"]
 	path = sources/poky
-	url = git://git.yoctoproject.org/poky
+	url = https://git.yoctoproject.org/git/poky
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
@@ -18,13 +18,13 @@
 	url = https://github.com/Freescale/meta-freescale-distro.git
 [submodule "sources/meta-security"]
 	path = sources/meta-security
-	url = git://git.yoctoproject.org/meta-security
+	url = https://git.yoctoproject.org/git/meta-security
 [submodule "sources/meta-virtualization"]
 	path = sources/meta-virtualization
-	url = git://git.yoctoproject.org/meta-virtualization
+	url = https://git.yoctoproject.org/git/meta-virtualization
 [submodule "sources/meta-cloud-services"]
 	path = sources/meta-cloud-services
-	url = git://git.yoctoproject.org/meta-cloud-services
+	url = https://git.yoctoproject.org/git/meta-cloud-services
 [submodule "sources/meta-qoriq-demos"]
 	path = sources/meta-qoriq-demos
 	url = https://source.codeaurora.org/external/qoriq/qoriq-components/meta-qoriq-demos
