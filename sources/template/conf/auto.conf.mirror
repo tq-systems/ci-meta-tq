@@ -6,6 +6,8 @@ require conf/mirror.inc
 
 require image-features.inc
 
+require compile-tweaks.inc
+
 require uninative-mirror.inc
 
 require ci-helper.inc
