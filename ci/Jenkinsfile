@@ -162,18 +162,20 @@ pipeline {
     }
 
     environment {
+        /*
+         * workspace name for config must be identical to config name
+         */
 /*
         WS_GUI = "CONFIGS/gui"
         WS_MFG = "CONFIGS/mfgtool"
         WS_MIN = "CONFIGS/minimal"
-<<<<<<< HEAD
 */
         WS_NET = "CONFIGS/network"
         DL_DIR = "shared-dl-dir"
         SSTATE_DIR = "shared-sstate-cache"
         BUILD_DIR = "buildspace"
         DEPLOY_DIR = "deployment"
-   }
+    }
 
     stages {
         stage ('Manage sstate cache') {
