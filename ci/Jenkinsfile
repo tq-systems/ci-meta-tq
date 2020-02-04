@@ -30,6 +30,7 @@ def checkoutMetaLayers(directoryName) {
         git submodule sync
         git submodule update --init
         git submodule foreach --recursive git clean -fdx
+        git submodule foreach --recursive 'git checkout ./*'
         git clean -fdx sources templates
         git clean -fx"""
     }
