@@ -1,9 +1,23 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
-Releases are named with thefollowing scheme:
+Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
+
+## sumo.TQMa8.BSP.SW.0017
+
+* meta-dumpling: u-boot-fw-utils in packagegroups
+* meta-tq: u-boot-fw-utils support
+* meta-tq: TQMa8Xx / TQMa8XxS / TQMa8x: QSPI fixes for linux
+* meta-tq: TQMa8Mx: QSPI fixes for linux
+* meta-tq: TQMa8Mx: additional UARTS
+* meta-tq: TQMa8x audio support
+* meta-tq: TQMa8x display support
+* meta-tq: TQMa8x adc support
+* meta-tq: TQMa8XxS initial USB support
+* meta-tq: TQMa8Xx SPI and additonal UART
+* meta-tq: cleanup
 
 ## sumo.TQMa8.BSP.SW.0016
 
