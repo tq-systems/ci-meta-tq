@@ -209,7 +209,7 @@ main () {
 		;;
 	"network" )
 		IMAGES="tq-image-generic"
-		ALL_TARGETS="tqmls102xa-mbls102xa tqmls1012al-mbls1012al"
+		ALL_TARGETS="tqmls1012al-mbls1012al"
 		export EULA="y"
 		;;
 	* )
