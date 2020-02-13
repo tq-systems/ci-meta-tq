@@ -123,6 +123,13 @@ def handleGlobalData(directoryName) {
             println "clear ${directoryName}/${env.DL_DIR} ..."
             sh "pwd; ls -al; time rm -rf ${directoryName}/${env.DL_DIR}; ls -1"
         }
+        /*
+         * for nightly builds: do sstate cache maintenance
+         */
+        if (reason.contains("TimerTriggerCause")) {
+            println "maintain ${directoryName}/${env.SSTATE_DIR} ..."
+            sh "time ${directoryName}/sources/poky/scripts/sstate-cache-management.sh --cache-dir=${directoryName}/${env.SSTATE_DIR} --extra-layer=${directoryName}/sources/meta-tq -d -y"
+        }
     }
     causes = null
 
