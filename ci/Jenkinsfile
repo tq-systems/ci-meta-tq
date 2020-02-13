@@ -121,6 +121,13 @@ def handleGlobalData(directoryName) {
             println "clear ${directoryName}/shared-dl-dir ..."
             sh "pwd; ls -al; time rm -rf ${directoryName}/shared-dl-dir; ls -1"
         }
+        /*
+         * for nightly builds: do sstate cache maintenance
+         */
+        if (reason.contains("TimerTriggerCause")) {
+            println "maintain ${directoryName}/${env.SSTATE_DIR} ..."
+            sh "time ${directoryName}/CONFIGS/minimal/sources/poky/scripts/sstate-cache-management.sh --cache-dir=${directoryName}/shared-sstate-cache --extra-layer=${directoryName}/CONFIGS/minimal/sources/meta-tq -d -y"
+        }
     }
     causes = null
 
