@@ -312,6 +312,7 @@ main () {
 			mkdir -p ${DEPLOYDIR}
 			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
 			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh)
+			local GIT_STAMP_FILE="${DEPLOYDIR}/${CONFIG}-stamp"
 			# note: this depends on a selected distro
 			local VERSION=$(bitbake -e | grep ^"DISTRO_VERSION=")
 			export ${VERSION}
@@ -322,6 +323,8 @@ main () {
 			DISTRO_CODENAME=${DISTRO_CODENAME#\"*}
 			DISTRO_CODENAME=${DISTRO_CODENAME%\"*}
 			local ARCHIVE_BASENAME=${CONFIG}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${STAMP}
+
+			git log -1 > ${GIT_STAMP_FILE}
 
 			for t in ${ALL_TARGETS}; do
 				local MACHINE=${t}
@@ -334,7 +337,7 @@ main () {
 				get_md5sum ${ARTIFACTSDIR}/${MACHINE} > ${DEPLOYDIR}/${MACHINE_ARCHIVE}.md5sum
 				cp ${DEPLOYDIR}/${MACHINE_ARCHIVE}.md5sum ${ARTIFACTSDIR}/${MACHINE}
 				# create a file containing the version we are build from
-				git log -1 > ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
+				cp ${GIT_STAMP_FILE} ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
 				printf "\ngit submodule url:\n\n" >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
 				git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
 				printf "\ngit submodule info:\n\n" >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
