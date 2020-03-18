@@ -4,7 +4,7 @@ This repo contains setup, configuration and dependencies use to build and test
 the meta-tq hardware support layer. All Yocto Project / Open Embedded layers
 the build depends on are git submodules
 
-Clone this repo using git clone --branch=<branch-name> --recurse-submodules <url>
+Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <url>`
 
 ## Supported branches of meta-tq
 
@@ -13,11 +13,12 @@ Clone this repo using git clone --branch=<branch-name> --recurse-submodules <url
 - pyro (not longer maintained)
 - rocko (no i.MX mfgtool support, not longer maintained)
 - warrior (dropped i.MX mfgtool support)
-- rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP)
+- rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, not longer maintained)
+- sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK)
 - sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
 - thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
 
-**Attention:** use README of used branch for exact details.
+**Attention:** use README.md of used branch for exact details.
 
 Branch names correspond to Yocto Project release names. Special branches
 supporting a special setup are named `<release-name>-<module>`
@@ -71,6 +72,8 @@ After this step, everything is setup to build an image using bitbake.
 ### Return to an existing build space
 
 To return to an existing buildspace go to the checked out dir and
+
+`. ./setup-environment <builddir>`
 
 ### Configurations
 
