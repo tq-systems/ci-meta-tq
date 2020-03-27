@@ -9,11 +9,15 @@ Releases are named with the following scheme:
 
 # Changed
 
+meta-tq: tqmls1012al device tree improvements
+meta-tq: tqmls1012al kernel config improvements
+doc: add CHANGELOG and convert to MarkDown
 meta-dumpling: package group improvements
 poky: update to latest sumo
 meta-qoriq-demos: update to latest sumo
 ci: generate mirror archives
-conf: introduce aut.conf
+conf: force systemd as init manager
+conf: introduce auto.conf
 ci: jenkins improvements for artifact naming
 
 # Fixed
