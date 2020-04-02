@@ -30,3 +30,18 @@
 	path = sources/meta-arm
 	url = https://git.yoctoproject.org/git/meta-arm
 	branch = master
+[submodule "sources/meta-browser"]
+	path = sources/meta-browser
+	url = https://github.com/OSSystems/meta-browser.git
+[submodule "sources/meta-rust"]
+	path = sources/meta-rust
+	url = git://github.com/meta-rust/meta-rust
+[submodule "sources/meta-timesys"]
+	path = sources/meta-timesys
+	url = git://github.com/TimesysGit/meta-timesys
+[submodule "sources/meta-qt5"]
+	path = sources/meta-qt5
+	url = https://github.com/meta-qt5/meta-qt5.git
+[submodule "sources/meta-imx"]
+	path = sources/meta-imx
+	url = https://source.codeaurora.org/external/imx/meta-imx
