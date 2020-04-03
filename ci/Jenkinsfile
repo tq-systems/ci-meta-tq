@@ -33,7 +33,6 @@ def checkoutMetaLayers(directoryName) {
         git submodule sync
         git submodule update --init
         git submodule foreach --recursive git clean -fdx
-        git submodule foreach --recursive 'git checkout ./*'
         git clean -fdx sources templates
         git clean -fx"""
     }
@@ -129,7 +128,7 @@ def handleGlobalData(directoryName) {
          */
         if (reason.contains("TimerTriggerCause")) {
             println "maintain ${directoryName}/${env.SSTATE_DIR} ..."
-            sh "time ${directoryName}/CONFIGS/minimal/sources/poky/scripts/sstate-cache-management.sh --cache-dir=${directoryName}/${env.SSTATE_DIR} --extra-layer=${directoryName}/CONFIGS/minimal/sources/meta-tq -d -y"
+            sh "time ${directoryName}/sources/poky/scripts/sstate-cache-management.sh --cache-dir=${directoryName}/${env.SSTATE_DIR} --extra-layer=${directoryName}/sources/meta-tq -d -y"
         }
     }
     causes = null
@@ -142,6 +141,7 @@ def handleGlobalData(directoryName) {
     echo "clear ${directoryName}/*.tar.gz ... "
     sh "rm -f ${directoryName}/*.tar.gz"
 }
+
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
@@ -201,6 +201,7 @@ pipeline {
                         wipeOutBuildspace("${env.WS_IMX}")
                         prepareWorkspace("${env.WS_IMX}")
                     },
+/*
                     "minimal" : {
                         wipeOutBuildspace("${env.WS_MIN}")
                         prepareWorkspace("${env.WS_MIN}")
@@ -209,6 +210,7 @@ pipeline {
                         wipeOutBuildspace("${env.WS_TI}")
                         prepareWorkspace("${env.WS_TI}")
                     },
+*/
                 )
             }
         }
@@ -218,12 +220,14 @@ pipeline {
                     "imx" : {
                         handleBuildCause("${env.WS_IMX}")
                     },
+/*
                     "minimal" : {
                         handleBuildCause("${env.WS_MIN}")
                     },
                     "ti" : {
                         handleBuildCause("${env.WS_TI}")
                     },
+*/
                 )
             }
         }
@@ -233,12 +237,14 @@ pipeline {
                     "imx" : {
                         checkoutMetaLayers("${env.WS_IMX}")
                     },
+/*
                     "minimal" : {
                         checkoutMetaLayers("${env.WS_MIN}")
                     },
                     "ti" : {
                         checkoutMetaLayers("${env.WS_TI}")
                     },
+*/
                 )
             }
         }
@@ -248,12 +254,14 @@ pipeline {
                     "imx" : {
                         buildConfiguration("${env.WS_IMX}")
                     },
+/*
                     "minimal" : {
                         buildConfiguration("${env.WS_MIN}")
                     },
                     "ti" : {
                         buildConfiguration("${env.WS_TI}")
                     },
+*/
                 )
             }
        }
@@ -271,10 +279,12 @@ pipeline {
         success {
             archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_IMX}")
+/*
             archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_MIN}")
             archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_TI}")
+*/
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
         unstable {
