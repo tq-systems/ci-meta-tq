@@ -30,6 +30,8 @@ readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname $(readlink -f "${0}"))
 readonly SCRIPT="$(basename ${0})"
 
+readonly SETUPSCRIPT=./imx-setup-release.sh
+
 DEBUG="off"
 
 usage() {
@@ -136,10 +138,14 @@ main () {
 	local TI_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma57)
 	local LS_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmls)
 	local PPC_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmt)
-	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma[6,7])
+	local IMX6_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma6)
+	local IMX7_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma7)
+	local IMX8_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8)
+	local IMX_TARGETS="${IMX6_TARGETS} ${IMX7_TARGETS} ${IMX8_TARGETS}"
 	local CONFIG=${2}
-	local IMAGES="core-image-minimal"
-	local MINIMAL_EXCLUDE=""
+	local IMAGES="tq-image-generic"
+	local MINIMAL_EXCLUDE="tqma6q-nav ${IMX8_TARGETS}"
+	local IMX8_EXCLUDE="${LS_TARGETS} ${IMX6_TARGETS} ${IMX7_TARGETS} ${TI_TARGETS} ${PPC_TARGETS}"
 	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS} ${PPC_TARGETS}"
 	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS} ${PPC_TARGETS}"
 	local MODE="normal"
@@ -160,8 +166,8 @@ main () {
 	# filter out machines from the ${LAYER} based on ${CONFIG}
 	case ${CONFIG} in
 	"imx" )
-		IMAGES="fsl-image-multimedia-full"
-		for excl in ${IMX_EXCLUDE}; do
+		IMAGES="tq-image-qt5"
+		for excl in ${IMX8_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
 		export EULA="y"
@@ -190,8 +196,10 @@ main () {
 
 	# source the real setup workhorse.
 	export MACHINE=$(echo ${ALL_TARGETS} | awk '{ print $1 }')
-	. ./setup-environment ${BUILD_DIR} ${CONFIG}
-	[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
+	# TODO: need to call nxp setup script ...
+	#. ./setup-environment ${BUILD_DIR} ${CONFIG}
+	. ${SETUPSCRIPT} -b ${BUILD_DIR}
+	[ "$?" -ne "0" ] && error_out "sourcing ${SETUPSCRIPT} failed"
 
 	if ! [ -f ./version.info ]; then
 		${SCRIPTPATH}/poky-version-check.sh mkinfo
