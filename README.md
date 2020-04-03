@@ -17,6 +17,7 @@ Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <ur
 - sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK)
 - sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
 - thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
+- zeus-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
 
 **Attention:** use README.md of used branch for exact details.
 
@@ -35,6 +36,8 @@ git submodule update --init
 See README of TQ Sytems layer (meta-tq) or use `./ls-machines` to list machines
 from meta-tq.
 
+**Note:** only TQMa8 boards from meta-tq are supported with this branch.
+
 ## Quick Start Guide
 
 ### Setting up an initial build space
@@ -43,17 +46,19 @@ To set up an initial build space, clone this repo using
 
 `git clone --branch=<branch-name> --recurse-submodules <url>`
 
-change to  checked out dir and
+change to checked out dir and
 
-`. ./setup-environment <builddir> <config>`
+`. ./imx-setup-release.sh -b <builddir>`
 
 You can override defaults with:
 
-* `export MACHINE=<machine>` (default is first tqma\* MACHINE from meta-tq)
-* `export DISTRO=<distro>` (tested is poky, per default systemd and wayland are selected via DISTRO_FEATURES)
+* `export MACHINE=<machine>` (default is first tqma8\* MACHINE from meta-tq)
+* `export DISTRO=<distro>` (tested is fsl-imx-wayland from meta-imx,
+only DISTROS with wayland support from meta-fsl-bsp-release/imx/meta-sdk are
+supported with this release)
 
 before sourcing the script. The script sources ./setup-environment, which uses
-the requested configuration in sources/template/conf/bblayers.conf.\<config\> as initial
+the imx configuration in sources/template/conf/bblayers.conf.imx as initial
 template for your bblayer.conf
 
 Additionally some config variables are injected via auto.conf.normal from
@@ -69,6 +74,13 @@ meta layer will be sourced to get the bitbake environment
 
 After this step, everything is setup to build an image using bitbake.
 
+**Attention:**: meta-imx needs to overwrite some files in
+meta-freescale:
+
+`conf/machines/*` and `conf/machines/include/imx-base.include`
+
+This leads to uncommitted changes in meta-freescale.
+
 ### Return to an existing build space
 
 To return to an existing buildspace go to the checked out dir and
@@ -81,8 +93,11 @@ Under sources/templates several configs are supplied as starting point for own
 bblayers.conf
 
 * minimal: usable for all supported machines, only minimal layer dependencies
+(not tested in this release, not usable for tqma8* MACHINES)
 
-* imx: usable for all machines with i.MX CPU, supports FSL community BSP via meta-freessale
+* imx: usable for all machines with i.MX CPU, supports NXP reference BSP
+via meta-freessale / meta-imx
+(only tested for tqma8* MACHINES in this release)
 
 * ti: usable for all machines with TQ AM57xx CPU, uses meta-ti
 
@@ -105,8 +120,10 @@ use the CI helper script:
 Depending on the configuration, following images will be built:
 
 * minimal: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
-* imx: fsl-image-multimedia-full (meta-freescale-distro, some bbappends via meta-dumpling)
-* ti: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
+* imx: tq-image-qt5 (meta-dumpling, based on the qt5 demo image defined in
+meta-imx/meta-bsp)
+
+**Note:** only imx config is supported for this branch.
 
 ### Clean build
 
