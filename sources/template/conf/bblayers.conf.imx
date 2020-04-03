@@ -9,8 +9,8 @@ BBLAYERS = " \
   ${BSPDIR}/sources/poky/meta-poky \
   \
   ${BSPDIR}/sources/meta-openembedded/meta-oe \
-  ${BSPDIR}/sources/meta-openembedded/meta-python \
   ${BSPDIR}/sources/meta-openembedded/meta-multimedia \
+  ${BSPDIR}/sources/meta-openembedded/meta-python \
   \
   ${BSPDIR}/sources/meta-freescale \
   ${BSPDIR}/sources/meta-freescale-distro \
@@ -18,3 +18,14 @@ BBLAYERS = " \
   ${BSPDIR}/sources/meta-tq \
   ${BSPDIR}/sources/meta-dumpling \
 "
+
+# i.MX Yocto Project Release layers
+BBLAYERS += " ${BSPDIR}/sources/meta-imx/meta-bsp "
+BBLAYERS += " ${BSPDIR}/sources/meta-imx/meta-sdk "
+BBLAYERS += " ${BSPDIR}/sources/meta-imx/meta-ml "
+
+BBLAYERS += "${BSPDIR}/sources/meta-browser"
+BBLAYERS += "${BSPDIR}/sources/meta-rust"
+BBLAYERS += "${BSPDIR}/sources/meta-openembedded/meta-networking"
+BBLAYERS += "${BSPDIR}/sources/meta-openembedded/meta-filesystems"
+BBLAYERS += "${BSPDIR}/sources/meta-qt5"
