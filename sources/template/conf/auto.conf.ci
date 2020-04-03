@@ -13,6 +13,8 @@ INHERIT += "archiver"
 COPYLEFT_LICENSE_EXCLUDE ?= "CLOSED Proprietary"
 ARCHIVER_MODE[src] ?= "original"
 
+require image-features.inc
+
 require uninative-mirror.inc
 
 require ci-helper.inc
