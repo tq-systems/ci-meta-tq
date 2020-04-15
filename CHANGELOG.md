@@ -5,21 +5,51 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## Next release
+
+### Changed
+
+* metat-tq: TQMa8Mx: use UART3/ttymxc2 as serial console
+* meta-tq: wic image generalisation for TQMa8\[x,Xx,Mx\]
+* meta-dumpling: busybox config improvements
+* meta-dumpling: packagegroup improvements
+
+### Fixed
+
+meta-tq: TQMa8Mx: fix DSI over eLCDIF
+meta-tq: TQMa8x: fix enet pad config / ENET randomly not working
+meta-tq: TQMa8x: fix using only one PCIe interface
+
+### Added
+
+* meta-tq: TQMa8XxS: SPI support
+* meta-tq: TQMa8x: initial microbus support
+
 ## sumo.TQMa8.BSP.SW.0017
+
+### Changed
+
+* meta-tq: cleanup
+
+### Added
 
 * meta-dumpling: u-boot-fw-utils in packagegroups
 * meta-tq: u-boot-fw-utils support
-* meta-tq: TQMa8Xx / TQMa8XxS / TQMa8x: QSPI fixes for linux
-* meta-tq: TQMa8Mx: QSPI fixes for linux
 * meta-tq: TQMa8Mx: additional UARTS
 * meta-tq: TQMa8x audio support
 * meta-tq: TQMa8x display support
 * meta-tq: TQMa8x adc support
 * meta-tq: TQMa8XxS initial USB support
 * meta-tq: TQMa8Xx SPI and additonal UART
-* meta-tq: cleanup
+
+### Fixed
+
+* meta-tq: TQMa8Xx / TQMa8XxS / TQMa8x: QSPI fixes for linux
+* meta-tq: TQMa8Mx: QSPI fixes for linux
 
 ## sumo.TQMa8.BSP.SW.0016
+
+### Changed
 
 * meta-tq: TQMa8x memory size fix
 * meta-tq: TQMa8x 8 GB RAM variant
