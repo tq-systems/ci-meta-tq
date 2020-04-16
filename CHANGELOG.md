@@ -5,6 +5,16 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## warrior.TQMLS10xx.BSP.SW.0101
+
+### Fixed
+
+* meta-tq: tqmls10xxa: several bug-fixes
+
+### Added
+
+* meta-tq: support for TQMLS1043a 2GB variant
+
 ## warrior.TQMa6x.BSP.SW.0115
 
 * meta-tq: u-boot changes for TQMa7x and TQMa6x
