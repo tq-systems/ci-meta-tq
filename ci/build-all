@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # File:        build-all
-# Copyright (C) 2017 TQ Systems GmbH
+# Copyright (C) 2017-2020 TQ Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # Description: build all machines in a layer with a given config
@@ -28,7 +28,7 @@
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname $(readlink -f "${0}"))
-readonly SCRIPT="$(basename ${0})"
+readonly SCRIPT="$(basename "${0}")"
 
 DEBUG="off"
 
@@ -139,7 +139,8 @@ main () {
 	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma[6,7])
 	local CONFIG=${2}
 	local IMAGES="core-image-minimal"
-	local MINIMAL_EXCLUDE=""
+	local MINIMAL_EXCLUDE="${LS_TARGETS}"
+	local LS_EXCLUDE="${TI_TARGETS} ${IMX_TARGETS}"
 	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS} ${PPC_TARGETS}"
 	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS} ${PPC_TARGETS}"
 	local MODE="normal"
@@ -162,6 +163,13 @@ main () {
 	"imx" )
 		IMAGES="fsl-image-multimedia-full"
 		for excl in ${IMX_EXCLUDE}; do
+			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		export EULA="y"
+		;;
+	"ls" )
+		IMAGES="tq-image-generic"
+		for excl in ${LS_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
 		export EULA="y"
