@@ -259,7 +259,7 @@ pipeline {
                     "imx" : {
                         buildConfiguration("${env.WS_IMX}")
                     },
-                    "imx" : {
+                    "ls" : {
                         buildConfiguration("${env.WS_LS}")
                     },
                     "minimal" : {
