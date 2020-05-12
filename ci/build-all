@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # File:        build-all
-# Copyright (C) 2017 TQ Systems GmbH
+# Copyright (C) 2017 - 2020 TQ Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # Description: build all machines in a layer with a given config
@@ -140,7 +140,9 @@ main () {
 	local PPC_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmt)
 	local IMX6_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma6)
 	local IMX7_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma7)
-	local IMX8_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8)
+# TODO: temporary
+#	local IMX8_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8)
+	local IMX8_TARGETS=tqma8xqp-mba8xx
 	local IMX_TARGETS="${IMX6_TARGETS} ${IMX7_TARGETS} ${IMX8_TARGETS}"
 	local CONFIG=${2}
 	local IMAGES="tq-image-generic"
@@ -166,7 +168,10 @@ main () {
 	# filter out machines from the ${LAYER} based on ${CONFIG}
 	case ${CONFIG} in
 	"imx" )
-		IMAGES="tq-image-qt5"
+# TODO: temporary
+#		IMAGES="tq-image-qt5"
+		ALL_TARGETS=${IMX8_TARGETS}
+		IMAGES="tq-image-generic"
 		for excl in ${IMX8_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
