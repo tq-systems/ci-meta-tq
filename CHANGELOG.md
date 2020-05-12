@@ -5,6 +5,16 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## Changed
+
+* meta-dumpling: prepare enhanced support for NXP 5.4.3_1.0.0 reference BSP
+* global: prepare integration of NXP 5.4.3_1.0.0 reference BSP
+* global: update to use zeus
+
+## Added
+
+* meta-tq: support for TQMa8Xx REV.020x
+
 ## warrior.TQMLS10xx.BSP.SW.0101
 
 ### Fixed
