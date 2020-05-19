@@ -5,14 +5,20 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0025
+
 ## Changed
 
+* global: build tq-image-weston for imx config
+* global: restrict imx config to supported TQMa8 machines
+* global: restrict autobuild to imx config
 * meta-dumpling: prepare enhanced support for NXP 5.4.3_1.0.0 reference BSP
 * global: prepare integration of NXP 5.4.3_1.0.0 reference BSP
 * global: update to use zeus
 
 ## Added
 
+* meta-dumpling: add recipe for generic weston image
 * meta-tq: support for TQMa8Xx REV.020x
 
 ## warrior.TQMLS10xx.BSP.SW.0101
