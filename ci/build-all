@@ -169,9 +169,7 @@ main () {
 		;;
 	"ls" )
 		IMAGES="tq-image-generic"
-		for excl in ${LS_EXCLUDE}; do
-			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
-		done
+		ALL_TARGETS="tqmls1028a-mbls1028a tqmls1028a-mbls1028a-ind"
 		export EULA="y"
 		;;
 	"minimal" )

@@ -175,10 +175,7 @@ pipeline {
         /*
          * workspace name for config must be identical to config name
          */
-        WS_IMX = "CONFIGS/imx"
         WS_LS = "CONFIGS/ls"
-        WS_MIN = "CONFIGS/minimal"
-        WS_TI = "CONFIGS/ti"
         DL_DIR = "shared-dl-dir"
         SSTATE_DIR = "shared-sstate-cache"
         BUILD_DIR = "buildspace"
@@ -198,21 +195,9 @@ pipeline {
         stage ('Prepare Workspaces') {
             steps {
                 parallel (
-                    "imx" : {
-                        wipeOutBuildspace("${env.WS_IMX}")
-                        prepareWorkspace("${env.WS_IMX}")
-                    },
                     "ls" : {
                         wipeOutBuildspace("${env.WS_LS}")
                         prepareWorkspace("${env.WS_LS}")
-                    },
-                    "minimal" : {
-                        wipeOutBuildspace("${env.WS_MIN}")
-                        prepareWorkspace("${env.WS_MIN}")
-                    },
-                    "ti" : {
-                        wipeOutBuildspace("${env.WS_TI}")
-                        prepareWorkspace("${env.WS_TI}")
                     },
                 )
             }
@@ -220,17 +205,8 @@ pipeline {
         stage('handle build cause') {
             steps {
                 parallel (
-                    "imx" : {
-                        handleBuildCause("${env.WS_IMX}")
-                    },
                     "ls" : {
                         handleBuildCause("${env.WS_LS}")
-                    },
-                    "minimal" : {
-                        handleBuildCause("${env.WS_MIN}")
-                    },
-                    "ti" : {
-                        handleBuildCause("${env.WS_TI}")
                     },
                 )
             }
@@ -238,17 +214,8 @@ pipeline {
         stage ('Checkout all meta-layers') {
             steps {
                 parallel (
-                    "imx" : {
-                        checkoutMetaLayers("${env.WS_IMX}")
-                    },
                     "ls" : {
                         checkoutMetaLayers("${env.WS_LS}")
-                    },
-                    "minimal" : {
-                        checkoutMetaLayers("${env.WS_MIN}")
-                    },
-                    "ti" : {
-                        checkoutMetaLayers("${env.WS_TI}")
                     },
                 )
             }
@@ -256,17 +223,8 @@ pipeline {
         stage ('Build'){
             steps {
                 parallel (
-                    "imx" : {
-                        buildConfiguration("${env.WS_IMX}")
-                    },
                     "ls" : {
                         buildConfiguration("${env.WS_LS}")
-                    },
-                    "minimal" : {
-                        buildConfiguration("${env.WS_MIN}")
-                    },
-                    "ti" : {
-                        buildConfiguration("${env.WS_TI}")
                     },
                 )
             }
@@ -283,14 +241,8 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
-            wipeOutBuildspace("${env.WS_IMX}")
             archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_LS}")
-            archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
-            wipeOutBuildspace("${env.WS_MIN}")
-            archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
-            wipeOutBuildspace("${env.WS_TI}")
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
         unstable {
