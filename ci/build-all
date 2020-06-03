@@ -169,7 +169,7 @@ main () {
 		;;
 	"ls" )
 		IMAGES="tq-image-generic"
-		ALL_TARGETS="tqmls1028a-mbls1028a tqmls1028a-mbls1028a-ind"
+		ALL_TARGETS="tqmls1028a-mbls1028a tqmls1028a-mbls1028a-emmc tqmls1028a-mbls1028a-ind tqmls1028a-mbls1028a-ind-emmc"
 		export EULA="y"
 		;;
 	"minimal" )
