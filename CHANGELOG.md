@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
+## zeus.TQMa57xx.BSP.SW.0011
+
+* meta-tq: tqma57xx: u-boot: update extraversion
+* meta-tq: tqma57xx: add pci to MACHINE_FEATURES
+* meta-tq: u-boot-tq_2019.04: pru mac from eeprom
+
+## zeus.TQMa57xx.BSP.SW.0010
+
+### Added
+
+* meta-tq: linux 5.4 added for TQMa57xx
 
 ## warrior.TQMLS10xx.BSP.SW.0101
 
