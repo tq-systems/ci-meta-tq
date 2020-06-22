@@ -9,7 +9,8 @@ Releases are named with the following scheme:
 
 ### Changed
 
-* metat-tq: TQMa8Mx: use UART3/ttymxc2 as serial console
+* meta-tq: automatic version string for linux and u-boot
+* meta-tq: TQMa8Mx: use UART3/ttymxc2 as serial console
 * meta-tq: wic image generalisation for TQMa8\[x,Xx,Mx\]
 * meta-dumpling: busybox config improvements
 * meta-dumpling: packagegroup improvements
