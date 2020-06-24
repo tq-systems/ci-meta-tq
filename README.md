@@ -17,7 +17,7 @@ Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <ur
 - sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK)
 - sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
 - thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
-- zeus-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
+- zeus-tqma8x (only for TQMa8 platforms, based on NXP BSP, current development)
 
 **Attention:** use README.md of used branch for exact details.
 
