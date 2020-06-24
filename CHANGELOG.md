@@ -9,6 +9,10 @@ Releases are named with the following scheme:
 * meta-tq: tqma57xx: u-boot: update extraversion
 * meta-tq: tqma57xx: add pci to MACHINE_FEATURES
 * meta-tq: u-boot-tq_2019.04: pru mac from eeprom
+* meta-tq: tqma57xx: U-Boot: update u-boot on vfat partition
+* meta-tq: tqma57xx: U-Boot: implement errata i863 workaround: mmc2 no pullups
+* meta-tq: tqma57xx: Linux: implement errata i863 workaround: mmc2 no pullups
+* meta-tq: tqma57xx: Linux: enable USB2 OTG mode on MBa57xx
 
 ## zeus.TQMa57xx.BSP.SW.0010
 
