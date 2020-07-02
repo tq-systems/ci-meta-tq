@@ -14,5 +14,4 @@ BBLAYERS = " \
   \
   ${BSPDIR}/sources/meta-tq \
   ${BSPDIR}/sources/meta-dumpling \
-  ${BSPDIR}/sources/meta-tripe \
 "
