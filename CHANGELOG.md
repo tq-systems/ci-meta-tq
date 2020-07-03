@@ -5,8 +5,11 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0026
+
 ## Added
 
+* ci: allow building for more machines
 * meta-tq: support for TQMa8Mx REV.020x (work in progress)
 * meta-tq: initial support for TQMa8MxML
 * meta-tq: initial support for TQMa8MxNL
