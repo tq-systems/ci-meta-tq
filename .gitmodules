@@ -25,7 +25,7 @@
 [submodule "sources/meta-ti"]
 	path = sources/meta-ti
 	url = https://git.yoctoproject.org/git/meta-ti
-	branch = master
+	branch = zeus
 [submodule "sources/meta-arm"]
 	path = sources/meta-arm
 	url = https://git.yoctoproject.org/git/meta-arm
