@@ -5,10 +5,18 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0027
+
 ## Changed
 
+* meta-tq: machine file renames for for TQMa8M\[x,xML,xNL\]
 * meta-tq: Sound support for TQMa8M\[x,xML,xNL\]
 * meta-tq: QSPI support for TQMa8M\[xML,xNL\]
+
+## Fixed
+
+* meta-tq: RAM timing fix  for TQMa8MxNL
+* meta-tq: RAM size fix  for TQMa8MxML
 
 ## zeus.TQMa8.BSP.SW.0026
 
