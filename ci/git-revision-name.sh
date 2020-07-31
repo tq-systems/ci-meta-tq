@@ -33,31 +33,31 @@ set -C # noclobber
 
 # For security reasons, explicitly set the internal field separator
 # to newline, space, tab
-OLD_IFS=$IFS
+OLD_IFS="$IFS"
 IFS='
  	'
 
 # Internal variables and initializations.
-readonly PROGRAM=$(basename "$0")
+readonly PROGRAM="$(basename "$0")"
 readonly VERSION=0.2
 
  # Create a place to store our work's progress
 function main () {
 	local IS_GIT_TAG="0"
-	local GITHEAD=$(git rev-parse --verify --short HEAD 2>/dev/null)
+	local GITHEAD="$(git rev-parse --verify --short HEAD 2>/dev/null)"
 	local GITATAG="$(git describe 2>/dev/null)"
-	git show-ref --quiet --tags ${GITATAG} 2>/dev/null
+	git show-ref --quiet --tags "${GITATAG}" 2>/dev/null
 	[ "${?}" -eq "0" ] && IS_GIT_TAG="1"
 	local STAMP="git-stamp"
 	if [ "${IS_GIT_TAG}" -gt "0" ]; then
-		STAMP=${GITATAG};
-	elif ! [ -z ${GITATAG} ]; then
-		STAMP=$(echo "${GITATAG}" | awk -F- '{ printf("%s", $1); for (i = 2; i <= NF - 2; i++) { printf("-%s", $i) } }')
-		STAMP=${STAMP}$(echo "${GITATAG}" | awk -F- '{ if (NF >= 3) printf("-%05d-%s", $(NF-1),$(NF));}')
+		STAMP="${GITATAG}"
+	elif [ -n "${GITATAG}" ]; then
+		STAMP="$(echo "${GITATAG}" | awk -F- '{ printf("%s", $1); for (i = 2; i <= NF - 2; i++) { printf("-%s", $i) } }')"
+		STAMP="${STAMP}$(echo "${GITATAG}" | awk -F- '{ if (NF >= 3) printf("-%05d-%s", $(NF-1),$(NF));}')"
 	else
-		STAMP=git$(printf "%s%s" -g ${GITHEAD})
+		STAMP="git-g${GITHEAD}"
 	fi
-	echo ${STAMP}
+	echo "${STAMP}"
 }
 
-main $@
+main "$@"
