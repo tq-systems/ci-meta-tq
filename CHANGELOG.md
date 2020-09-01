@@ -5,6 +5,11 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## Added
+
+* meta-tq: support for TQMa8XxS REV.020x
+* meta-tq: PCIe support for TQMa8Xx
+
 ## zeus.TQMa8.BSP.SW.0027
 
 ## Changed
