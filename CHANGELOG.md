@@ -7,6 +7,8 @@ Releases are named with the following scheme:
 
 ## Added
 
+* meta-tq: FlexSPI and mfgtool boot support for TQMa8XQP\[S\] REV.020x
+* meta-tq: improve recipes for mfgtool support
 * meta-tq: support for TQMa8XxS REV.020x
 * meta-tq: PCIe support for TQMa8Xx
 
