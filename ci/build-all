@@ -140,12 +140,13 @@ main () {
 	local PPC_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmt)
 	local IMX6_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma6)
 	local IMX7_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma7)
+# TODO: temporary
 	local IMX8M_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8m)
-	debug ${IMX8M_TARGETS}
-	local IMX8X_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8x)
-	debug ${IMX8X_TARGETS}
+	local IMX8X_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8xqp)
 	local IMX8_TARGETS="${IMX8X_TARGETS} ${IMX8M_TARGETS}"
-	debug ${IMX8_TARGETS}
+	debug "IMX8M_TARGETS: ${IMX8M_TARGETS}"
+	debug "IMX8X_TARGETS: ${IMX8X_TARGETS}"
+	debug "IMX8_TARGETS: ${IMX8_TARGETS}"
 	local IMX_TARGETS="${IMX6_TARGETS} ${IMX7_TARGETS} ${IMX8_TARGETS}"
 	local CONFIG=${2}
 	local IMAGES="tq-image-generic"
