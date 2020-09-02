@@ -30,7 +30,7 @@ CONFIG_TEMPLATE=minimal
 
 DEFAULT_DISTRO_minimal="poky"
 # use for linux-imx based kernel, should this be fsl[c]-wayland?
-DEFAULT_DISTRO_imx="fslc-wayland"
+DEFAULT_DISTRO_imx="poky"
 DEFAULT_DISTRO_ls="poky"
 DEFAULT_DISTRO_ti="poky"
 

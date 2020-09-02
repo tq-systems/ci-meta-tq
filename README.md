@@ -82,7 +82,7 @@ bblayers.conf
 
 * minimal: usable for all supported machines, only minimal layer dependencies
 
-* imx: usable for all machines with i.MX CPU, supports FSL community BSP via meta-freessale
+* imx: usable for all machines with i.MX CPU, supports FSL community BSP via meta-freescale
 
 * ti: usable for all machines with TQ AM57xx CPU, uses meta-ti
 
@@ -105,8 +105,9 @@ use the CI helper script:
 Depending on the configuration, following images will be built:
 
 * minimal: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
-* imx: fsl-image-multimedia-full (meta-freescale-distro, some bbappends via meta-dumpling)
+* imx: tq-image-weston (meta-dumpling, wayland image with various multimedia packages)
 * ti: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
+* ls: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
 
 ### Clean build
 
