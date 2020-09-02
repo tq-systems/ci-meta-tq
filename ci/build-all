@@ -319,7 +319,7 @@ main () {
 		if [ "${MODE}" == "ci" ]; then
 			mkdir -p ${DEPLOYDIR}
 			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
-			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh)
+			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
 			local GIT_STAMP_FILE="${DEPLOYDIR}/${CONFIG}-stamp"
 			# note: this depends on a selected distro
 			local VERSION=$(bitbake -e | grep ^"DISTRO_VERSION=")
