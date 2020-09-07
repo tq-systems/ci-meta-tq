@@ -129,25 +129,38 @@ def handleGlobalData(directoryName) {
     for(cause in causes) {
         def reason = cause.toString()
         cause = null
+        /*
+         * for all build cases other then SCM triggered rebuild delete the
+         * DL_DIR
+         */
         if (!reason.contains("SCMTriggerCause")) {
             println "clear ${directoryName}/${env.DL_DIR} ..."
             sh "pwd; ls -al; time rm -rf ${directoryName}/${env.DL_DIR}; ls -1"
         }
         /*
          * for nightly builds: do sstate cache maintenance
+         * to make sure that no previous error left defect build space,
+         * update submodules before
          */
         if (reason.contains("TimerTriggerCause")) {
             println "maintain ${directoryName}/${env.SSTATE_DIR} ..."
+            checkoutMetaLayers("${directoryName}")
             sh "time ${directoryName}/sources/poky/scripts/sstate-cache-management.sh --cache-dir=${directoryName}/${env.SSTATE_DIR} --extra-layer=${directoryName}/sources/meta-tq -d -y"
         }
     }
     causes = null
 
+    /*
+     * last ressort only: clean SSTATE_CACHE
+     */
     if (params.CLEAN_CACHES == true) {
         println "clear ${directoryName}/${env.SSTATE_DIR} ... (CLEAN_CACHES)"
         sh "pwd; ls -al; time rm -rf ${directoryName}/${env.SSTATE_DIR}; ls -1"
     }
 
+    /*
+     * remove old archives
+     */
     echo "clear ${directoryName}/*.tar.gz ... "
     sh "rm -f ${directoryName}/*.tar.gz"
 }
