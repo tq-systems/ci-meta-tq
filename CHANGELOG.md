@@ -5,6 +5,28 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQ.Yocto.BSP.SW.0001
+
+This is a joint release for multiple TQMaxx and TQMLSxx module families. It can
+also be found under the following tag names:
+
+* zeus.TQMa6x.BSP.SW.0118
+* zeus.TQMa7x.BSP.SW.0111
+* zeus.TQMa6ULx.BSP.SW.0113
+* zeus.TQMLS1012AL.BSP.SW.0007
+* zeus.TQMLS102xA.BSP.SW.0115
+* zeus.TQMLS1028A.BSP.SW.0102
+
+### Changed
+
+* ci: improve support for multiple Git tags pointing at the same revision
+* ci: pass -k to bitbake for fetch step to show all missing downloads in the log
+* imx: build new tq-image-weston image instead of fsl-image-multimedia-full
+* imx: do not include meta-freescale-distro layer by default
+
+See the changelogs of meta-tq and meta-dumpling for changes in those layers.
+
+
 ## zeus.TQMa57xx.BSP.SW.0013
 
 ### Changed
