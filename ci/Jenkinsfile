@@ -29,12 +29,14 @@ def wipeOutWs(){
 
 def checkoutMetaLayers(directoryName) {
     dir("${directoryName}") {
-        sh """
-        git submodule sync
-        git submodule update --init
-        git submodule foreach --recursive git clean -fdx
-        git clean -fdx sources templates
-        git clean -fx"""
+        sshagent(['jenkins-master-key']) {
+            sh """
+            git submodule sync
+            git submodule update --init
+            git submodule foreach --recursive git clean -fdx
+            git clean -fdx sources templates
+            git clean -fx"""
+        }
     }
 }
 
@@ -277,7 +279,9 @@ pipeline {
             steps {
                 script {
                     checkoutMetaLayers("${env.WORKSPACE}")
-                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
+                    sshagent(['jenkins-master-key']) {
+                        sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
+                    }
                 }
             }
         }
