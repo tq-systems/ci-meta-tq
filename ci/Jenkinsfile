@@ -269,7 +269,7 @@ pipeline {
             steps {
                 script {
                     checkoutMetaLayers("${env.WORKSPACE}")
-                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh) && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
+                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
                 }
             }
         }
