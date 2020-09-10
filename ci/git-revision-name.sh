@@ -44,8 +44,8 @@ readonly VERSION=0.2
  # Create a place to store our work's progress
 function main () {
 	local IS_GIT_TAG="0"
-	local GITHEAD="$(git rev-parse --verify --short HEAD 2>/dev/null)"
-	local GITATAG="$(git describe 2>/dev/null)"
+	local GITHEAD="$(git rev-parse --verify HEAD 2>/dev/null)"
+	local GITATAG="$(git describe --abbrev=12 2>/dev/null)"
 	if git show-ref --quiet --tags "${GITATAG}" 2>/dev/null; then
 		IS_GIT_TAG="1"
 	fi
@@ -55,7 +55,7 @@ function main () {
 	elif [ -n "${GITATAG}" ]; then
 		STAMP="$(echo "${GITATAG}" | awk -F- '{ OFS = "-"; if (NF > 1) $(NF-1) = sprintf("%05d", $(NF-1)); print $0 }')"
 	else
-		STAMP="git-g${GITHEAD}"
+		STAMP="git-g${GITHEAD:0:12}"
 	fi
 	echo "${STAMP}"
 }
