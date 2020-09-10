@@ -35,10 +35,10 @@
 	url = https://github.com/OSSystems/meta-browser.git
 [submodule "sources/meta-rust"]
 	path = sources/meta-rust
-	url = git://github.com/meta-rust/meta-rust
+	url = https://github.com/meta-rust/meta-rust.git
 [submodule "sources/meta-timesys"]
 	path = sources/meta-timesys
-	url = git://github.com/TimesysGit/meta-timesys
+	url = https://github.com/TimesysGit/meta-timesys.git
 [submodule "sources/meta-qt5"]
 	path = sources/meta-qt5
 	url = https://github.com/meta-qt5/meta-qt5.git
