@@ -50,15 +50,23 @@ def prepareWorkspace(directoryName){
         branches: [[name: "${YOCTO_VERSION}"]],
         doGenerateSubmoduleConfigurations: false,
         extensions: [
+            [$class: 'SubmoduleOption',
+                disableSubmodules: false,
+                parentCredentials: true,
+                recursiveSubmodules: true,
+                reference: '',
+                trackingSubmodules: false
+            ],
             [$class: 'RelativeTargetDirectory',
                 relativeTargetDir: "${directoryName}"
             ],
             [$class: 'PruneStaleBranch'],
         ],
         submoduleCfg: [],
-        userRemoteConfigs: [
-            [url: "${env.GIT_URL}"]
-        ]
+        userRemoteConfigs: [[
+            credentialsId: 'jenkins-master-key',
+            url: "${env.GIT_URL}"
+        ]]
     ])
 }
 
