@@ -52,8 +52,7 @@ function main () {
 	if [ "${IS_GIT_TAG}" -gt "0" ]; then
 		STAMP="${GITATAG}"
 	elif [ -n "${GITATAG}" ]; then
-		STAMP="$(echo "${GITATAG}" | awk -F- '{ printf("%s", $1); for (i = 2; i <= NF - 2; i++) { printf("-%s", $i) } }')"
-		STAMP="${STAMP}$(echo "${GITATAG}" | awk -F- '{ if (NF >= 3) printf("-%05d-%s", $(NF-1),$(NF));}')"
+		STAMP="$(echo "${GITATAG}" | awk -F- '{ OFS = "-"; if (NF > 1) $(NF-1) = sprintf("%05d", $(NF-1)); print $0 }')"
 	else
 		STAMP="git-g${GITHEAD}"
 	fi
