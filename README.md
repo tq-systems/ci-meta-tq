@@ -2,27 +2,28 @@
 
 This repo contains setup, configuration and dependencies use to build and test
 the meta-tq hardware support layer. All Yocto Project / Open Embedded layers
-the build depends on are git submodules
+the build depends on are git submodules of this repo.
 
 Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <url>`
 
 ## Supported branches of meta-tq
+
+Branch names correspond to Yocto Project release names. Special branches
+supporting a special setup are named `<release-name>-<module>`
 
 - krogoth (not longer maintained)
 - morty (not longer maintained)
 - pyro (not longer maintained)
 - rocko (no i.MX mfgtool support, not longer maintained)
 - warrior (dropped i.MX mfgtool support)
+- zeus
 - rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, not longer maintained)
 - sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK)
 - sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
 - thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
 - zeus-tqma8x (only for TQMa8 platforms, based on NXP BSP, current development)
 
-**Attention:** use README.md of used branch for exact details.
-
-Branch names correspond to Yocto Project release names. Special branches
-supporting a special setup are named `<release-name>-<module>`
+**Attention:** use README.md of the used branch for exact details.
 
 When switching branches keep in mind to keep the submodules in sync:
 
@@ -80,6 +81,12 @@ meta-freescale:
 `conf/machines/*` and `conf/machines/include/imx-base.include`
 
 This leads to uncommitted changes in meta-freescale.
+
+**Attention:**: The fetcher code of bitbake in the zeus release has issues
+with git submodules and shallow cloning, which can cause build breaks.
+Therefore a patch is applied to the poky sources when the setup environment
+script is sourced. If you do not use shallow clones, the code in
+`setup-environment` can be removed.
 
 ### Return to an existing build space
 
@@ -166,7 +173,7 @@ with `BB_FETCH_PREMIRRORONLY=1`
 This project is focused on board bringup and demonstration for TQ Systems starter
 kits. Since embedded projects have different goals, the Yocto Project brings lots
 of features to modify system configuration and setup. This project is not a turn
-key distribution but a starting point fro own developments.
+key distribution but a starting point for own developments.
 
-RootFS created with this setup has for demonstration purpose and ease of
-development not root password set.
+RootFS created with this setup has no root password set for demonstration
+purpose and ease of development.
