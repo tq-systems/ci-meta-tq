@@ -5,6 +5,17 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0029
+
+## Changed
+
+* setup-environment: apply bitbake fix for gitsm fetcher and shallow clones
+* ci: jenkins slave support
+* ci: improve support for multiple Git tags pointing at the same revision
+* ci: pass -k to bitbake for fetch step to show all missing downloads in the log
+
+See the changelogs of meta-tq and meta-dumpling for changes in those layers.
+
 ## zeus.TQMa8.BSP.SW.0028
 
 ## Added
