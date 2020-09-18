@@ -12,6 +12,7 @@ BBLAYERS = " \
   ${BSPDIR}/sources/meta-openembedded/meta-python \
   ${BSPDIR}/sources/meta-openembedded/meta-networking \
   ${BSPDIR}/sources/meta-openembedded/meta-multimedia \
+  ${BSPDIR}/sources/meta-linaro/meta-optee \
   \
   ${BSPDIR}/sources/meta-tq \
   ${BSPDIR}/sources/meta-dumpling \

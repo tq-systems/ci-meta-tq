@@ -30,3 +30,7 @@
 	path = sources/meta-arm
 	url = https://git.yoctoproject.org/git/meta-arm
 	branch = master
+[submodule "sources/meta-linaro"]
+	path = sources/meta-linaro
+	url = https://git.linaro.org/openembedded/meta-linaro
+	branch = zeus
