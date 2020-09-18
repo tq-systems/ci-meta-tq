@@ -134,15 +134,17 @@ main () {
 	local LAYER="meta-tq"
 	local ALL_TARGETS=$(${SCRIPTPATH}/ls-machines)
 	local TI_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma57)
+	local TQ_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma65)
 	local LS_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmls)
 	local PPC_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmt)
 	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma[6,7])
 	local CONFIG=${2}
 	local IMAGES="core-image-minimal"
 	local MINIMAL_EXCLUDE="${LS_TARGETS}"
-	local LS_EXCLUDE="${TI_TARGETS} ${IMX_TARGETS}"
-	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS} ${PPC_TARGETS}"
-	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS} ${PPC_TARGETS}"
+	local LS_EXCLUDE="${TI_TARGETS} ${IMX_TARGETS} ${TQ_TARGETS}"
+	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS} ${TQ_TARGETS} ${PPC_TARGETS}"
+	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS} ${TQ_TARGETS} ${PPC_TARGETS}"
+	local TQ_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS} ${TI_TARGETS} ${PPC_TARGETS}"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
@@ -183,6 +185,12 @@ main () {
 	"ti" )
 		IMAGES="tq-image-generic"
 		for excl in ${TI_EXCLUDE}; do
+			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		;;
+	"tq" )
+		IMAGES="tq-image-generic"
+		for excl in ${TQ_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
 		;;
