@@ -25,4 +25,4 @@
 [submodule "sources/meta-arm"]
 	path = sources/meta-arm
 	url = https://git.yoctoproject.org/git/meta-arm
-	branch = master
+	branch = dunfell
