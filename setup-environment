@@ -33,6 +33,7 @@ DEFAULT_DISTRO_minimal="poky"
 DEFAULT_DISTRO_imx="fslc-wayland"
 DEFAULT_DISTRO_ls="poky"
 DEFAULT_DISTRO_ti="poky"
+DEFAULT_DISTRO_tq="poky"
 
 usage()
 {
