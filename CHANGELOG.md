@@ -7,12 +7,20 @@ Releases are named with the following scheme:
 
 ## Changed
 
+meta-dumpling: change to packagegroups to include more utils
 meta-dumpling: add gstreamer support to tq-image-weston
 meta-dumpling: add u-boot-fw-utils and ubi tools to tq images
 
 ### Added
 
+meta-tq: new TQMa8Mx variant with 4 GiB RAM
+meta-tq: new features fpr TQMa8Mx / TQMa8Mx\[M,N]L
 meta-dumpling: qt5 enable image based on tq-image-weston
+
+For exact details of changes in the layers see in the CHANGELOG for the respective
+layer.
+
+### Fixed
 
 ## zeus.TQMa8.BSP.SW.0029
 
