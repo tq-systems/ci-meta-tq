@@ -5,6 +5,15 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## Changed
+
+meta-dumpling: add gstreamer support to tq-image-weston
+meta-dumpling: add u-boot-fw-utils and ubi tools to tq images
+
+### Added
+
+meta-dumpling: qt5 enable image based on tq-image-weston
+
 ## zeus.TQMa8.BSP.SW.0029
 
 ## Changed
