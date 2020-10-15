@@ -5,6 +5,8 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0030
+
 ## Changed
 
 meta-dumpling: change to packagegroups to include more utils
@@ -13,6 +15,7 @@ meta-dumpling: add u-boot-fw-utils and ubi tools to tq images
 
 ### Added
 
+meta-tq: add support for TQMa8Mx on MBa8Mx REV.0300
 meta-tq: new TQMa8Mx variant with 4 GiB RAM
 meta-tq: new features fpr TQMa8Mx / TQMa8Mx\[M,N]L
 meta-dumpling: qt5 enable image based on tq-image-weston
