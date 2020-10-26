@@ -5,6 +5,16 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0031
+
+### Added
+
+meta-tq: add initial support for TQMa8x on MBa8x REV.0x020x
+ci: allow automatic building of TQMa8QM variants
+
+See the changelogs of meta-tq and meta-dumpling for detailed list of changes in
+those layers.
+
 ## zeus.TQMa8.BSP.SW.0030
 
 ## Changed
