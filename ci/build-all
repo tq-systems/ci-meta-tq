@@ -143,9 +143,11 @@ main () {
 # TODO: temporary
 	local IMX8M_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8m)
 	local IMX8X_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8xqp)
-	local IMX8_TARGETS="${IMX8X_TARGETS} ${IMX8M_TARGETS}"
+	local IMX8QM_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8qm)
+	local IMX8_TARGETS="${IMX8X_TARGETS} ${IMX8M_TARGETS} ${IMX8QM_TARGETS}"
 	debug "IMX8M_TARGETS: ${IMX8M_TARGETS}"
 	debug "IMX8X_TARGETS: ${IMX8X_TARGETS}"
+	debug "IMX8QM_TARGETS: ${IMX8QM_TARGETS}"
 	debug "IMX8_TARGETS: ${IMX8_TARGETS}"
 	local IMX_TARGETS="${IMX6_TARGETS} ${IMX7_TARGETS} ${IMX8_TARGETS}"
 	local CONFIG=${2}
