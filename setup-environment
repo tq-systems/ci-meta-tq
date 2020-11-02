@@ -275,6 +275,7 @@ Common targets are:
     meta-toolchain-sdk
     adt-installer
     meta-ide-support
+    tq-custom-image
 
 EOF
 

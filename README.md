@@ -86,6 +86,8 @@ bblayers.conf
 
 * ti: usable for all machines with TQ AM57xx CPU, uses meta-ti
 
+* tq: usable for all machines with TQ AM65xx CPU, uses meta-ti
+
 ### Reproducible build environment
 
 Devolopment and automated builds are supported by the scripts under ci and
@@ -107,6 +109,7 @@ Depending on the configuration, following images will be built:
 * minimal: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
 * imx: fsl-image-multimedia-full (meta-freescale-distro, some bbappends via meta-dumpling)
 * ti: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
+* tq: tq-custom-image (meta-dumpling, based on poky core-image-minimal)
 
 ### Clean build
 
