@@ -5,6 +5,14 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMLS1028A.BSP.SW.0103
+
+### Changed
+
+* Extended build scripts with support for tqmlx2160 platform
+
+See the changelogs of meta-tq and meta-dumpling for changes in those layers.
+
 ## zeus.TQ.Yocto.BSP.SW.0001
 
 This is a joint release for multiple TQMaxx and TQMLSxx module families. It can
