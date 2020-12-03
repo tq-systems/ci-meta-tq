@@ -54,7 +54,7 @@ def prepareWorkspace(directoryName){
         doGenerateSubmoduleConfigurations: false,
         extensions: [
             [$class: 'SubmoduleOption',
-                disableSubmodules: false,
+                disableSubmodules: true,
                 parentCredentials: true,
                 recursiveSubmodules: true,
                 reference: '',
