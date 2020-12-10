@@ -5,6 +5,16 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMLS1012AL.BSP.SW.0008
+
+### Changed
+
+* ci: disable Jenkins's builtin submodule handling
+  * The manual submodule updates in the scripts run by Jenkins are sufficient
+    and more robust.
+
+See the changelog of meta-tq for changes in this layer.
+
 ## zeus.TQMLS1028A.BSP.SW.0103
 
 ### Changed
