@@ -8,6 +8,7 @@ BBLAYERS = " \
   ${BSPDIR}/sources/poky/meta \
   ${BSPDIR}/sources/poky/meta-poky \
   \
+  ${BSPDIR}/sources/meta-openembedded/meta-oe \
   ${BSPDIR}/sources/meta-tq \
   ${BSPDIR}/sources/meta-dumpling \
 "
