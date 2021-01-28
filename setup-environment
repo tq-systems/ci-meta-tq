@@ -210,9 +210,6 @@ if [ ! -e conf/local.conf.sample ]; then
     # Generate the local.conf based on the Yocto defaults, throw away comments
     TEMPLATES=${CWD}/sources/template/conf
     grep -v '^#\|^$' conf/local.conf.sample > conf/local.conf
-    
-    echo "INITRAMFS_IMAGE = \"core-tq-image-initramfs\"" >> conf/local.conf
-    echo "INITRAMFS_IMAGE_BUNDLE = \"1\"" >> conf/local.conf
 
     echo "link additional includes from ${TEMPLATES} to ./conf/ ..."
     FILES=$(find ${TEMPLATES} -maxdepth 1 -type f -name "*.inc")
