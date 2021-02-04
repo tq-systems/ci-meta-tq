@@ -5,6 +5,10 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMLS10xxA.BSP.SW.0103
+
+* Update of meta-tq: see CHANGELOG.md in meta-tq
+
 ## zeus.TQMLS1028A.BSP.SW.0105
 
 See the changelogs of meta-tq and meta-dumpling for detailed list of
