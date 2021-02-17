@@ -6,6 +6,11 @@ the build depends on are git submodules of this repo.
 
 Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <url>`
 
+## License information
+
+This repo contains shell scripts released under the GPLv2, see the file
+[COPYING](COPYING)
+
 ## Supported branches of meta-tq
 
 Branch names correspond to Yocto Project release names. Special branches
