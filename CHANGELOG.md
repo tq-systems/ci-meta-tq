@@ -4,10 +4,15 @@ All notable changes to this project will be documented in this file.
 Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
+## zeus.TQMa8.BSP.SW.0033
 
-## Changed
+### Changed
 
+* add complete license text for GPLv2 (we have some scripts files under GPLv2)
+* treewide: fix spelling of TQ-Systems
+* treewide: style fix in shell scripts calling main
 * meta-tq: collection of linux / DT fixes
+* meta-tq: prepare new u-boot release for TQMa8XQPS
 
 See the changelog of meta-tq for detailed list of changes in this layer.
 
