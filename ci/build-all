@@ -28,7 +28,7 @@
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname $(readlink -f "${0}"))
-readonly SCRIPT="$(basename ${0})"
+readonly SCRIPT="$(basename "${0}")"
 
 readonly SETUPSCRIPT=./imx-setup-release.sh
 
@@ -408,4 +408,4 @@ main () {
 	return 0
 }
 
-main ${@}
+main "${@}"
