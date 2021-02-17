@@ -11,6 +11,8 @@ Releases are named with the following scheme:
 * add complete license text for GPLv2 (we have some scripts files under GPLv2)
 * treewide: fix spelling of TQ-Systems
 * treewide: style fix in shell scripts calling main
+* meta-tq: support new hardware revision for TQMa8XxS
+* meta-tq: cleanup old, now unneeded recipes for bootstream creation
 * meta-tq: collection of linux / DT fixes
 * meta-tq: prepare new u-boot release for TQMa8XQPS
 
