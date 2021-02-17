@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # File:        update-modules.py
-# Copyright (C) 2019 TQ Systems GmbH
+# Copyright (C) 2019 TQ-Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # Description: utility script to update all submodules to HEAD of branch given

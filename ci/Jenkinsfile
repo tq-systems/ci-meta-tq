@@ -1,7 +1,7 @@
 /**
- * Copyright (C) 2017 - 2020 TQ Systems GmbH
+ * Copyright (C) 2017 - 2020 TQ-Systems GmbH
  * @author Markus Niebel <Markus.Niebel@tq-group.com>
- * Jenkinsfile for TQ Systems Yocto-BSPs using declarative pipeline
+ * Jenkinsfile for TQ-Systems Yocto-BSPs using declarative pipeline
  * License:     GPLv2
  *
  */
