@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
+
+## zeus.TQMa8.BSP.SW.0034
+
+### Changed
+
+* meta-tq: support new hardware revision for TQMa8MxML / TQMa8MxNL
+
+See the changelog of meta-tq for detailed list of changes in this layer.
+
 ## zeus.TQMa8.BSP.SW.0033
 
 ### Changed
