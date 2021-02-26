@@ -189,7 +189,7 @@ main () {
 		done
 		;;
 	"tq" )
-		IMAGES="tq-image-generic"
+		IMAGES="tq-custom-image"
 		for excl in ${TQ_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
