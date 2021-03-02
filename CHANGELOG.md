@@ -5,6 +5,15 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0035
+
+### Changed
+
+* ci: enable modules with i.MX8DXP (TQMa8XDP\[4\]) for ci builds
+* meta-tq: support new hardware variants TQMa8XDP\[4\]
+
+See the changelog of meta-tq for detailed list of changes in this layer.
+
 ## zeus.TQMa8.BSP.SW.0034
 
 ### Changed
