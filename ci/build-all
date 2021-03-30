@@ -132,9 +132,9 @@ main () {
 	local BUILD_DIR=${1}
 	local DEPLOYDIR=$(readlink -f ./${BUILD_DIR})/deployment
 	local LAYER="meta-tq"
-	local ALL_TARGETS=$(${SCRIPTPATH}/ls-machines)
+	local ALL_TARGETS=$(${SCRIPTPATH}/ls-machines | grep -v -- '-k3r5$')
 	local TI_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma57)
-	local TQ_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma65)
+	local TQ_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma65 | grep -v -- '-k3r5$')
 	local LS_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmls)
 	local PPC_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmt)
 	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep "tqma[6,7][^0-9]")
