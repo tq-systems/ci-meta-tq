@@ -26,6 +26,7 @@ CWD=$(pwd)
 # bashism:
 FULL_PROGNAME=$( readlink -f ${BASH_SOURCE} )
 PROGNAME=$(basename ${FULL_PROGNAME})
+PACKAGE_CLASSES=${PACKAGE_CLASSES:-package_rpm}
 # get first tqma8 machine from meta-tq
 DEFAULT_MACHINE=$(./ls-machines | grep tqma8 | head -1 | awk '{$1=$1;print}')
 META_TQ_MACHINES=$(./ls-machines | grep tqma8)
@@ -48,8 +49,8 @@ Usage: MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> [<templa
 Usage:                                   source ${PROGNAME} <build-dir>
     <machine>    machine name
     <distro>     distro name
-    <build-dir>: specifies the build directory (required)
-    <template>: template bblayers.conf to use (optional)
+    <build-dir>  specifies the build directory (required)
+    <template>  template bblayers.conf to use (optional)
 
 The first usage is for creating a new build directory. In this case, the
 script creates the build directory <build-dir>, configures it for the
@@ -97,6 +98,13 @@ clean_up() {
 handle_eula() {
 	# Handle EULA setting
 	local EULA_ACCEPTED=
+
+	[ -z "${FSL_EULA_FILE}" ] && FSL_EULA_FILE=${CWD}/sources/meta-freescale/EULA
+	if [ ! -e ${FSL_EULA_FILE} ]; then
+	    echo -e "ERROR: EULA not found at ${FSL_EULA_FILE}."
+	    clean_up
+	    return 1
+	fi
 
 	# EULA has been accepted already (ACCEPT_FSL_EULA is set in local.conf)
 	if grep -q '^\s*ACCEPT_FSL_EULA\s*=\s*["'\'']..*["'\'']' conf/local.conf; then
