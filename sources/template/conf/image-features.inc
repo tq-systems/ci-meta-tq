@@ -14,3 +14,6 @@ EXTRA_IMAGE_FEATURES_append = " empty-root-password"
 IMAGE_FSTYPES_remove = "tar.xz wic.xz"
 IMAGE_FSTYPES_remove = "wic.gz wic.bz2 tar.bz2 sdcard sdcard.bz2 ext2.gz "
 IMAGE_FSTYPES_append = " tar.gz ext4 wic"
+
+IMAGE_CLASSES_remove = "image_types_fsl"
+IMAGE_CLASSES_remove = "image_types_create_sdcard_symlink"
