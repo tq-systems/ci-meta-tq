@@ -26,6 +26,8 @@ BBLAYERS += " ${BSPDIR}/sources/meta-imx/meta-ml "
 
 BBLAYERS += "${BSPDIR}/sources/meta-browser"
 BBLAYERS += "${BSPDIR}/sources/meta-rust"
+BBLAYERS += "${BSPDIR}/sources/meta-clang"
 BBLAYERS += "${BSPDIR}/sources/meta-openembedded/meta-networking"
 BBLAYERS += "${BSPDIR}/sources/meta-openembedded/meta-filesystems"
 BBLAYERS += "${BSPDIR}/sources/meta-qt5"
+BBLAYERS += "${BSPDIR}/sources/meta-python2"
