@@ -19,12 +19,12 @@ supporting a special setup are named `<release-name>-<module>`
 - krogoth (not longer maintained)
 - morty (not longer maintained)
 - pyro (not longer maintained)
-- rocko (no i.MX mfgtool support, not longer maintained)
-- warrior (dropped i.MX mfgtool support)
+- rocko (not longer maintained)
+- sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK)
+- warrior (not longer maintained)
 - zeus
 - rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, not longer maintained)
-- sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK)
-- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
+- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP, not longer maintained)
 - thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
 - zeus-tqma8x (only for TQMa8 platforms, based on NXP BSP, current development)
 
@@ -80,18 +80,8 @@ meta layer will be sourced to get the bitbake environment
 
 After this step, everything is setup to build an image using bitbake.
 
-**Attention:**: meta-imx needs to overwrite some files in
-meta-freescale:
-
-`conf/machines/*` and `conf/machines/include/imx-base.include`
-
-This leads to uncommitted changes in meta-freescale.
-
-**Attention:**: The fetcher code of bitbake in the zeus release has issues
-with git submodules and shallow cloning, which can cause build breaks.
-Therefore a patch is applied to the poky sources when the setup environment
-script is sourced. If you do not use shallow clones, the code in
-`setup-environment` can be removed.
+**Attention:**: setup scripts for NXP BSP overwrites the NXP EULA file in
+`sources/meta-freescale`. This leads to uncommitted changes in `meta-freescale`.
 
 ### Return to an existing build space
 
