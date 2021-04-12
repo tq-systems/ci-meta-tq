@@ -5,6 +5,17 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+### Changed
+
+* configuration helper:  prepare using NXP BSP rel\_imx\_5.4.70\_2.3.1
+* sources/template: remove some content of IMAGE_CLASSES via auto.config
+  to reduce image folder size
+* sources/template: update bblayers.conf template for  NXP BSP
+  rel\_imx\_5.4.70\_2.3.1
+* submodules: prepare using NXP BSP rel\_imx\_5.4.70\_2.3.1
+
+See the changelog of meta-tq for detailed list of changes in this layer.
+
 ## zeus.TQMa8.BSP.SW.0036
 
 * meta-tq: u-boot bugfix release for TQMa8X\[D,Q\]P\[S,4\] and TQMa8QM
