@@ -177,12 +177,12 @@ handle_fsl_bsp_release () {
 }
 
 handle_patches () {
-    local PATCH="${CWD}/ci/patches/0001-bitbake-fetch2-update-git-gitsm-to-upstream-master.patch"
-    # Try to apply patch - if this fails, check it patch is already applied
+    local PATCH="${CWD}/ci/patches/0001-bitbake-fetch2-update-gitsm-to-upstream.patch"
+    # Try to apply patch - if this fails, check if patch is already applied
     # This is only save if this is the top level patch. Nevertheless this should
-    # always be true. if poky ist updated we have to check this workaround
+    # always be true. If poky is updated, we have to check this workaround
     # anyway.
-    git -C ${CWD}/sources/poky apply "${PATCH}" || git -C ${CWD}/sources/poky apply "${PATCH}" -R --check && echo already applied
+    git -C ${CWD}/sources/poky apply "${PATCH}" || git -C ${CWD}/sources/poky apply "${PATCH}" -R --check && echo "already applied"
 }
 
 # get command line options
