@@ -196,8 +196,11 @@ main () {
 	ALL_TARGETS=$(echo ${ALL_TARGETS} | tr ' ' '\n' | sort -u)
 	debug "Targets to build: ${ALL_TARGETS}"
 
-	# source the real setup workhorse.
 	export MACHINE=$(echo ${ALL_TARGETS} | awk '{ print $1 }')
+	# clean conf, to enforce a really clean configuration and to enable
+	# incremental changes in the config using our template dir
+	rm -rf ${BUILD_DIR}/conf
+	# source the real setup workhorse.
 	. ./setup-environment ${BUILD_DIR} ${CONFIG}
 	[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
 
