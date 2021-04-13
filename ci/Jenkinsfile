@@ -32,9 +32,9 @@ def checkoutMetaLayers(directoryName) {
         sshagent(['jenkins-master-key']) {
             sh """
             git submodule sync
+            git submodule foreach --recursive 'git clean -fdx'
+            git submodule foreach --recursive 'git checkout .'
             git submodule update --init
-            git submodule foreach --recursive git clean -fdx
-            git submodule foreach --recursive 'git checkout ./*'
             git clean -fdx sources templates
             git clean -fx"""
         }
