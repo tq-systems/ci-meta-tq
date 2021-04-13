@@ -5,6 +5,26 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+### Added
+
+* sources/templates: add image-features config fragment
+  * global handling for `IMAGE_FSTYPES`, prepare removal from machine files in
+    meta-tq
+  * remove `debug-tweaks` from `EXTRA_IMAGE_FEATURES` and `EXTRA_FEATURES`
+    This kind of stuff should explicitly set be set in local.conf if needed
+    for development.
+
+### Changed
+
+* ci: improve shell coding style
+* treewide: fix spelling of TQ-Systems GmbH
+
+### Fixed
+
+* ci/build-all: force a clean generated conf dir in buildspace for every run
+* ci/Jenkinsfile: prevent errors in submodule code in case of build needs to
+  manipulate submodules
+
 ## zeus.TQMLS10xxA.BSP.SW.0103
 
 * Update of meta-tq: see CHANGELOG.md in meta-tq
