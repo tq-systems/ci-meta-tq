@@ -1,10 +1,10 @@
 #!/bin/bash
 #
 # File:        prepare-release.sh
-# Copyright (C) 2016 TQ Systems GmbH
+# Copyright (C) 2016 - 2021 TQ-Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
-# Description: A utility script to install a PTXdist version
+# Description: A utility script to tag current version and optionally submodules
 #
 # License:     GPLv2
 #

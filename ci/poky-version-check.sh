@@ -1,7 +1,7 @@
 #!/bin/bash -
 #
 # File:        poky-version-check.sh
-# Copyright (C) 2018 TQ Systems GmbH
+# Copyright (C) 2018 TQ-Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # Description: utility script for poky / bitbake version checking

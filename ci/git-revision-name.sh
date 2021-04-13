@@ -1,7 +1,7 @@
 #!/bin/bash -
 #
 # File:        git-revision-name.sh
-# Copyright (C) 2014 - 2018 TQ Systems GmbH
+# Copyright (C) 2014 - 2018 TQ-Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # Description: A utility to get a pretty string for
