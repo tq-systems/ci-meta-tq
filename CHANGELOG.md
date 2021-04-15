@@ -7,6 +7,7 @@ Releases are named with the following scheme:
 
 ### Changed
 
+* meta-tq: support new hardware TQMa8MPxL
 * configuration helper:  prepare using NXP BSP rel\_imx\_5.4.70\_2.3.1
 * sources/template: remove some content of IMAGE_CLASSES via auto.config
   to reduce image folder size
