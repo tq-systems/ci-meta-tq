@@ -85,10 +85,18 @@ def mirrorConfiguration(directoryName) {
     }
 }
 
+/**********************************************************************/
+/* build images for all machines using build-all script.              */
+/* The given directory name must match the configuration name         */
+/* which is needed as parameter for the build-all script              */
+/* Note:                                                              */
+/* all configurations use a shared dl dir                             */
+/* the build node should have the path to SSTATE_DIR in the site.conf */
+/**********************************************************************/
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
-        sh "export SSTATE_DIR=${env.WORKSPACE}/${env.SSTATE_DIR} && export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build-all ${env.BUILD_DIR} \$(basename \$(pwd)) ci"
+        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build-all ${env.BUILD_DIR} \$(basename \$(pwd)) ci"
     }
 }
 
@@ -150,16 +158,6 @@ def handleGlobalData(directoryName) {
             println "clear ${directoryName}/${env.DL_DIR} ..."
             sh "pwd; ls -al; time rm -rf ${directoryName}/${env.DL_DIR}; ls -1"
         }
-        /*
-         * for nightly builds: do sstate cache maintenance
-         * to make sure that no previous error left defect build space,
-         * update submodules before
-         */
-        if (reason.contains("TimerTriggerCause")) {
-            println "maintain ${directoryName}/${env.SSTATE_DIR} ..."
-            checkoutMetaLayers("${directoryName}")
-            sh "time ${directoryName}/sources/poky/scripts/sstate-cache-management.sh --cache-dir=${directoryName}/${env.SSTATE_DIR} --extra-layer=${directoryName}/sources/meta-tq -d -y"
-        }
     }
     causes = null
 
@@ -167,8 +165,7 @@ def handleGlobalData(directoryName) {
      * last ressort only: clean SSTATE_CACHE
      */
     if (params.CLEAN_CACHES == true) {
-        println "clear ${directoryName}/${env.SSTATE_DIR} ... (CLEAN_CACHES)"
-        sh "pwd; ls -al; time rm -rf ${directoryName}/${env.SSTATE_DIR}; ls -1"
+        println "CLEAN_CACHES not supported for shared SSTATE_CACHE"
     }
 
     /*
@@ -217,7 +214,6 @@ pipeline {
         WS_MIN = "CONFIGS/minimal"
         WS_TI = "CONFIGS/ti"
         DL_DIR = "shared-dl-dir"
-        SSTATE_DIR = "shared-sstate-cache"
         BUILD_DIR = "buildspace"
         DEPLOY_DIR = "deployment"
     }
