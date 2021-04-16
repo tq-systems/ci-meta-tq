@@ -315,14 +315,14 @@ main () {
 				# overwrite MACHINE
 				export MACHINE=${t}
 
-				#
-				# do a fetchall to force filling DL_DIR
-				#
-				if [ "${MODE}" == "ci" ]; then
-					echo "baking: ${MACHINE} ${img} with --runall=fetch"
-					bitbake ${img} --runall=fetch -k
-					[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
-				fi
+#				#
+#				# do a fetchall to force filling DL_DIR
+#				#
+#				if [ "${MODE}" == "ci" ]; then
+#					echo "baking: ${MACHINE} ${img} with --runall=fetch"
+#					bitbake ${img} --runall=fetch -k
+#					[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
+#				fi
 
 				echo "baking ${MACHINE} ${img} ..."
 				# create image for $MACHINE
