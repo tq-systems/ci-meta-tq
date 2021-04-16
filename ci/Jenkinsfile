@@ -78,7 +78,10 @@ def prepareWorkspace(directoryName){
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
+/*
         sh "export SSTATE_DIR=${env.WORKSPACE}/${env.SSTATE_DIR} && export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build-all ${env.BUILD_DIR} \$(basename \$(pwd)) ci"
+*/
+        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build-all ${env.BUILD_DIR} \$(basename \$(pwd)) ci"
     }
 }
 
@@ -146,9 +149,11 @@ def handleGlobalData(directoryName) {
          * update submodules before
          */
         if (reason.contains("TimerTriggerCause")) {
+        /*
             println "maintain ${directoryName}/${env.SSTATE_DIR} ..."
             checkoutMetaLayers("${directoryName}")
             sh "time ${directoryName}/sources/poky/scripts/sstate-cache-management.sh --cache-dir=${directoryName}/${env.SSTATE_DIR} --extra-layer=${directoryName}/sources/meta-tq -d -y"
+        */
         }
     }
     causes = null
@@ -157,8 +162,10 @@ def handleGlobalData(directoryName) {
      * last ressort only: clean SSTATE_CACHE
      */
     if (params.CLEAN_CACHES == true) {
+        /*
         println "clear ${directoryName}/${env.SSTATE_DIR} ... (CLEAN_CACHES)"
         sh "pwd; ls -al; time rm -rf ${directoryName}/${env.SSTATE_DIR}; ls -1"
+        */
     }
 
     /*
@@ -205,7 +212,7 @@ pipeline {
         WS_MIN = "CONFIGS/minimal"
         WS_TI = "CONFIGS/ti"
         DL_DIR = "shared-dl-dir"
-        SSTATE_DIR = "shared-sstate-cache"
+        /* SSTATE_DIR = "shared-sstate-cache" */
         BUILD_DIR = "buildspace"
         DEPLOY_DIR = "deployment"
     }
