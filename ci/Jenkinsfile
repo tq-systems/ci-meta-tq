@@ -75,6 +75,13 @@ def prepareWorkspace(directoryName){
     ])
 }
 
+def mirrorConfiguration(directoryName) {
+    dir("${directoryName}") {
+        echo "creat mirror packages for all machines of config ${directoryName} ..."
+        sh "./ci/build-all ${env.BUILD_DIR}-mirror \$(basename \$(pwd)) mirror"
+    }
+}
+
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
@@ -278,6 +285,15 @@ pipeline {
                         checkoutMetaLayers("${env.WS_TI}")
                     },
 */
+                )
+            }
+        }
+        stage ('Fetch'){
+            steps {
+                parallel (
+                    "imx" : {
+                        mirrorConfiguration("${env.WS_IMX}")
+                    },
                 )
             }
         }
