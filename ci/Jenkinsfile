@@ -199,6 +199,7 @@ pipeline {
                        numToKeepStr: '10')
         )
         disableConcurrentBuilds()
+        timestamps()
     }
 
     triggers {
