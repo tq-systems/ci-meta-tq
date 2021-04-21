@@ -204,6 +204,7 @@ pipeline {
                        numToKeepStr: '10')
         )
         disableConcurrentBuilds()
+        timestamps()
     }
     triggers {
             cron('H H(0-4) * * *')
