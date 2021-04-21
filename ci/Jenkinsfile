@@ -292,7 +292,9 @@ pipeline {
             steps {
                 parallel (
                     "imx" : {
-                        mirrorConfiguration("${env.WS_IMX}")
+                        sshagent(['jenkins-master-key']) {
+                            mirrorConfiguration("${env.WS_IMX}")
+                        }
                     },
                 )
             }
