@@ -5,17 +5,23 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
-### Changed
+## zeus.TQMa8.BSP.SW.0037
+
+### Added
 
 * meta-tq: support new hardware TQMa8MPxL
+
+### Changed
+
+* ci: improvements for build server
 * configuration helper:  prepare using NXP BSP rel\_imx\_5.4.70\_2.3.1
 * sources/template: remove some content of IMAGE_CLASSES via auto.config
   to reduce image folder size
-* sources/template: update bblayers.conf template for  NXP BSP
+* sources/template: update bblayers.conf template for NXP BSP
   rel\_imx\_5.4.70\_2.3.1
 * submodules: prepare using NXP BSP rel\_imx\_5.4.70\_2.3.1
 
-See the changelog of meta-tq for detailed list of changes in this layer.
+See the changelog of meta-tq for detailed list of changes in the BSP layer.
 
 ## zeus.TQMa8.BSP.SW.0036
 
