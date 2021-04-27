@@ -38,10 +38,6 @@
 	path = sources/meta-rust
 	url = https://github.com/meta-rust/meta-rust.git
 	branch = "master"
-[submodule "sources/meta-timesys"]
-	path = sources/meta-timesys
-	url = https://github.com/TimesysGit/meta-timesys.git
-	branch = "zeus"
 [submodule "sources/meta-qt5"]
 	path = sources/meta-qt5
 	url = https://github.com/meta-qt5/meta-qt5.git
@@ -49,4 +45,12 @@
 [submodule "sources/meta-imx"]
 	path = sources/meta-imx
 	url = https://source.codeaurora.org/external/imx/meta-imx
-	branch = "zeus-5.4.3-1.0.0"
+	branch = "zeus-5.4.70-2.3.1"
+[submodule "sources/meta-python2"]
+	path = sources/meta-python2
+	url = https://git.openembedded.org/meta-python2
+	branch = "zeus"
+[submodule "sources/meta-clang"]
+	path = sources/meta-clang
+	url = https://github.com/kraj/meta-clang.git
+	branch = "zeus"
