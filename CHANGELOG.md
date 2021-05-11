@@ -5,6 +5,23 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0037
+
+### Added
+
+* meta-tq: support new hardware variant TQMa8XDPS
+
+### Fixed
+
+* meta-imx: update to top of lf-5-4 release branch to workaround history rewrite
+  in imx clone of opencv
+
+### Changed
+
+* ci: improvements for build server
+
+See the changelog of meta-tq for detailed list of changes in this layer.
+
 ## zeus.TQMa8.BSP.SW.0036
 
 * meta-tq: u-boot bugfix release for TQMa8X\[D,Q\]P\[S,4\] and TQMa8QM
