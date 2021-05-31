@@ -141,10 +141,11 @@ main () {
 	local IMX6_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma6)
 	local IMX7_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma7)
 # TODO: temporary
-	local IMX8M_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8m)
+	local IMX8MQ_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8mx-)
+	local IMX8M_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8mx[mn]l)
 	local IMX8X_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8x[dq]p)
 	local IMX8QM_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma8qm)
-	local IMX8_TARGETS="${IMX8X_TARGETS} ${IMX8M_TARGETS} ${IMX8QM_TARGETS}"
+	local IMX8_TARGETS="${IMX8MQ_TARGETS}"
 	debug "IMX8M_TARGETS: ${IMX8M_TARGETS}"
 	debug "IMX8X_TARGETS: ${IMX8X_TARGETS}"
 	debug "IMX8QM_TARGETS: ${IMX8QM_TARGETS}"
@@ -153,7 +154,7 @@ main () {
 	local CONFIG=${2}
 	local IMAGES="tq-image-generic"
 	local MINIMAL_EXCLUDE="tqma6q-nav ${IMX8_TARGETS}"
-	local IMX8_EXCLUDE="${LS_TARGETS} ${IMX6_TARGETS} ${IMX7_TARGETS} ${TI_TARGETS} ${PPC_TARGETS}"
+	local IMX8_EXCLUDE="${LS_TARGETS} ${IMX6_TARGETS} ${IMX7_TARGETS} ${TI_TARGETS} ${PPC_TARGETS} ${IMX8QM_TARGETS} ${IMX8X_TARGETS} ${IMX8M_TARGETS} "
 	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS} ${PPC_TARGETS}"
 	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS} ${PPC_TARGETS}"
 	local MODE="normal"
