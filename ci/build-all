@@ -133,7 +133,7 @@ main () {
 	local DEPLOYDIR=$(readlink -f ./${BUILD_DIR})/deployment
 	local LAYER="meta-tq"
 	local ALL_TARGETS=$(${SCRIPTPATH}/ls-machines)
-	local TI_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma57)
+	local TI_TARGETS=$(${SCRIPTPATH}/ls-machines | grep 'tqma335\|tqma57')
 	local LS_TARGETS=$(${SCRIPTPATH}/ls-machines | grep 'tqml[s,x]')
 	local PPC_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmt)
 	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep 'tqma[6,7]')
