@@ -71,6 +71,18 @@ def prepareWorkspace(directoryName){
             url: "${env.GIT_URL}"
         ]]
     ])
+    echo "create shared DL_DIR ${env.WORKSPACE}/${env.DL_DIR} ..."
+    sh "mkdir -p ${env.WORKSPACE}/${env.DL_DIR}"
+}
+
+def mirrorConfiguration(directoryName) {
+    dir("${directoryName}") {
+        sshagent(['jenkins-master-key']) {
+           echo "create mirror packages for all machines of config ${directoryName} ..."
+           sh "./ci/build-all ${env.BUILD_DIR}-mirror \$(basename \$(pwd)) mirror"
+           sh "cp -ruv ${env.BUILD_DIR}-mirror/downloads/* ${env.WORKSPACE}/${env.DL_DIR}"
+        }
+    }
 }
 
 def buildConfiguration(directoryName) {
@@ -188,6 +200,7 @@ pipeline {
         )
         disableConcurrentBuilds()
     }
+
     triggers {
             cron('H H(0-4) * * *')
             pollSCM('''# Alle fünf Minuten von 7.00-20.00 an jedem Wochentag
@@ -272,6 +285,24 @@ pipeline {
                     },
                     "ti" : {
                         checkoutMetaLayers("${env.WS_TI}")
+                    },
+                )
+            }
+        }
+        stage ('Fetch'){
+            steps {
+                parallel (
+                    "imx" : {
+                        mirrorConfiguration("${env.WS_IMX}")
+                    },
+                    "ls" : {
+                        mirrorConfiguration("${env.WS_LS}")
+                    },
+                    "minimal" : {
+                        mirrorConfiguration("${env.WS_MIN}")
+                    },
+                    "ti" : {
+                        mirrorConfiguration("${env.WS_TI}")
                     },
                 )
             }
