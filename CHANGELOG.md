@@ -5,6 +5,18 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMLS1012AL.BSP.SW.0009
+
+### Added
+
+* ci/build-all: add tqma335x to TI_TARGETS
+
+### Changed
+
+* Update of meta-tq: see CHANGELOG.md in meta-tq
+
+## zeus.TQMLX2160A.BSP.SW.0009
+
 ### Added
 
 * sources/templates: add image-features config fragment
@@ -16,6 +28,7 @@ Releases are named with the following scheme:
 
 ### Changed
 
+* Update of meta-tq: see CHANGELOG.md in meta-tq
 * ci: improve shell coding style
 * treewide: fix spelling of TQ-Systems GmbH
 
