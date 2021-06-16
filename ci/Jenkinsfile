@@ -215,11 +215,6 @@ pipeline {
     triggers {
         /* nightly rebuild */
         cron('H H(0-4) * * *')
-        /*
-         * TODO: we should use gitlab webhooks here ...
-         * pollSCM('''# Alle fünf Minuten von 7.00-20.00 an jedem Wochentag
-         *       H/5 7-20 * * 1-5''')
-         */
     }
 
     environment {
@@ -230,7 +225,6 @@ pipeline {
         WS_MIN = "CONFIGS/minimal"
         WS_TI = "CONFIGS/ti"
         DL_DIR = "shared-dl-dir"
-        /* SSTATE_DIR = "shared-sstate-cache" */
         BUILD_DIR = "buildspace"
         DEPLOY_DIR = "deployment"
     }
