@@ -75,10 +75,17 @@ def prepareWorkspace(directoryName){
     sh "mkdir -p ${env.WORKSPACE}/${env.DL_DIR}"
 }
 
+/**********************************************************************/
+/* create missing mirror packages using build-all script.             */
+/* use separate build directory since other config options are used   */
+/* clean mirror build dir to prevent old downloads are copied into    */
+/* shared dl dir                                                      */
+/**********************************************************************/
 def mirrorConfiguration(directoryName) {
     dir("${directoryName}") {
         sshagent(['jenkins-master-key']) {
            echo "create mirror packages for all machines of config ${directoryName} ..."
+           sh "rm -rf ${env.BUILD_DIR}-mirror"
            sh "./ci/build-all ${env.BUILD_DIR}-mirror \$(basename \$(pwd)) mirror"
            sh "cp -ruv ${env.BUILD_DIR}-mirror/downloads/* ${env.WORKSPACE}/${env.DL_DIR}"
         }
