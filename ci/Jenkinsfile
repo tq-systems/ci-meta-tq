@@ -27,15 +27,29 @@ def wipeOutWs(){
     }
 }
 
+/**********************************************************************/
+/* Special submodule handling                                         */
+/* we need to be able to exchange the submodule setup                 */
+/* therefore                                                          */
+/* - add / remove / update submodule url                              */
+/* - fetch all repos and clean no longer existing refs                */
+/* - update default branch                                            */
+/* - do repo maintenance                                              */
+/* - force a clean checkout with existing ref to make sure following  */
+/*   'git submodule update --init' runs smoothly                      */
+/**********************************************************************/
 def checkoutMetaLayers(directoryName) {
     dir("${directoryName}") {
         sshagent(['jenkins-master-key']) {
             sh """
             git submodule sync
+            git submodule foreach --recursive 'git fetch --prune --prune-tags origin'
+            git submodule foreach --recursive 'git remote set-head origin --auto'
+            git submodule foreach --recursive 'git gc'
+            git submodule foreach --recursive 'git reset --hard origin/HEAD'
             git submodule foreach --recursive 'git clean -fdx'
-            git submodule foreach --recursive 'git checkout .'
             git submodule update --init
-            git clean -fdx sources templates
+            git clean -fdx sources/templates
             git clean -fx"""
         }
     }
