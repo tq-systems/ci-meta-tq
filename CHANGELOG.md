@@ -5,6 +5,18 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0038
+
+### Changed
+
+* meta-tq: RTM release for TQMa8XDPS
+
+### Fixed
+
+* meta-tq: u-boot fixes for TQMa8XDPS
+
+See the changelog of meta-tq for detailed list of changes in this layer.
+
 ## zeus.TQMa8.BSP.SW.0037
 
 ### Added
