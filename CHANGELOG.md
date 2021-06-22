@@ -5,6 +5,14 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0052
+
+### Fixed
+
+* meta-tq: RAM Timing fixes for TQMa8MxML
+
+See the changelog of meta-tq for detailed list of changes in this layer.
+
 ## zeus.TQMa8.BSP.SW.0051
 
 ### Changed
