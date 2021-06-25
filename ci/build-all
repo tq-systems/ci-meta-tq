@@ -242,7 +242,7 @@ main () {
 			for t in ${ALL_TARGETS}; do
 				export MACHINE=${t}
 				echo "baking: ${MACHINE} ${img} with --runall=fetch"
-				bitbake ${img} --runall=fetch
+				bitbake ${img} --runall=fetch -k
 				[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
 			done
 		done
@@ -312,7 +312,7 @@ main () {
 				#
 				if [ "${MODE}" == "ci" ]; then
 					echo "baking: ${MACHINE} ${img} with --runall=fetch"
-					bitbake ${img} --runall=fetch
+					bitbake ${img} --runall=fetch -k
 					[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
 				fi
 
