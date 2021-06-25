@@ -27,6 +27,9 @@
 #
 ###############################################################################
 
+# Usage:
+# git-revision-name.sh [ PREFERRED-TAG ]
+
 # DEBUGGING
 ### set -e
 set -C # noclobber
@@ -43,10 +46,16 @@ readonly VERSION=0.2
 
  # Create a place to store our work's progress
 function main () {
+	local PREFERRED_TAG="$1"
+
 	local IS_GIT_TAG="0"
 	local GITHEAD="$(git rev-parse --verify HEAD 2>/dev/null)"
 	local GITATAG="$(git describe --abbrev=12 2>/dev/null)"
-	if git show-ref --quiet --tags "${GITATAG}" 2>/dev/null; then
+	local PREFERRED_TAG_COMMIT="$(git show-ref --tags -d "${PREFERRED_TAG}" 2>/dev/null | awk 'END { print $1 }')"
+	if [ -n "${PREFERRED_TAG_COMMIT}" ] && [ "${PREFERRED_TAG_COMMIT}" = "${GITHEAD}" ]; then
+		GITATAG="${PREFERRED_TAG}"
+		IS_GIT_TAG="1"
+	elif git show-ref --quiet --tags "${GITATAG}" 2>/dev/null; then
 		IS_GIT_TAG="1"
 	fi
 	local STAMP="git-stamp"
