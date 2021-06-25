@@ -75,6 +75,15 @@ def prepareWorkspace(directoryName){
     ])
 }
 
+def mirrorConfiguration(directoryName) {
+    dir("${directoryName}") {
+        sshagent(['jenkins-master-key']) {
+            echo "creat mirror packages for all machines of config ${directoryName} ..."
+            sh "./ci/build-all ${env.BUILD_DIR}-mirror \$(basename \$(pwd)) mirror"
+        }
+    }
+}
+
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
@@ -241,6 +250,15 @@ pipeline {
                 parallel (
                     "tq" : {
                         checkoutMetaLayers("${env.WS_TQ}")
+                    },
+                )
+            }
+        }
+        stage ('Fetch'){
+            steps {
+                parallel (
+                    "tq" : {
+                        mirrorConfiguration("${env.WS_TQ}")
                     },
                 )
             }
