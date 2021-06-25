@@ -5,7 +5,29 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa65xx.BSP.SW.0007
+
+### Fixed
+
+* ci: build logic fixes
+* sources/meta-tq: fix default URL for TQ Systems hosted repos
+
+### Changed
+
+* add complete license text for GPLv2 (we have some scripts files under GPLv2)
+* treewide: fix spelling of TQ-Systems
+* treewide: style fix in shell scripts calling main
+
+## zeus.TQMa65xx.BSP.SW.0006
+
+### Fixed
+
+* meta-tq: fixing for TQMa65xx
+
+For complete list of changes see CHANGELOG.md of meta-tq.
+
 ## zeus.TQMa65xx.BSP.SW.0005
+
 * preliminary addition of module TQMa65xx
 * meta-tq: add new module TQMa65xx / MBa65xx
 
