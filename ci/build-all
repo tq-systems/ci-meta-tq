@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # File:        build-all
-# Copyright (C) 2017-2020 TQ Systems GmbH
+# Copyright (C) 2017 - 2020 TQ-Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
 # Description: build all machines in a layer with a given config
