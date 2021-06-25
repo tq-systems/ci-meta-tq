@@ -6,6 +6,11 @@ the build depends on are git submodules
 
 Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <url>`
 
+## License information
+
+This repo contains shell scripts released under the GPLv2, see the file
+[COPYING](COPYING)
+
 ## Supported branches of meta-tq
 
 - krogoth (not longer maintained)
