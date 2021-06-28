@@ -44,7 +44,7 @@ def checkoutMetaLayers(directoryName) {
             sh """
             git submodule sync
             git submodule foreach --recursive 'git fetch --prune --prune-tags origin'
-            git submodule foreach --recursive 'git remote set-head origin --auto'
+            git submodule foreach --recursive 'git remote set-head origin \$(basename \$(git branch -r | tail -1))'
             git submodule foreach --recursive 'git gc'
             git submodule foreach --recursive 'git reset --hard origin/HEAD'
             git submodule foreach --recursive 'git clean -fdx'
