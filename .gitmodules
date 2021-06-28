@@ -28,8 +28,8 @@
 	branch = zeus
 [submodule "sources/meta-linaro"]
 	path = sources/meta-linaro
-	url = https://git.linaro.org/openembedded/meta-linaro
+	url = https://git.linaro.org/openembedded/meta-linaro.git
 	branch = zeus
 [submodule "sources/meta-arm"]
 	path = sources/meta-arm
-	url = git://git.yoctoproject.org/meta-arm
+	url = https://git.yoctoproject.org/git/meta-arm
