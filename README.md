@@ -19,9 +19,12 @@ This repo contains shell scripts released under the GPLv2, see the file
 - rocko (no i.MX mfgtool support, not longer maintained)
 - warrior (dropped i.MX mfgtool support)
 - rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, not longer maintained)
-- sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK)
-- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
+- sumo-tqmls1012al (only for TQMLS1012AL, based on NXP LSDK, not longer maintained)
+- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP, not longer maintained)
 - thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
+- zeus-tqma8x (only for TQMa8 platforms, based on NXP BSP)
+- zeus
+- zeus-tqma65xx (this branch, only TQMa65xx)
 
 **Attention:** use README.md of used branch for exact details.
 
@@ -92,6 +95,8 @@ bblayers.conf
 * ti: usable for all machines with TQ AM57xx CPU, uses meta-ti
 
 * tq: usable for all machines with TQ AM65xx CPU, uses meta-ti
+
+*Note:* only tq configuration for TQMa65xx tested for this branch
 
 ### Reproducible build environment
 
