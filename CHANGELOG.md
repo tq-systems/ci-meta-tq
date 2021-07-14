@@ -5,6 +5,23 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0053
+
+### Changed
+
+* meta-tq: updated RTM release for TQMa8Mx
+* ci: build improvements
+* meta-dumpling: recipe improvements
+
+### Added
+
+* meta-tq: camera support for TQMa8Mx and TQMa8MxML
+* meta-tq: support for TQMa8XDPS
+* meta-dumpling: add camera support
+
+See the changelog of meta-tq and meta-dumpling for detailed list of changes in
+these layers.
+
 ## zeus.TQMa8.BSP.SW.0052
 
 ### Fixed
