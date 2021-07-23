@@ -171,4 +171,9 @@ of features to modify system configuration and setup. This project is not a turn
 key distribution but a starting point for own developments.
 
 RootFS created with this setup has no root password set for demonstration
-purpose and ease of development.
+purpose and ease of development. Root access with SSH is disabled by default.
+To enable development rootfs with ssh for root, please add
+
+`EXTRA_IMAGE_FEATURES_append = "debug_tweaks"`
+
+to your `local.conf`
