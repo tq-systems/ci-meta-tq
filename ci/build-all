@@ -308,9 +308,9 @@ main () {
 			echo "env DL_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 
-		for img in ${IMAGES}; do
-			# now force bitbake to generate images for all targets ...
-			for t in ${ALL_TARGETS}; do
+		# now force bitbake to generate images for all targets ...
+		for t in ${ALL_TARGETS}; do
+			for img in ${IMAGES}; do
 				local err;
 				# overwrite MACHINE
 				export MACHINE=${t}
