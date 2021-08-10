@@ -141,8 +141,8 @@ main () {
 	local IMAGES="core-image-minimal"
 	local MINIMAL_EXCLUDE="${LS_TARGETS}"
 	local LS_EXCLUDE="${TI_TARGETS} ${IMX_TARGETS}"
-	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS} ${PPC_TARGETS}"
-	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS} ${PPC_TARGETS}"
+	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS}"
+	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS}"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
