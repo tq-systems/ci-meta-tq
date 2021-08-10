@@ -1,28 +1,28 @@
 [submodule "sources/poky"]
 	path = sources/poky
 	url = https://git.yoctoproject.org/git/poky
-	branch = zeus
+	branch = hardknott
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
-	branch = zeus
+	branch = hardknott
 [submodule "sources/meta-openembedded"]
 	path = sources/meta-openembedded
 	url = https://github.com/openembedded/meta-openembedded.git
-	branch = zeus
+	branch = hardknott
 [submodule "sources/meta-freescale"]
 	path = sources/meta-freescale
 	url = https://git.yoctoproject.org/git/meta-freescale
-	branch = zeus
+	branch = hardknott
 [submodule "sources/meta-dumpling"]
 	path = sources/meta-dumpling
 	url = ../meta-dumpling.git
-	branch = zeus
+	branch = hardknott
 [submodule "sources/meta-ti"]
 	path = sources/meta-ti
 	url = https://git.yoctoproject.org/git/meta-ti
-	branch = zeus
+	branch = master
 [submodule "sources/meta-arm"]
 	path = sources/meta-arm
 	url = https://git.yoctoproject.org/git/meta-arm
-	branch = dunfell
+	branch = hardknott
