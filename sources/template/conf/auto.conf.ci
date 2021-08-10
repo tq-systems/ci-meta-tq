@@ -1,6 +1,3 @@
-# from meta-dumpling
-require init-manager.inc
-
 # restrict network access
 BB_NO_NETWORK = "1"
 BB_FETCH_PREMIRRORONLY = "1"
