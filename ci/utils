@@ -1,0 +1,123 @@
+#!/bin/bash
+#
+# File:        build-all
+# Copyright (C) 2021 TQ-Systems GmbH
+# @author Markus Niebel <Markus.Niebel@tq-group.com>
+# @author Martin Schmiedel <Martin.Schmiedel@tq-group.com>
+#
+# Description: build all machines in a layer with a given config
+#
+# License:     GPLv2
+#
+###############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+####
+# func:   __print
+# brief:  print messags
+# param:  $1 - message type (info, err, dbg)
+#         $2 - message
+# return: ---
+####
+__print () {
+	local type="${1}"
+	local msg="${2}"
+
+	case ${type} in
+		info)
+			echo "${SCRIPT} [INFO]: ${msg}"
+			;;
+		err)
+			echo "${SCRIPT} [ERROR]: ${msg}" >&2
+			;;
+		dbg)
+			[ "${DEBUG}" = "on" ] && echo "${SCRIPT} [DEBUG]: ${msg}"
+			;;
+	esac
+}
+
+debug () {
+	__print dbg "$@"
+}
+
+info () {
+	__print info "$@"
+}
+
+error () {
+	__print err "$@"
+}
+
+error_out () {
+	echo "FATAL: $1" >&2
+	exit 1
+}
+
+assign_or_replace() {
+	local var=${1////\\/}
+	local val=${2////\\/}
+	local infile=${3}
+
+	debug "trying assign/replace $1 $2:"
+	debug "/^${var} =/{h;s/=.*/= \"${val}\"/};\${x;/^$/{s//${var} = \"${val}\"/;H};x}"
+
+	sed -i "/^${var} =/{h;s/=.*/= \"${val}\"/};\${x;/^$/{s//${var} = \"${val}\"/;H};x}" ${infile}
+
+	debug "$(cat ${infile})"
+}
+
+####
+# func:   get_md5sum
+# brief:  calculate md5sum for all files directory 
+# param:  $1 - directory
+# return: file containing md5sum of files
+####
+get_md5sum () {
+	local mypwd=$(pwd)
+	local directory=${1}
+
+	if [ -d ${directory} ]; then
+		cd ${directory}
+		local files=$(find . -maxdepth 1 -type f)
+
+		for file in ${files}; do
+			md5sum ${file}
+			if [ "$?" -ne "0" ]; then
+				err "md5sum for ${file}"
+			fi
+		done
+	fi
+	cd ${mypwd}
+}
+
+####
+# func:   do_link_auto_conf
+# brief:  update the auto.conflink based on mode
+#         link conf/auto.conf to conf/auto.conf.tmpl
+# param:  $1 - mode (ci/mirror/normal)
+# return: ---
+####
+do_link_auto_conf () {
+	local PWD=$(pwd)
+	local MODE=${1}
+
+	rm -rf ${PWD}/conf/auto.conf
+	ln -s ${PWD}/conf/auto.conf.${MODE} ${PWD}/conf/auto.conf
+	! [ -e ${PWD}/conf/auto.conf ] && error_out "missing auto.conf"
+}
+

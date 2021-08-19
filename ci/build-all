@@ -32,6 +32,8 @@ readonly SCRIPT="$(basename "${0}")"
 
 DEBUG="off"
 
+. ${SCRIPTPATH}/utils
+
 usage() {
 	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> [<mode>] \n \
 	<build-dir>: specifies the build directory location (required) \n \
@@ -39,90 +41,6 @@ usage() {
 	mode=normal or not given: do normal build \n
 	mode=mirror: if given, download only and provide mirror tarballs \n
 	mode=ci: if given, use only mirror tarballs to build"
-}
-
-####
-# func:   __print
-# brief:  print messags
-# param:  $1 - message type (info, err, dbg)
-#         $2 - message
-# return: ---
-####
-__print () {
-	local type="${1}"
-	local msg="${2}"
-
-	case ${type} in
-		info)
-			echo -e "${SCRIPT} [INFO]: ${msg}"
-			;;
-		err)
-			echo -e "${SCRIPT} [ERROR]: ${msg}" >&2
-			;;
-		dbg)
-			[ "${DEBUG}" = "on" ] && echo -e "${SCRIPT} [DEBUG]: ${msg}"
-			;;
-	esac
-}
-
-debug () {
-	__print dbg "$@"
-}
-
-info () {
-	__print info "$@"
-}
-
-error () {
-	__print err "$@"
-}
-
-error_out () {
-	echo "FATAL: $1" >&2
-	exit 1
-}
-
-assign_or_replace() {
-	local var=${1////\\/}
-	local val=${2////\\/}
-	local infile=${3}
-
-	debug "trying assign/replace $1 $2:"
-	debug "/^${var} =/{h;s/=.*/= \"${val}\"/};\${x;/^$/{s//${var} = \"${val}\"/;H};x}"
-
-	sed -i "/^${var} =/{h;s/=.*/= \"${val}\"/};\${x;/^$/{s//${var} = \"${val}\"/;H};x}" ${infile}
-
-	debug "$(cat ${infile})"
-}
-
-function get_md5sum () {
-	local MYPWD=$(pwd)
-	local DIRECTORY=${1}
-
-	if [ -d ${DIRECTORY} ]; then
-		cd ${DIRECTORY}
-		local FILES=$(find . -maxdepth 1 -type f)
-
-		for file in ${FILES}; do
-			md5sum ${file}
-			if [ "$?" -ne "0" ]; then
-				err "md5sum for ${file}"
-			fi
-		done
-	fi
-	cd ${MYPWD}
-}
-
-#
-# link conf/auto.conf to conf/auto.conf.tmpl
-#
-function do_link_auto_conf () {
-	local PWD=$(pwd)
-	local MODE=${1}
-
-	rm -rf ${PWD}/conf/auto.conf
-	ln -s ${PWD}/conf/auto.conf.${MODE} ${PWD}/conf/auto.conf
-	! [ -e ${PWD}/conf/auto.conf ] && error_out "missing auto.conf"
 }
 
 main () {
