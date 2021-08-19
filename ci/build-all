@@ -27,7 +27,7 @@
 ###############################################################################
 
 readonly SCRIPTNAME="${0}"
-readonly SCRIPTPATH=$(dirname $(readlink -f "${0}"))
+readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
 readonly SCRIPT="$(basename "${0}")"
 
 DEBUG="off"
@@ -35,169 +35,70 @@ DEBUG="off"
 . ${SCRIPTPATH}/utils
 
 usage() {
-	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> <template> [<mode>] \n \
-	<build-dir>: specifies the build directory location (required) \n \
-	<template>: template bblayers.conf to use \n \
-	mode=normal or not given: do normal build \n
-	mode=mirror: if given, download only and provide mirror tarballs \n
-	mode=ci: if given, use only mirror tarballs to build"
+	cat <<EOF
+Usage: ${SCRIPTNAME} <build-dir> <template>
+	<build-dir>: specifies the build directory location (required)
+	<flavour>: template bblayers.conf to use (defaults to minimal)
+	For local builds set LOCAL=on in your environment
+EOF
 }
 
 main () {
-	# this disables network check
-	export CONNECTIVITY_CHECK_URIS=" "
-
-	local BUILD_DIR=${1}
-	local DEPLOYDIR=$(readlink -f ./${BUILD_DIR})/deployment
-	local LAYER="meta-tq"
-	local ALL_TARGETS=$(${SCRIPTPATH}/ls-machines)
-	local TI_TARGETS=$(${SCRIPTPATH}/ls-machines | grep 'tqma335\|tqma57')
-	local LS_TARGETS=$(${SCRIPTPATH}/ls-machines | grep 'tqml[s,x]')
-	local PPC_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmt)
-	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep 'tqma[6,7]')
-	local CONFIG=${2}
-	local IMAGES="core-image-minimal"
-	local MINIMAL_EXCLUDE="${LS_TARGETS}"
-	local LS_EXCLUDE="${TI_TARGETS} ${IMX_TARGETS}"
-	local IMX_EXCLUDE="${LS_TARGETS} ${TI_TARGETS}"
-	local TI_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS}"
-	local MODE="normal"
-
-	if ! [ -z "${3}" ]
+	if [ $# -lt 1 ]
 	then
-		if [ "${3}" == "mirror" ] || [ "${3}" == "ci" ] || [ "${3}" == "normal" ]
-		then
-			MODE=${3}
-		else
-			usage
-			exit 1
-		fi
-	fi
-
-	echo $1 $2 $3 $MODE
-
-	# filter out machines from the ${LAYER} based on ${CONFIG}
-	case ${CONFIG} in
-	"imx" )
-		IMAGES="tq-image-weston"
-		for excl in ${IMX_EXCLUDE}; do
-			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
-		done
-		export EULA="y"
-		;;
-	"ls" )
-		IMAGES="tq-image-generic"
-		for excl in ${LS_EXCLUDE}; do
-			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
-		done
-		export EULA="y"
-		;;
-	"minimal" )
-		IMAGES="tq-image-small"
-		for excl in ${MINIMAL_EXCLUDE}; do
-			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
-		done
-		;;
-	"ti" )
-		IMAGES="tq-image-generic"
-		for excl in ${TI_EXCLUDE}; do
-			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
-		done
-		;;
-	* )
 		usage
 		exit 1
-		;;
-	esac
-
-	# filter out double entries in case we build multiple images per config
-	ALL_TARGETS=$(echo ${ALL_TARGETS} | tr ' ' '\n' | sort -u)
-	debug "Targets to build: ${ALL_TARGETS}"
-
-	export MACHINE=$(echo ${ALL_TARGETS} | awk '{ print $1 }')
-	# clean conf, to enforce a really clean configuration and to enable
-	# incremental changes in the config using our template dir
-	rm -rf ${BUILD_DIR}/conf
-	# source the real setup workhorse.
-	. ./setup-environment ${BUILD_DIR} ${CONFIG}
-	[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
-
-	if ! [ -f ./version.info ]; then
-		${SCRIPTPATH}/poky-version-check.sh mkinfo
-		[ "$?" -ne "0" ] && error_out "failed to create version.info"
-	else
-		${SCRIPTPATH}/poky-version-check.sh check
-		[ "$?" -ne "0" ] && error_out "not clean and version changed"
 	fi
 
-	cmp conf/bblayers.conf conf/bblayers.conf.tmpl > /dev/null
-	[ "$?" -ne "0" ] && error_out "Your conf/bblayers.conf (or the template changed)"
+	local build_dir=${1}
+	local config="minimal"
+	if ! [ -z "${2}" ]
+	then
+		config=${2}
+	fi
 
-	# modify local conf as needed before executing bitbake
-	if [ "${MODE}" == "mirror" ]; then
-		echo "build mirror"
-		do_link_auto_conf ${MODE}
-		echo "clean local dirs in $(pwd) ..."
-		rm -rf ./cache ./tmp ./sstate-cache
-		# get DL_DIR from local.conf to cleanup packages generated from git ...
-		SETTER=$(bitbake -e | grep ^"DL_DIR=")
-		echo "$SETTER"
-		export ${SETTER}
-		# if there is a .done file and / or a git2_*.tar.gz it seems the
-		# fetcher does not rerun git to update the repo
-		echo "clean git2 tarballs from ${DL_DIR} ..."
-		rm -f ${DL_DIR}/git2_*.tar.gz
-		rm -f ${DL_DIR}/git2_*.tar.gz.done
-		ls -1 ${DL_DIR}/git2_*
+	local top_dir=$(pwd)
+	local distros=$(get_distros)
+	local machines=$(get_machines ${config})
 
-		for img in ${IMAGES}; do
-			# now force bitbake to do a --runall fetch for the image to generate
-			for t in ${ALL_TARGETS}; do
-				export MACHINE=${t}
-				echo "baking: ${MACHINE} ${img} with --runall=fetch"
-				bitbake ${img} --runall=fetch -k
-				[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
-			done
-		done
+	debug "Machines to build: ${machines}"
 
-		URL=$(bitbake -e | grep ^"SOURCE_MIRROR_URL=")
-		export ${URL}
-		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
-		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
-		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
+	for distro in ${distros}
+	do
+		# GENERAL
 
-		DL_DIR=${DL_DIR#\"*}
-		DL_DIR=${DL_DIR%\"*}
+		local images=$(get_images ${distro})
 
-		echo "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
-		FILES=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
-		echo "copy ${FILES}"
-		for f in ${FILES}; do
-			cp ${f} ${SOURCE_MIRROR_URL}
-		done
+		# source the real setup workhorse
+		export EULA="y"
+		export DISTRO=${distro}
+		export MACHINE=$(echo ${machines} | awk '{ print $1 }')
 
-		CWD=$(pwd)
-		cd ${DL_DIR}
-		FILES=$(find uninative -maxdepth 2 -type f -not -name "*.done")
-		for f in ${FILES}; do
-			DIR=$(dirname ${f})
-			mkdir -p ${SOURCE_MIRROR_URL}/${DIR}
-			cp ${f} ${SOURCE_MIRROR_URL}/${DIR}
-		done
-		cd ${CWD}
-	else
+		. ./setup-environment ${build_dir}_${distro}~ ${config}
+		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
+
+		cmp conf/bblayers.conf conf/bblayers.conf.tmpl > /dev/null
+		[ "$?" -ne "0" ] && error_out "Your conf/bblayers.conf (or the template) changed"
+
 		echo "build images"
+		local deploydir=$(readlink -f ./deployment)
 
 		#
 		# clean deploydir for CI builds
 		#
-		if [ "${MODE}" == "ci" ]; then
-			if [ -d "${DEPLOYDIR}" ]; then
-				rm -rf "${DEPLOYDIR}"
+		if [ -z ${LOCAL} ]
+		then
+			if [ -d "${deploydir}" ]; then
+				rm -rf "${deploydir}"
 			fi
 		fi
 
-		do_link_auto_conf ${MODE}
+		if [ -z ${LOCAL} ]
+		then
+			do_link_auto_conf "ci"
+		else
+			do_link_auto_conf "normal"
+		fi
 
 		if ! [ -z ${SSTATE_DIR} ]; then
 			# add SSTATE dir outside of builddir, optimize global builds
@@ -205,6 +106,7 @@ main () {
 		else
 			echo "env SSTATE_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
+
 		if ! [ -z ${DL_DIR} ]; then
 			# add DL_DIR dir outside of builddir, optimize global builds
 			assign_or_replace DL_DIR ${DL_DIR} conf/local.conf
@@ -213,100 +115,109 @@ main () {
 			echo "env DL_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 
-		for img in ${IMAGES}; do
+		for img in ${images}
+		do
 			# now force bitbake to generate images for all targets ...
-			for t in ${ALL_TARGETS}; do
+			for machine in ${machines}
+			do
 				local err;
 				# overwrite MACHINE
-				export MACHINE=${t}
+				export MACHINE=${machine}
 
-				echo "baking ${MACHINE} ${img} ..."
+				#
+				# do a fetchall to force filling DL_DIR
+				#
+				echo "baking: ${machine} ${distro} ${img} with --runall=fetch"
+				bitbake ${img} --runall=fetch -k
+				[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
+
+				echo "baking: ${machine} ${distro} ${img} ..."
 				# create image for $MACHINE
+				#echo "simulate baking: bake ... bake ... bake"
 				bitbake ${img}
 				err=${?}
 				[ "${err}" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
 			done
 		done
-
-		if [ "${MODE}" == "ci" ]; then
-			mkdir -p ${DEPLOYDIR}
-			local ARTIFACTSDIR=$(pwd)/tmp/deploy/images
-			local STAMP=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
-			local GIT_STAMP_FILE="${DEPLOYDIR}/${CONFIG}-stamp"
+		if [ -z ${LOCAL} ]
+		then
+			mkdir -p ${deploydir}
+			local artifactsdir=$(pwd)/tmp/deploy/images
+			local stamp=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
+			local git_stamp_file="${deploydir}/${config}-stamp"
 			# note: this depends on a selected distro
-			local VERSION=$(bitbake -e | grep ^"DISTRO_VERSION=")
-			export ${VERSION}
+			local version=$(bitbake -e | grep ^"DISTRO_VERSION=")
+			export ${version}
 			DISTRO_VERSION=${DISTRO_VERSION#\"*}
 			DISTRO_VERSION=${DISTRO_VERSION%\"*}
-			local CODENAME=$(bitbake -e | grep ^"DISTRO_CODENAME=")
-			export ${CODENAME}
+			local codename=$(bitbake -e | grep ^"DISTRO_CODENAME=")
+			export ${codename}
 			DISTRO_CODENAME=${DISTRO_CODENAME#\"*}
 			DISTRO_CODENAME=${DISTRO_CODENAME%\"*}
-			local ARCHIVE_BASENAME=${CONFIG}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${STAMP}
+			local archive_basename=${config}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${stamp}
 
-			git log -1 > ${GIT_STAMP_FILE}
+			git log -1 > ${git_stamp_file}
 
-			for t in ${ALL_TARGETS}; do
-				local MACHINE=${t}
-				local MACHINE_ARCHIVE=${MACHINE}_${ARCHIVE_BASENAME}
-				echo "archiving ${MACHINE} ..."
+			for machine in ${machines}; do
+				local machine_archive=${machine}_${archive_basename}
+				echo "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}/${MACHINE}, clean them before recreate
-				rm -f ${ARTIFACTSDIR}/${MACHINE}/*.info
-				rm -f ${ARTIFACTSDIR}/${MACHINE}/*.md5sum
+				rm -f ${artifactsdir}/${machine}/*.info
+				rm -f ${artifactsdir}/${machine}/*.md5sum
 				# create a file containing md5sum of files
-				get_md5sum ${ARTIFACTSDIR}/${MACHINE} > ${DEPLOYDIR}/${MACHINE_ARCHIVE}.md5sum
-				cp ${DEPLOYDIR}/${MACHINE_ARCHIVE}.md5sum ${ARTIFACTSDIR}/${MACHINE}
+				get_md5sum ${artifactsdir}/${machine} > ${deploydir}/${machine_archive}.md5sum
+				cp ${deploydir}/${machine_archive}.md5sum ${artifactsdir}/${machine}
 				# create a file containing the version we are build from
-				cp ${GIT_STAMP_FILE} ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
-				printf "\ngit submodule url:\n\n" >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
-				git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
-				printf "\ngit submodule info:\n\n" >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
-				git submodule >> ${ARTIFACTSDIR}/${MACHINE}/${MACHINE_ARCHIVE}.info
+				cp ${git_stamp_file} ${artifactsdir}/${machine}/${machine_archive}.info
+				printf "\ngit submodule url:\n\n" >> ${artifactsdir}/${machine}/${machine_archive}.info
+				git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${artifactsdir}/${machine}/${machine_archive}.info
+				printf "\ngit submodule info:\n\n" >> ${artifactsdir}/${machine}/${machine_archive}.info
+				git submodule >> ${artifactsdir}/${machine}/${machine_archive}.info
 				# create image archive for $MACHINE
-				tar -cvzf ${DEPLOYDIR}/${MACHINE_ARCHIVE}.BIN.tar.gz -C ${ARTIFACTSDIR} ${MACHINE}
-				[ "$?" -ne "0" ] && error_out "archiving for ${MACHINE} failed"
+				tar -cvzf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${artifactsdir} ${machine}
+				[ "$?" -ne "0" ] && error_out "archiving for ${machine} failed"
 			done
-			tar -cvzf ${DEPLOYDIR}/${ARCHIVE_BASENAME}.LIC.tar.gz -C $(pwd)/tmp/deploy licenses
+			tar -cvzf ${deploydir}/${archive_basename}.LIC.tar.gz -C $(pwd)/tmp/deploy licenses
 
 			# create a mirror archive
-			mkdir ${DEPLOYDIR}/${ARCHIVE_BASENAME}.MIRROR.SRC
+			mkdir ${deploydir}/${archive_basename}.MIRROR.SRC
 
-			SETTER=$(bitbake -e | grep ^"DL_DIR=")
-			export ${SETTER}
+			setter=$(bitbake -e | grep ^"DL_DIR=")
+			export ${setter}
 			# remove the '"' from the var, otherwise usage will fail
 			DL_DIR=${DL_DIR#\"*}
 			DL_DIR=${DL_DIR%\"*}
 			# query all archived sources, needs archiver class in config
-			local ARCHIVED_SRC_PATH=$(ls -1 $(pwd)/tmp/deploy/sources/*/*/*)
+			local archived_src_path=$(ls -1 $(pwd)/tmp/deploy/sources/*/*/*)
 			# copy the file from archived sources if it exists in DL_DIR
-			for f in ${ARCHIVED_SRC_PATH}; do
-				local FILENAME="${DL_DIR}/$(basename ${f})"
-				if [ -e ${FILENAME} ]; then
-					cp "${FILENAME}" ${DEPLOYDIR}/${ARCHIVE_BASENAME}.MIRROR.SRC;
+			for f in ${archived_src_path}; do
+				local filename="${DL_DIR}/$(basename ${f})"
+				if [ -e ${filename} ]; then
+					cp "${filename}" ${deploydir}/${archive_basename}.MIRROR.SRC;
 				else
-					debug "$f has no counterpart ${FILENAME}"
+					debug "$f has no counterpart ${filename}"
 				fi
 			done
 			#
 			# we assume here that bitbake is configured to use shallow cloning
 			# and that packages are tar.gz''
 			#
-			local ARCHIVE_GIT=$(ls -1 ${DL_DIR}/gitshallow_*.tar.gz)
-			local ARCHIVE_GITSM=$(ls -1 ${DL_DIR}/gitsmshallow_*.tar.gz)
-			for f in ${ARCHIVE_GIT}; do
-				cp "${f}" ${DEPLOYDIR}/${ARCHIVE_BASENAME}.MIRROR.SRC;
+			local archive_git=$(ls -1 ${DL_DIR}/gitshallow_*.tar.gz)
+			local archive_gitsm=$(ls -1 ${DL_DIR}/gitsmshallow_*.tar.gz)
+			for f in ${archive_git}; do
+				cp "${f}" ${deploydir}/${archive_basename}.MIRROR.SRC;
 			done
-			for f in ${ARCHIVE_GITSM}; do
-				cp "${f}" ${DEPLOYDIR}/${ARCHIVE_BASENAME}.MIRROR.SRC;
+			for f in ${archive_gitsm}; do
+				cp "${f}" ${deploydir}/${archive_basename}.MIRROR.SRC;
 			done
 
-			tar -cvzf ${DEPLOYDIR}/${ARCHIVE_BASENAME}.MIRROR.SRC.tar.gz -C ${DEPLOYDIR} ${ARCHIVE_BASENAME}.MIRROR.SRC
+			tar -cvzf ${deploydir}/${archive_basename}.MIRROR.SRC.tar.gz -C ${deploydir} ${archive_basename}.MIRROR.SRC
 			# do some cleanup
-			rm -rf ${DEPLOYDIR}/${ARCHIVE_BASENAME}.MIRROR.SRC
+			rm -rf ${deploydir}/${archive_basename}.MIRROR.SRC
 		fi
-	fi
 
-	return 0
+		cd ${top_dir}
+	done
 }
 
 main "${@}"

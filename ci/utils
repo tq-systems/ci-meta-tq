@@ -107,17 +107,102 @@ get_md5sum () {
 
 ####
 # func:   do_link_auto_conf
-# brief:  update the auto.conflink based on mode
+# brief:  update the auto.conflink based on template
 #         link conf/auto.conf to conf/auto.conf.tmpl
-# param:  $1 - mode (ci/mirror/normal)
+# param:  $1 - template (ci/mirror/normal)
 # return: ---
 ####
 do_link_auto_conf () {
 	local PWD=$(pwd)
-	local MODE=${1}
+	local templ=${1}
 
 	rm -rf ${PWD}/conf/auto.conf
-	ln -s ${PWD}/conf/auto.conf.${MODE} ${PWD}/conf/auto.conf
+	ln -s ${PWD}/conf/auto.conf.${templ} ${PWD}/conf/auto.conf
 	! [ -e ${PWD}/conf/auto.conf ] && error_out "missing auto.conf"
 }
 
+####
+# func:   get_images
+# brief:  return image based on distro
+# param:  $1 - distro
+# return: image
+####
+get_images () {
+	local distro=${1}
+
+	case ${distro} in
+		"dumpling" )
+			echo "tq-image-generic"
+			;;
+		"spaetzle" )
+			echo "tq-image-small"
+			;;
+		"dumpling-rt" )
+			echo "tq-image-small"
+			;;
+		"dumpling-wayland")
+			echo "tq-image-weston"
+			;;
+		* )
+			exit 1
+			;;
+	esac
+}
+
+####
+# func:   get_machines
+# brief:  return buildable machines for config
+# param:  $1 - config (imx/ls/ti/minimal)
+# return: list of machines
+####
+get_machines () {
+	local config=${1}
+	local all_machines=$("${SCRIPTPATH}"/ls-machines)
+	local ti_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqma335\|tqma57')
+	local ls_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqml[s,x]')
+	local imx_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqma[6,7]')
+	local minimal_exclude="${ls_machines}"
+	local ls_exclude=$(echo "${ti_machines} ${imx_machines}")
+	local imx_exclude=$(echo "${ls_machines} ${ti_machines}")
+	local ti_exclude=$(echo "${imx_machines} ${ls_machines}")
+	local choosen_machines=${all_machines}
+
+	case ${config} in
+	"imx" )
+		for excl in ${imx_exclude}; do
+			choosen_machines=$(echo ${choosen_machines} | sed -e "s/ *${excl} */ /")
+		done
+		;;
+	"ls" )
+		for excl in ${ls_exclude}; do
+			choosen_machines=$(echo ${choosen_machines} | sed -e "s/ *${excl} */ /")
+		done
+		;;
+	"minimal" )
+		for excl in ${minimal_exclude}; do
+			choosen_machines=$(echo ${choosen_machines} | sed -e "s/ *${excl} */ /")
+		done
+		;;
+	"ti" )
+		for excl in ${ti_exclude}; do
+			choosen_machines=$(echo ${choosen_machines} | sed -e "s/ *${excl} */ /")
+		done
+		;;
+	* )
+		exit 1
+		;;
+	esac
+
+	echo "${choosen_machines}"
+}
+
+####
+# func:   get_distros
+# brief:  return list of distros from meta-dumpling
+# return: list of distros
+####
+get_distros () {
+	local distro_path="sources/meta-dumpling/conf/distro"
+	local distros=$(cd ${distro_path} && find ./*.conf | sed -E "s/\.\/(.*)\.(.*)/\1/")
+	echo "${distros}"
+}
