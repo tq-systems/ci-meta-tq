@@ -233,6 +233,7 @@ pipeline {
         WS_LS = "CONFIGS/ls"
         WS_MIN = "CONFIGS/minimal"
         WS_TI = "CONFIGS/ti"
+        WS_RZG2 = "CONFIGS/rzg2"
         DL_DIR = "shared-dl-dir"
         BUILD_DIR = "buildspace"
         DEPLOY_DIR = "deployment"
@@ -267,6 +268,10 @@ pipeline {
                         wipeOutBuildspace("${env.WS_TI}")
                         prepareWorkspace("${env.WS_TI}")
                     },
+                    "rzg2" : {
+                        wipeOutBuildspace("${env.WS_RZG2}")
+                        prepareWorkspace("${env.WS_RZG2}")
+                    },
                 )
             }
         }
@@ -284,6 +289,9 @@ pipeline {
                     },
                     "ti" : {
                         handleBuildCause("${env.WS_TI}")
+                    },
+                    "rzg2" : {
+                        handleBuildCause("${env.WS_RZG2}")
                     },
                 )
             }
@@ -303,6 +311,9 @@ pipeline {
                     "ti" : {
                         checkoutMetaLayers("${env.WS_TI}")
                     },
+                    "rzg2" : {
+                        checkoutMetaLayers("${env.WS_RZG2}")
+                    },
                 )
             }
         }
@@ -321,6 +332,9 @@ pipeline {
                     "ti" : {
                         mirrorConfiguration("${env.WS_TI}")
                     },
+                    "rzg2" : {
+                        mirrorConfiguration("${env.WS_RZG2}")
+                    },
                 )
             }
         }
@@ -338,6 +352,9 @@ pipeline {
                     },
                     "ti" : {
                         buildConfiguration("${env.WS_TI}")
+                    },
+                    "rzg2" : {
+                        buildConfiguration("${env.WS_RZG2}")
                     },
                 )
             }
@@ -364,6 +381,8 @@ pipeline {
             wipeOutBuildspace("${env.WS_MIN}")
             archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_TI}")
+            archiveArtifacts artifacts: "${env.WS_RZG2}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
+            wipeOutBuildspace("${env.WS_RZG2}")
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
         unstable {

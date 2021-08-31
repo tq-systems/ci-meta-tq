@@ -33,6 +33,7 @@ DEFAULT_DISTRO_minimal="poky"
 DEFAULT_DISTRO_imx="poky"
 DEFAULT_DISTRO_ls="poky"
 DEFAULT_DISTRO_ti="poky"
+DEFAULT_DISTRO_rzg2="poky"
 
 usage()
 {
