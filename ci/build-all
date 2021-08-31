@@ -158,12 +158,14 @@ main () {
 	local TI_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma57)
 	local LS_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmls)
 	local IMX_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqma[6,7])
+	local RZG2_TARGETS=$(${SCRIPTPATH}/ls-machines | grep tqmarzg2)
 	local CONFIG=${2}
 	local IMAGES="core-image-minimal"
-	local MINIMAL_EXCLUDE="tqma6q-nav"
-	local MFGTOOL_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS}"
-	local IMX_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS}"
-	local TI_EXCLUDE="tqma6q-nav ${IMX_TARGETS} ${LS_TARGETS}"
+	local MINIMAL_EXCLUDE="tqma6q-nav ${RZG2_TARGETS}"
+	local MFGTOOL_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS} ${RZG2_TARGETS}"
+	local IMX_EXCLUDE="tqma6q-nav ${LS_TARGETS} ${TI_TARGETS} ${RZG2_TARGETS}"
+	local TI_EXCLUDE="tqma6q-nav ${IMX_TARGETS} ${LS_TARGETS} ${RZG2_TARGETS}"
+	local RZG2_EXCLUDE="${IMX_TARGETS} ${LS_TARGETS} ${TI_TARGETS}"
 	local MODE="normal"
 
 	if ! [ -z "${3}" ]
@@ -208,6 +210,12 @@ main () {
 #		done
 #		export EULA="y"
 #		;;
+	"rzg2" )
+		IMAGES="tq-image-generic"
+		for excl in ${RZG2_EXCLUDE}; do
+			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
+		done
+		;;
 	* )
 		usage
 		exit 1
