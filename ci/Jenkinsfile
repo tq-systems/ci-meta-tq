@@ -90,26 +90,28 @@ def prepareWorkspace(directoryName){
 }
 
 /**********************************************************************/
-/* create missing mirror packages using build-all script.             */
+/* create missing mirror packages using fill_mirror script.           */
 /* use separate build directory since other config options are used   */
-/* clean mirror build dir to prevent old downloads are copied into    */
-/* shared dl dir                                                      */
+/* The given directory name must match the configuration name         */
+/* clean mirror build dir to prevent old downloads are moved into     */
+/* shared dl dir. ( clean up after finished )                         */
 /**********************************************************************/
 def mirrorConfiguration(directoryName) {
     dir("${directoryName}") {
         sshagent(['jenkins-master-key']) {
            echo "create mirror packages for all machines of config ${directoryName} ..."
-           sh "rm -rf ${env.BUILD_DIR}-mirror"
-           sh "./ci/build-all ${env.BUILD_DIR}-mirror \$(basename \$(pwd)) mirror"
-           sh "cp -ruv ${env.BUILD_DIR}-mirror/downloads/* ${env.WORKSPACE}/${env.DL_DIR}"
+           sh "rm -rf ${env.BUILD_DIR}-mirror*"
+           sh "./ci/fill_mirror ${env.BUILD_DIR}-mirror \$(basename \$(pwd))"
+           sh "cp -ruv ${env.BUILD_DIR}-mirror*/downloads/* ${env.WORKSPACE}/${env.DL_DIR}"
+           sh "rm -rf ${env.BUILD_DIR}-mirror*"
         }
     }
 }
 
 /**********************************************************************/
-/* build images for all machines using build-all script.              */
+/* build images for all machines using build_all script.              */
 /* The given directory name must match the configuration name         */
-/* which is needed as parameter for the build-all script              */
+/* which is needed as parameter for the build_all script              */
 /* Note:                                                              */
 /* all configurations use a shared dl dir                             */
 /* the build node should have the path to SSTATE_DIR in the site.conf */
@@ -117,13 +119,13 @@ def mirrorConfiguration(directoryName) {
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
-        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build-all ${env.BUILD_DIR} \$(basename \$(pwd)) ci"
+        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build_all ${env.BUILD_DIR} \$(basename \$(pwd))"
     }
 }
 
 def wipeOutBuildspace(directoryName){
-    dir("${directoryName}/${env.BUILD_DIR}/${env.DEPLOY_DIR}") {
-        echo "Remove ${directoryName}/${env.BUILD_DIR}/${env.DEPLOY_DIR} ..."
+    dir("${directoryName}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}") {
+        echo "Remove all deploy directorys directory in ${directoryName} ..."
         deleteDir()
     }
     dir("${directoryName}@script") {
@@ -356,13 +358,13 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
+            archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_IMX}")
-            archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
+            archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_LS}")
-            archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
+            archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_MIN}")
-            archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
+            archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_TI}")
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
