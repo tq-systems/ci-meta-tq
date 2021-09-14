@@ -29,11 +29,10 @@ LIST_TQ_MACHINES=$(${CWD}/ci/ls-machines meta-tq)
 DEFAULT_MACHINE=$(echo ${LIST_TQ_MACHINES} | awk '{ print $1 }')
 CONFIG_TEMPLATE=minimal
 
-DEFAULT_DISTRO_minimal="poky"
-# use for linux-imx based kernel, should this be fsl[c]-wayland?
-DEFAULT_DISTRO_imx="poky"
-DEFAULT_DISTRO_ls="poky"
-DEFAULT_DISTRO_ti="poky"
+DEFAULT_DISTRO_minimal="spaetzle"
+DEFAULT_DISTRO_imx="dumpling-wayland"
+DEFAULT_DISTRO_ls="dumpling"
+DEFAULT_DISTRO_ti="dumpling-wayland"
 
 usage()
 {
