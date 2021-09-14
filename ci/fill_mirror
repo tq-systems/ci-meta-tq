@@ -1,0 +1,139 @@
+#!/bin/bash
+#
+# File:        fill_mirror
+# Copyright (C) 2021 TQ-Systems GmbH
+# @author Markus Niebel <Markus.Niebel@tq-group.com>
+# @author Paul Gerber <Paul.Gerber@tq-group.com>
+#
+# Description: build all machines in a layer with a given config
+#
+# License:     GPLv2
+#
+###############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+readonly SCRIPTNAME="${0}"
+readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
+readonly SCRIPT="$(basename "${0}")"
+
+. ${SCRIPTPATH}/utils
+
+DEBUG="off"
+
+usage() {
+	cat <<EOF
+Usage: ${SCRIPTNAME} <build-dir> <template>
+	<build-dir>: specifies the build directory location (required)
+	<flavour>: template bblayers.conf to use (defaults to minimal)
+EOF
+}
+
+main () {
+	if [ $# -lt 1 ]
+	then
+		usage
+		exit 1
+	fi
+
+	local build_dir=${1}
+	local config="minimal"
+	if ! [ -z "${2}" ]
+	then
+		config=${2}
+	fi
+
+	local top_dir=$(pwd)
+	local distros=$(get_distros)
+	local machines=$(get_machines ${config})
+
+	debug "Machines to build: ${machines}"
+
+	for distro in ${distros}
+	do
+		# GENERAL
+
+		local images=$(get_images ${distro})
+
+		# source the real setup workhorse
+		export EULA="y"
+		export DISTRO=${distro}
+		export MACHINE=$(echo ${machines} | awk '{ print $1 }')
+
+		. ./setup-environment ${build_dir}_${distro}~ ${config}
+		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
+
+		echo "build mirror"
+		do_link_auto_conf "mirror"
+		echo "clean local dirs in $(pwd) ..."
+		rm -rf ./cache ./tmp ./sstate-cache
+
+		# get DL_DIR to cleanup packages generated from git ...
+		setter=$(bitbake -e | grep ^"DL_DIR=")
+		echo "$setter"
+		export ${setter}
+
+		# if there is a .done file and / or a git2_*.tar.gz it seems the
+		# fetcher does not rerun git to update the repo
+		echo "clean git2 tarballs from ${DL_DIR} ..."
+		rm -f ${DL_DIR}/git2_*.tar.gz
+		rm -f ${DL_DIR}/git2_*.tar.gz.done
+		ls -1 ${DL_DIR}/git2_*
+
+		for img in ${images}
+		do
+			# now force bitbake to do a --runall fetch for the image to generate
+			for machine in ${machines}
+			do
+				export MACHINE=${machine}
+				echo "baking: ${machine} ${distro} ${img} with --runall=fetch"
+				bitbake ${img} --runall=fetch -k
+				[ "$?" -ne "0" ] && error_out "fetching (${img} for ${machine}) failed"
+			done
+		done
+
+		url=$(bitbake -e | grep ^"SOURCE_MIRROR_URL=")
+		export ${url}
+		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
+		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
+		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
+
+		DL_DIR=${DL_DIR#\"*}
+		DL_DIR=${DL_DIR%\"*}
+		
+		echo "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
+		files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
+		echo "copy ${files}"
+		for f in ${files}; do
+			cp ${f} ${SOURCE_MIRROR_URL}
+		done
+
+		cwd=$(pwd)
+		cd ${DL_DIR}
+		files=$(find uninative -maxdepth 2 -type f -not -name "*.done")
+		for f in ${files}; do
+			dir=$(dirname ${f})
+			mkdir -p ${SOURCE_MIRROR_URL}/${dir}
+			cp ${f} ${SOURCE_MIRROR_URL}/${dir}
+		done
+
+		cd ${top_dir}
+	done
+	cd ${cwd}
+}
+
+main "${@}"
