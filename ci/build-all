@@ -30,20 +30,44 @@ readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
 readonly SCRIPT="$(basename "${0}")"
 
-DEBUG="off"
-
 . ${SCRIPTPATH}/utils
 
 usage() {
-	cat <<EOF
-Usage: ${SCRIPTNAME} <build-dir> <template>
-	<build-dir>: specifies the build directory location (required)
-	<flavour>: template bblayers.conf to use (defaults to minimal)
-	For local builds set LOCAL=on in your environment
-EOF
+	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug] \n \
+	<build-dir>: specifies the build directory location (required) \n \
+	[template]: template bblayers.conf to use \n \
+	[--dryrun]: don't call bitbake \n \
+	[--debug]: print additional informations \n"
 }
 
 main () {
+
+	pos_params=""
+
+	while (( "$#" )); do
+		case "$1" in
+		--debug )
+			DEBUG="on"
+			shift
+			;;
+		--dryrun )
+			dryrun="on"
+			shift
+			;;
+		-*|--*=) # unsupported flags
+			echo "Error: Unsupported flag $1" >&2
+			exit 1
+			;;
+		*) # preserve positional arguments
+			pos_params="$pos_params $1"
+			shift
+			;;
+		esac
+	done
+
+	# set positional arguments in their proper place
+	eval set -- "$pos_params"
+
 	if [ $# -lt 1 ]
 	then
 		usage
@@ -124,19 +148,24 @@ main () {
 				# overwrite MACHINE
 				export MACHINE=${machine}
 
-				#
 				# do a fetchall to force filling DL_DIR
-				#
 				echo "baking: ${machine} ${distro} ${img} with --runall=fetch"
-				bitbake ${img} --runall=fetch -k
-				[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
 
-				echo "baking: ${machine} ${distro} ${img} ..."
+				if [ -z ${dryrun} ]
+				then
+					bitbake ${img} --runall=fetch -k
+					[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
+				fi
+				
 				# create image for $MACHINE
-				#echo "simulate baking: bake ... bake ... bake"
-				bitbake ${img}
-				err=${?}
-				[ "${err}" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
+				echo "baking: ${machine} ${distro} ${img} ..."
+
+				if [ -z ${dryrun} ]
+				then
+					bitbake ${img}
+					err=${?}
+					[ "${err}" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
+				fi
 			done
 		done
 		if [ -z ${LOCAL} ]
