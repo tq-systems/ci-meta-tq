@@ -1,17 +1,12 @@
+require common.inc
+require ci-helper.inc
+
 # restrict network access
 BB_NO_NETWORK = "1"
 BB_FETCH_PREMIRRORONLY = "1"
 
-# control usage of mirrors
-require mirror.inc
 
 # generate source and license dir for deployment
 INHERIT += "archiver"
 COPYLEFT_LICENSE_EXCLUDE ?= "CLOSED Proprietary"
 ARCHIVER_MODE[src] ?= "original"
-
-require image-features.inc
-
-require uninative-mirror.inc
-
-require ci-helper.inc
