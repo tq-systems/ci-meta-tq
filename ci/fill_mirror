@@ -33,17 +33,42 @@ readonly SCRIPT="$(basename "${0}")"
 
 . ${SCRIPTPATH}/utils
 
-DEBUG="off"
-
 usage() {
-	cat <<EOF
-Usage: ${SCRIPTNAME} <build-dir> <template>
-	<build-dir>: specifies the build directory location (required)
-	<flavour>: template bblayers.conf to use (defaults to minimal)
-EOF
+	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug] \n \
+	<build-dir>: specifies the build directory location (required) \n \
+	[template]: template bblayers.conf to use \n \
+	[--dryrun]: don't call bitbake \n \
+	[--debug]: print additional informations \n"
 }
 
 main () {
+
+	pos_params=""
+
+	while (( "$#" )); do
+		case "$1" in
+		--debug )
+			DEBUG="on"
+			shift
+			;;
+		--dryrun )
+			dryrun="on"
+			shift
+			;;
+		-*|--*=) # unsupported flags
+			echo "Error: Unsupported flag $1" >&2
+			exit 1
+			;;
+		*) # preserve positional arguments
+			pos_params="$pos_params $1"
+			shift
+			;;
+		esac
+	done
+
+	# set positional arguments in their proper place
+	eval set -- "$pos_params"
+
 	if [ $# -lt 1 ]
 	then
 		usage
@@ -101,8 +126,11 @@ main () {
 			do
 				export MACHINE=${machine}
 				echo "baking: ${machine} ${distro} ${img} with --runall=fetch"
-				bitbake ${img} --runall=fetch -k
-				[ "$?" -ne "0" ] && error_out "fetching (${img} for ${machine}) failed"
+				if [ -z ${dryrun} ]
+				then
+					bitbake ${img} --runall=fetch -k
+					[ "$?" -ne "0" ] && error_out "fetching (${img} for ${machine}) failed"
+				fi
 			done
 		done
 
@@ -116,20 +144,23 @@ main () {
 		DL_DIR=${DL_DIR%\"*}
 		
 		echo "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
-		files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
-		echo "copy ${files}"
-		for f in ${files}; do
-			cp ${f} ${SOURCE_MIRROR_URL}
-		done
+		if [ -z ${dryrun} ]
+			then
+			files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
+			echo "copy ${files}"
+			for f in ${files}; do
+				cp ${f} ${SOURCE_MIRROR_URL}
+			done
 
-		cwd=$(pwd)
-		cd ${DL_DIR}
-		files=$(find uninative -maxdepth 2 -type f -not -name "*.done")
-		for f in ${files}; do
-			dir=$(dirname ${f})
-			mkdir -p ${SOURCE_MIRROR_URL}/${dir}
-			cp ${f} ${SOURCE_MIRROR_URL}/${dir}
-		done
+			cwd=$(pwd)
+			cd ${DL_DIR}
+			files=$(find uninative -maxdepth 2 -type f -not -name "*.done")
+			for f in ${files}; do
+				dir=$(dirname ${f})
+				mkdir -p ${SOURCE_MIRROR_URL}/${dir}
+				cp ${f} ${SOURCE_MIRROR_URL}/${dir}
+			done
+		fi
 
 		cd ${top_dir}
 	done
