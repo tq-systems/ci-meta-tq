@@ -183,7 +183,6 @@ main () {
 			export ${codename}
 			DISTRO_CODENAME=${DISTRO_CODENAME#\"*}
 			DISTRO_CODENAME=${DISTRO_CODENAME%\"*}
-			local archive_basename=${config}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${stamp}
 
 			git log -1 > ${git_stamp_file}
 
@@ -207,46 +206,48 @@ main () {
 				[ "$?" -ne "0" ] && error_out "archiving for ${machine} failed"
 			done
 			tar -cvzf ${deploydir}/${archive_basename}.LIC.tar.gz -C $(pwd)/tmp/deploy licenses
-
-			# create a mirror archive
-			mkdir ${deploydir}/${archive_basename}.MIRROR.SRC
-
-			setter=$(bitbake -e | grep ^"DL_DIR=")
-			export ${setter}
-			# remove the '"' from the var, otherwise usage will fail
-			DL_DIR=${DL_DIR#\"*}
-			DL_DIR=${DL_DIR%\"*}
-			# query all archived sources, needs archiver class in config
-			local archived_src_path=$(ls -1 $(pwd)/tmp/deploy/sources/*/*/*)
-			# copy the file from archived sources if it exists in DL_DIR
-			for f in ${archived_src_path}; do
-				local filename="${DL_DIR}/$(basename ${f})"
-				if [ -e ${filename} ]; then
-					cp "${filename}" ${deploydir}/${archive_basename}.MIRROR.SRC;
-				else
-					debug "$f has no counterpart ${filename}"
-				fi
-			done
-			#
-			# we assume here that bitbake is configured to use shallow cloning
-			# and that packages are tar.gz''
-			#
-			local archive_git=$(ls -1 ${DL_DIR}/gitshallow_*.tar.gz)
-			local archive_gitsm=$(ls -1 ${DL_DIR}/gitsmshallow_*.tar.gz)
-			for f in ${archive_git}; do
-				cp "${f}" ${deploydir}/${archive_basename}.MIRROR.SRC;
-			done
-			for f in ${archive_gitsm}; do
-				cp "${f}" ${deploydir}/${archive_basename}.MIRROR.SRC;
-			done
-
-			tar -cvzf ${deploydir}/${archive_basename}.MIRROR.SRC.tar.gz -C ${deploydir} ${archive_basename}.MIRROR.SRC
-			# do some cleanup
-			rm -rf ${deploydir}/${archive_basename}.MIRROR.SRC
 		fi
 
 		cd ${top_dir}
+		# create a mirror archive
+		local archive_basename=${config}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${stamp}
+
+		mkdir -p ${archive_basename}.MIRROR.SRC
+
+		setter=$(bitbake -e | grep ^"DL_DIR=")
+		export ${setter}
+		# remove the '"' from the var, otherwise usage will fail
+		DL_DIR=${DL_DIR#\"*}
+		DL_DIR=${DL_DIR%\"*}
+		# query all archived sources, needs archiver class in config
+		local archived_src_path=$(ls -1 ${build_dir}_*/tmp/deploy/sources/*/*/*)
+
+		# copy the file from archived sources if it exists in DL_DIR
+		for f in ${archived_src_path}; do
+			local filename="${DL_DIR}/$(basename ${f})"
+			if [ -e ${filename} ]; then
+				cp "${filename}" ${archive_basename}.MIRROR.SRC;
+			else
+				debug "$f has no counterpart ${filename}"
+			fi
+		done
+		#
+		# we assume here that bitbake is configured to use shallow cloning
+		# and that packages are tar.gz''
+		#
+		local archive_git=$(ls -1 ${DL_DIR}/gitshallow_*.tar.gz)
+		local archive_gitsm=$(ls -1 ${DL_DIR}/gitsmshallow_*.tar.gz)
+		for f in ${archive_git}; do
+			cp "${f}" ${archive_basename}.MIRROR.SRC;
+		done
+		for f in ${archive_gitsm}; do
+			cp "${f}" ${archive_basename}.MIRROR.SRC;
+		done
 	done
+
+	tar -cvzf ${archive_basename}.MIRROR.SRC.tar.gz ${archive_basename}.MIRROR.SRC
+	# do some cleanup
+	rm -rf ${archive_basename}.MIRROR.SRC
 }
 
 main "${@}"
