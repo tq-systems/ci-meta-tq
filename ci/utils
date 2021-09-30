@@ -193,7 +193,12 @@ get_machines () {
 		;;
 	esac
 
-	echo "${choosen_machines}"
+	if [ -z "${LOCAL}" ] || [ -z "${MACHINE_LIST}" ]
+	then
+		echo "${choosen_machines}"
+	else
+		echo "${MACHINE_LIST}"
+	fi
 }
 
 ####
