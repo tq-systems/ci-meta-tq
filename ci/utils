@@ -227,3 +227,35 @@ get_distros () {
 		echo "${DISTRO_LIST}"
 	fi
 }
+
+####
+# func:   get_distros_for_config
+# brief:  return buildable machines for config
+# param:  $1 - config (imx/ls/ti/minimal)
+# return: list of machines
+####
+get_distros_for_config () {
+	local distro_path="sources/meta-dumpling/conf/distro"
+	local all_distros=$(cd ${distro_path} && find ./*.conf | sed -E "s/\.\/(.*)\.(.*)/\1/")
+	local chosen_distros=${all_distros}
+
+	case ${config} in
+	"imx" )
+		choosen_distros="spaetzle-nxp dumpling-wayland-nxp"
+		;;
+	"ls" )
+		choosen_distros="spaetzle dumpling"
+		;;
+	"minimal" )
+		choosen_distros="spaetzle dumpling dumpling-wayland"
+		;;
+	"ti" )
+		choosen_distros="spaetzle-ti dumpling-wayland-ti"
+		;;
+	* )
+		exit 1
+		;;
+	esac
+
+	echo "${choosen_distros}"
+}
