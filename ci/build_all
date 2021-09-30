@@ -213,6 +213,7 @@ main () {
 
 		cd ${top_dir}
 		# create a mirror archive
+		# TODO: ${DISTRO_CODENAME} ${DISTRO_VERSION} and ${stamp} are not valid here
 		local archive_basename=${config}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${stamp}
 
 		mkdir -p ${archive_basename}.MIRROR.SRC
