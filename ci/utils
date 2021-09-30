@@ -129,22 +129,24 @@ do_link_auto_conf () {
 ####
 get_images () {
 	local distro=${1}
+	local filter="-nxp\|-ti\|-ls"
 	local choosen_images="tq-image-generic"
 
-	case ${distro} in
-		"dumpling" )
-			choosen_images="tq-image-generic"
-			;;
-		"spaetzle" )
+	case $(echo ${distro} | sed -e "s/${filter}//g" ) in
+		spaetzle )
 			choosen_images="tq-image-small"
 			;;
-		"dumpling-rt" )
+		dumpling-rt )
 			choosen_images="tq-image-small"
 			;;
-		"dumpling-wayland")
+		dumpling-wayland )
 			choosen_images="tq-image-weston"
 			;;
+		dumpling )
+			choosen_images="tq-image-generic"
+			;;
 		* )
+			error "no image for distro ${distro}"
 			exit 1
 			;;
 	esac
