@@ -129,24 +129,32 @@ do_link_auto_conf () {
 ####
 get_images () {
 	local distro=${1}
+	local choosen_images="tq-image-generic"
 
 	case ${distro} in
 		"dumpling" )
-			echo "tq-image-generic"
+			choosen_images="tq-image-generic"
 			;;
 		"spaetzle" )
-			echo "tq-image-small"
+			choosen_images="tq-image-small"
 			;;
 		"dumpling-rt" )
-			echo "tq-image-small"
+			choosen_images="tq-image-small"
 			;;
 		"dumpling-wayland")
-			echo "tq-image-weston"
+			choosen_images="tq-image-weston"
 			;;
 		* )
 			exit 1
 			;;
 	esac
+
+	if [ -z "${LOCAL}" ] || [ -z "${IMAGE_LIST}" ]
+	then
+		echo "${choosen_images}"
+	else
+		echo "${IMAGE_LIST}"
+	fi
 }
 
 ####
