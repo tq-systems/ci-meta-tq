@@ -170,8 +170,9 @@ get_machines () {
 	local all_machines=$("${SCRIPTPATH}"/ls-machines)
 	local ti_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqma335\|tqma57')
 	local ls_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqml[s,x]')
-	local imx_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqma[6,7]')
-	local minimal_exclude="${ls_machines}"
+	local imx_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqma[6,7,8]')
+	local imx8_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqma8')
+	local minimal_exclude="${ls_machines} ${imx8_machines}"
 	local ls_exclude=$(echo "${ti_machines} ${imx_machines}")
 	local imx_exclude=$(echo "${ls_machines} ${ti_machines}")
 	local ti_exclude=$(echo "${imx_machines} ${ls_machines}")
