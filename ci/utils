@@ -257,5 +257,10 @@ get_distros_for_config () {
 		;;
 	esac
 
-	echo "${choosen_distros}"
+	if [ -z "${LOCAL}" ] || [ -z "${DISTRO_LIST}" ]
+	then
+		echo "${choosen_distros}"
+	else
+		echo "${DISTRO_LIST}"
+	fi
 }

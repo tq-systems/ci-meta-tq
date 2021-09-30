@@ -30,9 +30,9 @@ DEFAULT_MACHINE=$(echo ${LIST_TQ_MACHINES} | awk '{ print $1 }')
 CONFIG_TEMPLATE=minimal
 
 DEFAULT_DISTRO_minimal="spaetzle"
-DEFAULT_DISTRO_imx="dumpling-wayland"
+DEFAULT_DISTRO_imx="dumpling-wayland-nxp"
 DEFAULT_DISTRO_ls="dumpling"
-DEFAULT_DISTRO_ti="dumpling-wayland"
+DEFAULT_DISTRO_ti="dumpling-wayland-ti"
 
 usage()
 {
