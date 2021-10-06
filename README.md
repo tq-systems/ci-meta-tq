@@ -21,7 +21,7 @@ This repo contains shell scripts released under the GPLv2, see the file
 - sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK, not longer maintained)
 - sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
 - thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
-- warrior (not longer maintained))
+- warrior (not longer maintained)
 - zeus
 - zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP)
 - hardknott
@@ -69,8 +69,8 @@ Additionally some config variables are injected via `auto.conf.normal` from
 `sources/template/conf/`
 
 In case you have a `~/.oe` or `~/.yocto` dir a `site.conf` file from this dir
-will be symlinked to the conf dir inside the buildir to allow machine specific
-overrrides. Good use case for this are things like 
+will be symlinked to the conf dir inside the build directory to allow machine
+specific overrides. Good use case for this are things like
 
 * shared download directory: you can provide `$DL_DIR` via ~/.yocto/site.conf.
 * shared sstate cache: you can provide `$SSTATE_DIR` via ~/.yocto/site.conf.
@@ -136,7 +136,7 @@ Images:
 
 | image            | description                                          |
 | ---------------- | ---------------------------------------------------- |
-| tq-image-small   | samll image depending on `MACHINE_FEATURES`          |
+| tq-image-small   | small image depending on `MACHINE_FEATURES`          |
 | tq-image-generic | basic set of tools depending on `MACHINE_FEATURES`   |
 | tq-image-weston  | weston GUI and multimedia support                    |
 
@@ -144,7 +144,7 @@ Images:
 
 To force a clean build of all supported machines and generate archives, do
 
-`ci/build-all <builddir> <config>`
+`ci/build_all <builddir> <config>`
 
 ### Building package premirror
 

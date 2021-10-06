@@ -5,6 +5,25 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+### Added
+
+* meta-dumpling: example distros
+  * allows building UBI images
+  * configuration specific adjustments
+* meta-dumpling: image recipes for tiny systems
+* meta-tq: support for TQMa8 families of SOM
+
+### Changed
+
+* update layers to hardknott
+* ci: build improvements
+
+### Removed
+
+* meta-imx dependency for TQMa8 boards
+* templates: drop separate mirror / ci config
+* support for PPC targets
+
 ## zeus.TQMLS1012AL.BSP.SW.0010
 
 * Update of meta-tq: see CHANGELOG.md in meta-tq
