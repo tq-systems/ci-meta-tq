@@ -16,14 +16,15 @@ This repo contains shell scripts released under the GPLv2, see the file
 - krogoth (not longer maintained)
 - morty (not longer maintained)
 - pyro (not longer maintained)
-- rocko (no i.MX mfgtool support, not longer maintained)
-- warrior (dropped i.MX mfgtool support)
-- zeus
+- rocko (not longer maintained)
 - rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, not longer maintained)
 - sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK, not longer maintained)
 - sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
 - thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
-- zeus-tqma8x (only for TQMa8 platforms, based on NXP BSP)
+- warrior (not longer maintained))
+- zeus
+- zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP)
+- hardknott
 
 **Attention:** use README.md of used branch for exact details.
 
@@ -50,29 +51,33 @@ To set up an initial build space, clone this repo using
 
 `git clone --branch=<branch-name> --recurse-submodules <url>`
 
-change to  checked out dir and
+change to checked out dir and
 
 `. ./setup-environment <builddir> <config>`
 
 You can override defaults with:
 
 * `export MACHINE=<machine>` (default is first tqma\* MACHINE from meta-tq)
-* `export DISTRO=<distro>` (tested is poky, per default systemd and wayland are selected via DISTRO_FEATURES)
+* `export DISTRO=<distro>` (tested distros are based on poky and could be found
+   in meta-dumpling)
 
-before sourcing the script. The script sources ./setup-environment, which uses
-the requested configuration in sources/template/conf/bblayers.conf.\<config\> as initial
-template for your bblayer.conf
+before sourcing the script. This script uses the requested configuration from
+`sources/template/conf/bblayers.conf.<config>` as initial template for your
+bblayer.conf
 
-Additionally some config variables are injected via auto.conf.normal from
-sources/template/conf/
+Additionally some config variables are injected via `auto.conf.normal` from
+`sources/template/conf/`
 
-In case you have a ~/.oe or ~/.yocto dir a site.conf file will be symlinked to
-the conf dir of the buildir to allow machine specific overrrides. For instance
-to use a shared download directory, you can provide `$DL_DIR` via
-~/.yocto/site.conf.
+In case you have a `~/.oe` or `~/.yocto` dir a `site.conf` file from this dir
+will be symlinked to the conf dir inside the buildir to allow machine specific
+overrrides. Good use case for this are things like 
 
-Internally the oe-init-build-env script from the used openembedded / poky
-meta layer will be sourced to get the bitbake environment
+* shared download directory: you can provide `$DL_DIR` via ~/.yocto/site.conf.
+* shared sstate cache: you can provide `$SSTATE_DIR` via ~/.yocto/site.conf.
+* local PREMIRROR
+
+Internally the `oe-init-build-env` script from the used openembedded / poky
+meta layer will be sourced from `sertup-environment` to get the bitbake environment
 
 After this step, everything is setup to build an image using bitbake.
 
@@ -87,47 +92,66 @@ To return to an existing buildspace go to the checked out dir and
 Under sources/templates several configs are supplied as starting point for own
 bblayers.conf
 
-* minimal: usable for all supported machines, only minimal layer dependencies
-
-* imx: usable for all machines with i.MX CPU, supports FSL community BSP via meta-freescale
-
-* ti: usable for all machines with TQ AM57xx CPU, uses meta-ti
+| config  | description                                              |
+| ------- | -------------------------------------------------------- |
+| minimal | can build machines, that not depend on a vendor layer    |
+| imx     | for machines with i.MX CPU, uses `meta-freescale`        |
+| ti      | machines with TI AM335x / AM57xx CPU, uses `meta-ti`     |
+| ls      | machines with NXP Layerscape CPU, uses `meta-freescale`  |
 
 ### Reproducible build environment
 
 Devolopment and automated builds are supported by the scripts under ci and
-configuration under ./sources/templates, notably
+configuration under `./sources/templates`, notably
 
-- sample bblayer.conf files
-- sample auto.conf files and inclusion fragments (see Yocto Project doc for
-  local.conf and auto.conf
+- sample `bblayer.conf` files
+- sample `auto.conf` files and inclusion fragments (see Yocto Project doc for
+  `local.conf` and `auto.conf`
 
 ### Build all supported machines
 
-To build all supported machines in one of the configs, one can
+To build all supported machines from one of the configs, one can
 use the CI helper script:
 
-`ci/build-all <builddir> <configuration>`
+`ci/build_all <builddir> <configuration>`
 
 Depending on the configuration, following images will be built:
 
-* minimal: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
-* imx: tq-image-weston (meta-dumpling, wayland image with various multimedia packages)
-* ti: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
-* ls: tq-image-generic (meta-dumpling, based on poky core-image-minimal)
+| config  | distro               | image            | kernel       |
+| ------- | -------------------- | ---------------- | -----------  |
+| minimal | spaetzle             | tq-image-small   | linux-tq     |
+| minimal | dumpling             | tq-image-generic | linux-tq     |
+| minimal | dumpling-wayland     | tq-image-weston  | linux-tq     |
+| imx     | spaetzle-nxp         | tq-image-small   | linux-imx-tq |
+| imx     | dumpling-wayland-nxp | tq-image-weston  | linux-imx-tq |
+| ti      | spaetzle-ti          | tq-image-small   | linux-ti-tq  |
+| ti      | dumpling-wayland-ti  | tq-image-weston  | linux-ti-tq  |
+| ls      | spaetzle             | tq-image-small   | TBD          |
+| ls      | dumpling             | tq-image-generic | TBD          |
+
+The kernel recipes are defined in `meta-tq`, image recipes and distro configs
+can be found in `meta-dumpling`.
+
+Images:
+
+| image            | description                                          |
+| ---------------- | ---------------------------------------------------- |
+| tq-image-small   | samll image depending on `MACHINE_FEATURES`          |
+| tq-image-generic | basic set of tools depending on `MACHINE_FEATURES`   |
+| tq-image-weston  | weston GUI and multimedia support                    |
 
 ### Clean build
 
 To force a clean build of all supported machines and generate archives, do
 
-`ci/build-all <builddir> <config> ci`
+`ci/build-all <builddir> <config>`
 
 ### Building package premirror
 
 To help to create a package premirror (to support offline builds),
 one can use the CI helper script:
 
-`ci/build-all <builddir> <config> mirror`
+`ci/fill_mirror <builddir> <config>`
 
 One have to define the following stuff in your site.conf:
 
