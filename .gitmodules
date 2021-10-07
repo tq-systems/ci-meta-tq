@@ -26,3 +26,7 @@
 	path = sources/meta-arm
 	url = https://git.yoctoproject.org/git/meta-arm
 	branch = hardknott
+[submodule "sources/meta-qt5"]
+	path = sources/meta-qt5
+	url = https://github.com/meta-qt5/meta-qt5.git
+	branch = hardknott
