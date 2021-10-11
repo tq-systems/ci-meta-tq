@@ -7,6 +7,10 @@ Releases are named with the following scheme:
 
 ### Added
 
+* meta-dumpling: add qt5 demo image
+* meta-dumpling: port camera support from zeus-tqma8
+* templates: add meta-qt5 to imx config
+* meta-qt5: add layer as submodule
 * meta-dumpling: example distros
   * allows building UBI images
   * configuration specific adjustments
