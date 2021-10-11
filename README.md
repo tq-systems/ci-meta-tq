@@ -178,10 +178,20 @@ with `BB_FETCH_PREMIRRORONLY=1`
 
 ## Security
 
-This project is focused on board bringup and demonstration for TQ Systems starter
-kits. Since embedded projects have different goals, the Yocto Project brings lots
-of features to modify system configuration and setup. This project is not a turn
-key distribution but a starting point fro own developments.
+*Attention* This project is focused on board bringup and demonstration for
+TQ-Systems starter kits. Since embedded projects have different goals, the
+Yocto Project brings lots of features to modify system configuration and setup.
+This project is not a turn key distribution but a starting point for own
+developments.
 
-RootFS created with this setup has for demonstration purpose and ease of
-development not root password set.
+*Attention* RootFS created with this setup has for demonstration purpose and
+ease of development no root password set and allows passwordless ssh root access.
+Please make sure, to remove things like
+
+* `debug-tweaks`
+* `empty-root-password`
+* `ssh_allow_root_login`
+
+from `IMAGE_FEATURES` and / or `IMAGE_EXTRA_FEATURES` before release. View the
+openembedded / Yocto Project and bitbake documentation.
+
