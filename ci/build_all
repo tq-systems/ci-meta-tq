@@ -148,27 +148,15 @@ main () {
 			# now force bitbake to generate images for all targets ...
 			for machine in ${machines}
 			do
-				local err;
 				# overwrite MACHINE
 				export MACHINE=${machine}
-
-				# do a fetchall to force filling DL_DIR
-				info "baking: ${machine} ${distro} ${img} with --runall=fetch"
-
-				if [ -z ${dryrun} ]
-				then
-					bitbake ${img} --runall=fetch -k
-					[ "$?" -ne "0" ] && error_out "fetching ($img for $t) failed"
-				fi
-				
 				# create image for $MACHINE
-				echo "baking: ${machine} ${distro} ${img} ..."
+				info "baking: ${machine} ${distro} ${img} ..."
 
 				if [ -z ${dryrun} ]
 				then
 					bitbake ${img}
-					err=${?}
-					[ "${err}" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
+					[ "$?" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
 				fi
 			done
 		done
