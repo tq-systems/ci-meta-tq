@@ -84,7 +84,7 @@ main () {
 
 	local top_dir=$(pwd)
 	local distros=$(get_distros_for_config "${config}")
-	local machines=$(get_machines ${config})
+	local machines=$(get_machines "${config}")
 
 	debug "Machines to build: ${machines}"
 	debug "Distros to build: ${distros}"

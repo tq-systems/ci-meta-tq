@@ -87,12 +87,14 @@ main () {
 	local machines=$(get_machines "${config}")
 
 	debug "Machines to build: ${machines}"
+	debug "Distros to build: ${distros}"
 
 	for distro in ${distros}
 	do
 		# GENERAL
 
 		local images=$(get_images ${distro})
+		debug "Images to build: ${images}"
 
 		# source the real setup workhorse
 		export EULA="y"
@@ -118,7 +120,7 @@ main () {
 
 		# if there is a .done file and / or a git2_*.tar.gz it seems the
 		# fetcher does not rerun git to update the repo
-		echo "clean git2 tarballs from ${DL_DIR} ..."
+		info "clean git2 tarballs from ${DL_DIR} ..."
 		rm -f ${DL_DIR}/git2_*.tar.gz
 		rm -f ${DL_DIR}/git2_*.tar.gz.done
 		ls -1 ${DL_DIR}/git2_*
@@ -129,7 +131,7 @@ main () {
 			for machine in ${machines}
 			do
 				export MACHINE=${machine}
-				echo "baking: ${machine} ${distro} ${img} with --runall=fetch"
+				info "baking: ${machine} ${distro} ${img} with --runall=fetch"
 				if [ -z ${dryrun} ]
 				then
 					bitbake ${img} --runall=fetch -k
@@ -151,7 +153,7 @@ main () {
 		if [ -z ${dryrun} ]
 			then
 			files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
-			echo "copy ${files}"
+			info "copy ${files}"
 			for f in ${files}; do
 				cp ${f} ${SOURCE_MIRROR_URL}
 			done
