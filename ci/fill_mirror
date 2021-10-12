@@ -99,6 +99,10 @@ main () {
 		export DISTRO=${distro}
 		export MACHINE=$(echo ${machines} | awk '{ print $1 }')
 
+		# clean conf, to enforce a really clean configuration and to enable
+		# incremental changes in the config using our template dir
+		rm -rf ${build_dir}_${distro}~/conf
+
 		. ./setup-environment ${build_dir}_${distro}~ ${config}
 		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
 
