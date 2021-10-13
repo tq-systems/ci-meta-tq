@@ -1,9 +1,24 @@
 # Changelog
 
+[[_TOC_]]
+
 All notable changes to this project will be documented in this file.
 Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
+
+## Next Release
+
+### Added
+
+* meta-tq: CortexM4 Support for TQMa8x
+
+### Changed
+
+* meta-tq: improve support for multiple bootstreams for all tqma8
+
+See the changelog of meta-tq and meta-dumpling for detailed list of changes in
+these layers.
 
 ## zeus.TQMa8.BSP.SW.0055
 
@@ -163,7 +178,7 @@ layer.
 
 ## zeus.TQMa8.BSP.SW.0029
 
-## Changed
+### Changed
 
 * setup-environment: apply bitbake fix for gitsm fetcher and shallow clones
 * ci: jenkins slave support
@@ -174,7 +189,7 @@ See the changelogs of meta-tq and meta-dumpling for changes in those layers.
 
 ## zeus.TQMa8.BSP.SW.0028
 
-## Added
+### Added
 
 * meta-tq: FlexSPI and mfgtool boot support for TQMa8XQP\[S\] REV.020x
 * meta-tq: improve recipes for mfgtool support
@@ -183,20 +198,20 @@ See the changelogs of meta-tq and meta-dumpling for changes in those layers.
 
 ## zeus.TQMa8.BSP.SW.0027
 
-## Changed
+### Changed
 
 * meta-tq: machine file renames for for TQMa8M\[x,xML,xNL\]
 * meta-tq: Sound support for TQMa8M\[x,xML,xNL\]
 * meta-tq: QSPI support for TQMa8M\[xML,xNL\]
 
-## Fixed
+### Fixed
 
 * meta-tq: RAM timing fix  for TQMa8MxNL
 * meta-tq: RAM size fix  for TQMa8MxML
 
 ## zeus.TQMa8.BSP.SW.0026
 
-## Added
+### Added
 
 * ci: allow building for more machines
 * meta-tq: support for TQMa8Mx REV.020x (work in progress)
@@ -205,7 +220,7 @@ See the changelogs of meta-tq and meta-dumpling for changes in those layers.
 
 ## zeus.TQMa8.BSP.SW.0025
 
-## Changed
+### Changed
 
 * global: build tq-image-weston for imx config
 * global: restrict imx config to supported TQMa8 machines
@@ -214,7 +229,7 @@ See the changelogs of meta-tq and meta-dumpling for changes in those layers.
 * global: prepare integration of NXP 5.4.3_1.0.0 reference BSP
 * global: update to use zeus
 
-## Added
+### Added
 
 * meta-dumpling: add recipe for generic weston image
 * meta-tq: support for TQMa8Xx REV.020x
