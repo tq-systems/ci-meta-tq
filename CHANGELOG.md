@@ -9,6 +9,8 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## zeus.TQMa8.BSP.SW.0056
+
 ### Added
 
 * meta-tq: CortexM4 Support for TQMa8x
