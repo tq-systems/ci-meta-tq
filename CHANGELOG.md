@@ -5,6 +5,16 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMa8.BSP.SW.0055
+
+### Added
+
+* meta-tq: CortexM4 Support for TQMa8Xx\[4,S\]
+
+### Changed
+
+* meta-tq: improve documentation and camera support
+
 ## zeus.TQMa8.BSP.SW.0054
 
 ### Changed
