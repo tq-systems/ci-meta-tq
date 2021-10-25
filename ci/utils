@@ -168,14 +168,16 @@ get_images () {
 get_machines () {
 	local config=${1}
 	local all_machines=$("${SCRIPTPATH}"/ls-machines)
-	local ti_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqma335\|tqma57')
-	local ls_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqml[s,x]')
-	local imx_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqma[6,7,8]')
-	local imx8_machines=$("${SCRIPTPATH}"/ls-machines | grep 'tqma8')
-	local minimal_exclude="${ls_machines} ${imx8_machines}"
-	local ls_exclude=$(echo "${ti_machines} ${imx_machines}")
-	local imx_exclude=$(echo "${ls_machines} ${ti_machines}")
-	local ti_exclude=$(echo "${imx_machines} ${ls_machines}")
+	local ti_machines=$(echo "${all_machines}" | grep 'tqma335\|tqma57\|tqma65')
+	local tqma65_machines=$(echo "${all_machines}" | grep 'tqma65')
+	local ls_machines=$(echo "${all_machines}" | grep 'tqml[s,x]')
+	local imx_machines=$(echo "${all_machines}" | grep 'tqma[6,7,8][^0-9]')
+	local imx8_machines=$(echo "${all_machines}" | grep 'tqma8[^0-9]')
+	local mc_machines=$(echo "${all_machines}" | grep 'k3r5')
+	local minimal_exclude="${ls_machines} ${imx8_machines} ${tqma65_machines} ${mc_machines}"
+	local ls_exclude=$(echo "${ti_machines} ${imx_machines} ${mc_machines}")
+	local imx_exclude=$(echo "${ls_machines} ${ti_machines} ${mc_machines}")
+	local ti_exclude=$(echo "${imx_machines} ${ls_machines} ${mc_machines}")
 	local choosen_machines=${all_machines}
 
 	case ${config} in
