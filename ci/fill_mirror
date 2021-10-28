@@ -111,7 +111,7 @@ main () {
 		echo "build mirror"
 		do_link_auto_conf "mirror"
 		echo "clean local dirs in $(pwd) ..."
-		rm -rf ./cache ./tmp ./sstate-cache
+		rm -rf ./cache ./tmp* ./sstate-cache
 
 		# get DL_DIR to cleanup packages generated from git ...
 		setter=$(bitbake -e | grep ^"DL_DIR=")
