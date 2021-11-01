@@ -85,6 +85,7 @@ main () {
 	local top_dir=$(pwd)
 	local distros=$(get_distros_for_config "${config}")
 	local machines=$(get_machines "${config}")
+	local stamp=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
 
 	debug "Machines to build: ${machines}"
 	debug "Distros to build: ${distros}"
@@ -143,6 +144,16 @@ main () {
 			info "env DL_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 
+		# note: this depends on a selected distro
+		local version=$(bitbake -e | grep ^"DISTRO_VERSION=")
+		export ${version}
+		DISTRO_VERSION=${DISTRO_VERSION#\"*}
+		DISTRO_VERSION=${DISTRO_VERSION%\"*}
+		local codename=$(bitbake -e | grep ^"DISTRO_CODENAME=")
+		export ${codename}
+		DISTRO_CODENAME=${DISTRO_CODENAME#\"*}
+		DISTRO_CODENAME=${DISTRO_CODENAME%\"*}
+
 		for img in ${images}
 		do
 			# now force bitbake to generate images for all targets ...
@@ -162,24 +173,14 @@ main () {
 		done
 		if [ -z ${LOCAL} ]
 		then
-			mkdir -p ${deploydir}
 			local artifactsdir=$(pwd)/tmp/deploy/images
-			local stamp=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
 			local git_stamp_file="${deploydir}/${config}-stamp"
-			# note: this depends on a selected distro
-			local version=$(bitbake -e | grep ^"DISTRO_VERSION=")
-			export ${version}
-			DISTRO_VERSION=${DISTRO_VERSION#\"*}
-			DISTRO_VERSION=${DISTRO_VERSION%\"*}
-			local codename=$(bitbake -e | grep ^"DISTRO_CODENAME=")
-			export ${codename}
-			DISTRO_CODENAME=${DISTRO_CODENAME#\"*}
-			DISTRO_CODENAME=${DISTRO_CODENAME%\"*}
 
+			mkdir -p ${deploydir}
 			git log -1 > ${git_stamp_file}
 
 			for machine in ${machines}; do
-				local machine_archive=${machine}_${archive_basename}
+				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${stamp}
 				echo "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}/${MACHINE}, clean them before recreate
 				rm -f ${artifactsdir}/${machine}/*.info
@@ -197,16 +198,27 @@ main () {
 				tar -cvzf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${artifactsdir} ${machine}
 				[ "$?" -ne "0" ] && error_out "archiving for ${machine} failed"
 			done
-			tar -cvzf ${deploydir}/${archive_basename}.LIC.tar.gz -C $(pwd)/tmp/deploy licenses
 		fi
 
 		cd ${top_dir}
-		# create a mirror archive
-		# TODO: ${DISTRO_CODENAME} ${DISTRO_VERSION} and ${stamp} are not valid here
-		local archive_basename=${config}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${stamp}
+	done
+	if [ -z ${LOCAL} ]
+	then
+		# create licenses and mirror archive
+		local archive_basename=${config}_${stamp}
+
+		mkdir -p ${archive_basename}.LIC
+		# copy the file from licenses
+		local licenses_src_path=$(ls -d ${build_dir}_*/tmp/deploy/licenses/*)
+		for f in ${licenses_src_path}; do
+			cp -r "${f}" ${archive_basename}.LIC;
+		done
+
+		tar -cvzf ${archive_basename}.LIC.tar.gz ${archive_basename}.LIC
+		# do some cleanup
+		rm -rf ${archive_basename}.LIC
 
 		mkdir -p ${archive_basename}.MIRROR.SRC
-
 		setter=$(bitbake -e | grep ^"DL_DIR=")
 		export ${setter}
 		# remove the '"' from the var, otherwise usage will fail
@@ -236,11 +248,11 @@ main () {
 		for f in ${archive_gitsm}; do
 			cp "${f}" ${archive_basename}.MIRROR.SRC;
 		done
-	done
 
-	tar -cvzf ${archive_basename}.MIRROR.SRC.tar.gz ${archive_basename}.MIRROR.SRC
-	# do some cleanup
-	rm -rf ${archive_basename}.MIRROR.SRC
+		tar -cvzf ${archive_basename}.MIRROR.SRC.tar.gz ${archive_basename}.MIRROR.SRC
+		# do some cleanup
+		rm -rf ${archive_basename}.MIRROR.SRC
+	fi
 }
 
 main "${@}"
