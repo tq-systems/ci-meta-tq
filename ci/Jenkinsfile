@@ -359,12 +359,20 @@ pipeline {
     post {
         success {
             archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+            archiveArtifacts artifacts: "${env.WS_IMX}/*.LIC.tar.gz"
+            archiveArtifacts artifacts: "${env.WS_IMX}/*.MIRROR.SRC.tar.gz"
             wipeOutBuildspace("${env.WS_IMX}")
             archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+            archiveArtifacts artifacts: "${env.WS_LS}/*.LIC.tar.gz"
+            archiveArtifacts artifacts: "${env.WS_LS}/*.MIRROR.SRC.tar.gz"
             wipeOutBuildspace("${env.WS_LS}")
             archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+            archiveArtifacts artifacts: "${env.WS_MIN}/*.LIC.tar.gz"
+            archiveArtifacts artifacts: "${env.WS_MIN}/*.MIRROR.SRC.tar.gz"
             wipeOutBuildspace("${env.WS_MIN}")
             archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+            archiveArtifacts artifacts: "${env.WS_TI}/*.LIC.tar.gz"
+            archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
             wipeOutBuildspace("${env.WS_TI}")
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
