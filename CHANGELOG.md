@@ -5,6 +5,10 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+[[_TOC_]]
+
+## Next Release
+
 ### Added
 
 * meta-dumpling: add qt5 demo image
@@ -19,6 +23,7 @@ Releases are named with the following scheme:
 
 ### Changed
 
+* meta-tq: update TQMa8Mx/TQMa8MxML/TQMa8MxNL to kernel 5.10
 * update layers to hardknott
 * ci: build improvements
 
@@ -27,6 +32,9 @@ Releases are named with the following scheme:
 * meta-imx dependency for TQMa8 boards
 * templates: drop separate mirror / ci config
 * support for PPC targets
+
+For a list of detailed changes see changelogs in git submodules for meta-tq and
+meta-dumpling.
 
 ## zeus.TQMLS1012AL.BSP.SW.0010
 
