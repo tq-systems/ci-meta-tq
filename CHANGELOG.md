@@ -11,6 +11,8 @@ Releases are named with the following scheme:
 
 ### Added
 
+* meta-tq: tqma8 / linux-imx-5.10: add experimental support for ath10k wifi
+  with USB interface
 * meta-dumpling: add qt5 demo image
 * meta-dumpling: port camera support from zeus-tqma8
 * templates: add meta-qt5 to imx config
@@ -23,6 +25,8 @@ Releases are named with the following scheme:
 
 ### Changed
 
+* meta-dumpling: add missing packages to packagegroup-wifi and
+  packagegroup-hwutils
 * meta-tq: update TQMa8Mx/TQMa8MxML/TQMa8MxNL to kernel 5.10
 * update layers to hardknott
 * ci: build improvements
