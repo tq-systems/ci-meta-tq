@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # -*- mode: shell-script; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
 #
 # Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
@@ -55,13 +55,13 @@ directory <build-dir>. The build directory configuration is unchanged.
 "
 
     ls sources/meta-tq/conf/machine/*.conf > /dev/null 2>&1
-    ls sources/meta-tq-distro/conf/distro/*.conf > /dev/null 2>&1
+    ls sources/meta-dumpling/conf/distro/*.conf > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo -e "
 Supported machines: `echo; ls sources/meta-tq/conf/machine/*.conf \
 | sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
 
-Supported TQ's distros: `echo; ls sources/meta-tq-distro/conf/distro/*.conf \
+Supported TQ's distros: `echo; ls sources/meta-dumpling/conf/distro/*.conf\
 | sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
 
 Available Poky's distros: `echo; ls sources/poky/meta-poky/conf/distro/*.conf \
@@ -119,7 +119,7 @@ EOF
 
 		sleep 4
 
-		more -d $FSL_EULA_FILE
+		more -d ${CWD}/sources/meta-freescale/EULA
 		echo
 		REPLY=
 		while [ -z "${REPLY}" ]; do
