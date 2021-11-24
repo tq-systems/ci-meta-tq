@@ -195,7 +195,7 @@ main () {
 				printf "\ngit submodule info:\n\n" >> ${artifactsdir}/${machine}/${machine_archive}.info
 				git submodule >> ${artifactsdir}/${machine}/${machine_archive}.info
 				# create image archive for $MACHINE
-				tar -cvzf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${artifactsdir} ${machine}
+				tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${artifactsdir} ${machine} --use-compress-program=pigz
 				[ "$?" -ne "0" ] && error_out "archiving for ${machine} failed"
 			done
 		fi
@@ -214,7 +214,7 @@ main () {
 			cp -r "${f}" ${archive_basename}.LIC;
 		done
 
-		tar -cvzf ${archive_basename}.LIC.tar.gz ${archive_basename}.LIC
+		tar -cvf ${archive_basename}.LIC.tar.gz ${archive_basename}.LIC --use-compress-program=pigz
 		# do some cleanup
 		rm -rf ${archive_basename}.LIC
 
@@ -249,7 +249,7 @@ main () {
 			cp "${f}" ${archive_basename}.MIRROR.SRC;
 		done
 
-		tar -cvzf ${archive_basename}.MIRROR.SRC.tar.gz ${archive_basename}.MIRROR.SRC
+		tar -cvf ${archive_basename}.MIRROR.SRC.tar.gz ${archive_basename}.MIRROR.SRC --use-compress-program=pigz
 		# do some cleanup
 		rm -rf ${archive_basename}.MIRROR.SRC
 	fi
