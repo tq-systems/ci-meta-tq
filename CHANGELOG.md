@@ -5,6 +5,18 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+## zeus.TQMaRZG2x.BSP.SW.0003
+
+### Changed
+
+* Update of meta-tq: see CHANGELOG.md in meta-tq
+
+## zeus.TQMa335x.BSP.SW.0121
+
+### Changed
+
+* Update of meta-tq: see CHANGELOG.md in meta-tq
+
 ## zeus.TQMaRZG2.BSP.SW.0002
 
 ### Added
