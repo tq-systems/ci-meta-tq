@@ -9,6 +9,15 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## zeus.TQMa8.BSP.SW.0057
+
+### Added
+
+* meta-tq: Support for TQMa8MxML with 1 GiB RAM
+
+See the changelog of meta-tq and meta-dumpling for detailed list of changes in
+these layers.
+
 ## zeus.TQMa8.BSP.SW.0056
 
 ### Added
