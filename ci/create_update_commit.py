@@ -58,7 +58,7 @@ def process_submodule(submodule: Submodule, format: str) -> str:
     # Only one submodule shall be in the index
     assert len(diffs) == 1
     diff = diffs[0]
-    # Ensure this diff is on exactly the changes submodule
+    # Ensure this diff is on exactly the changed submodule
     assert diff.a_path == diff.b_path
     assert diff.a_path == submodule.path
 
@@ -71,7 +71,7 @@ def process_submodule(submodule: Submodule, format: str) -> str:
 
 def process(args):
     cwd = Path.cwd()
-    upper_repo = Repo(cwd)
+    upper_repo = Repo(str(cwd))
     assert not upper_repo.bare,  f"'{cwd}' does contain a bare repository"
     if upper_repo.is_dirty(working_tree=False, index=True, untracked_files=False):
         print('There are staged files which would be commited as well. Please use a clean index')
