@@ -230,6 +230,8 @@ if [ -e $PWD/sources/oe-core ]; then
     OEROOT=$PWD/sources/oe-core
 fi
 
+BB_ENV_EXTRAWHITE="${BB_ENV_EXTRAWHITE} TQ_GIT_BASEURL TQ_GIT_PROTOCOL"
+
 . $OEROOT/oe-init-build-env $CWD/$1 > /dev/null
 
 # if conf/local.conf not generated, no need to go further
