@@ -222,11 +222,6 @@ pipeline {
         timestamps()
     }
 
-    triggers {
-        /* nightly rebuild */
-        cron('H H(0-4) * * *')
-    }
-
     environment {
         /*
          * workspace name for config must be identical to config name
