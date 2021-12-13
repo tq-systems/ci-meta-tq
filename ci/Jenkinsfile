@@ -375,22 +375,22 @@ pipeline {
         }
         unstable {
             emailext (
-                to: "${env.MAIL_RECIPIENTS}",
+                to: "${gitlabUserEmail}",
                 subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
                 body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
                   Check console output at ${env.BUILD_URL} to view the results.""",
-                attachLog: true,
+                attachLog: false	,
             )
             updateGitlabCommitStatus name: 'build', state: 'failed'
         }
         failure {
             emailext (
-                to: "${env.MAIL_RECIPIENTS}",
+                to: "${gitlabUserEmail}",
                 subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
                 body: """\
                 ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
                 Check console output at ${env.BUILD_URL} to view the results.""",
-                attachLog: true,
+                attachLog: false,
             )
             updateGitlabCommitStatus name: 'build', state: 'failed'
         }
