@@ -219,6 +219,7 @@ pipeline {
                        numToKeepStr: '10')
         )
         timestamps()
+        gitLabConnection('tq-gitlab-server')
     }
 
     environment {
@@ -237,6 +238,7 @@ pipeline {
     stages {
         stage ('Manage sstate cache') {
             steps {
+                updateGitlabCommitStatus name: 'build', state: 'running'
                 /*
                  * manageSstateCache(currentBuild.startTimeInMillis()) does not work
                  * this helps to explicit clean state cache
@@ -369,6 +371,7 @@ pipeline {
             archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
             wipeOutBuildspace("${env.WS_TI}")
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
+            updateGitlabCommitStatus name: 'build', state: 'success'
         }
         unstable {
             emailext (
@@ -378,6 +381,7 @@ pipeline {
                   Check console output at ${env.BUILD_URL} to view the results.""",
                 attachLog: true,
             )
+            updateGitlabCommitStatus name: 'build', state: 'failed'
         }
         failure {
             emailext (
@@ -388,6 +392,7 @@ pipeline {
                 Check console output at ${env.BUILD_URL} to view the results.""",
                 attachLog: true,
             )
+            updateGitlabCommitStatus name: 'build', state: 'failed'
         }
     }
 }
