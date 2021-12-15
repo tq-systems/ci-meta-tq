@@ -25,6 +25,9 @@ Releases are named with the following scheme:
 
 ### Changed
 
+* setup-environment: adjust usage info and Freescale / NXP EULA handling
+  to current configuration
+* meta-dumpling: improve busybox configuration
 * meta-dumpling: add missing packages to packagegroup-wifi and
   packagegroup-hwutils
 * meta-tq: update TQMa8Mx/TQMa8MxML/TQMa8MxNL to kernel 5.10

@@ -218,13 +218,8 @@ pipeline {
                        daysToKeepStr: '', 
                        numToKeepStr: '10')
         )
-        disableConcurrentBuilds()
         timestamps()
-    }
-
-    triggers {
-        /* nightly rebuild */
-        cron('H H(0-4) * * *')
+        gitLabConnection('tq-gitlab-server')
     }
 
     environment {
@@ -243,6 +238,7 @@ pipeline {
     stages {
         stage ('Manage sstate cache') {
             steps {
+                updateGitlabCommitStatus name: 'build', state: 'running'
                 /*
                  * manageSstateCache(currentBuild.startTimeInMillis()) does not work
                  * this helps to explicit clean state cache
@@ -375,25 +371,28 @@ pipeline {
             archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
             wipeOutBuildspace("${env.WS_TI}")
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
+            updateGitlabCommitStatus name: 'build', state: 'success'
         }
         unstable {
             emailext (
-                to: "${env.MAIL_RECIPIENTS}",
+                to: "${gitlabUserEmail}",
                 subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
                 body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
                   Check console output at ${env.BUILD_URL} to view the results.""",
-                attachLog: true,
+                attachLog: false	,
             )
+            updateGitlabCommitStatus name: 'build', state: 'failed'
         }
         failure {
             emailext (
-                to: "${env.MAIL_RECIPIENTS}",
+                to: "${gitlabUserEmail}",
                 subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
                 body: """\
                 ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
                 Check console output at ${env.BUILD_URL} to view the results.""",
-                attachLog: true,
+                attachLog: false,
             )
+            updateGitlabCommitStatus name: 'build', state: 'failed'
         }
     }
 }
