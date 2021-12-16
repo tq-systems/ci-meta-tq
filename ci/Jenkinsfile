@@ -1,7 +1,7 @@
 /**
- * Copyright (C) 2017 - 2020 TQ Systems GmbH
+ * Copyright (C) 2017 - 2020 TQ-Systems GmbH
  * @author Markus Niebel <Markus.Niebel@tq-group.com>
- * Jenkinsfile for TQ Systems Yocto-BSPs using declarative pipeline
+ * Jenkinsfile for TQ-Systems Yocto-BSPs using declarative pipeline
  * License:     GPLv2
  *
  */
@@ -27,22 +27,38 @@ def wipeOutWs(){
     }
 }
 
+/**********************************************************************/
+/* Special submodule handling                                         */
+/* we need to be able to exchange the submodule setup                 */
+/* therefore                                                          */
+/* - add / remove / update submodule url                              */
+/* - fetch all repos and clean no longer existing refs                */
+/* - update default branch                                            */
+/* - do repo maintenance                                              */
+/* - force a clean checkout with existing ref to make sure following  */
+/*   'git submodule update --init' runs smoothly                      */
+/**********************************************************************/
 def checkoutMetaLayers(directoryName) {
     dir("${directoryName}") {
-        sh """
-        git submodule sync
-        git submodule update --init
-        git submodule foreach --recursive git clean -fdx
-        git submodule foreach --recursive 'git checkout ./*'
-        git clean -fdx sources templates
-        git clean -fx"""
+        sshagent(['jenkins-master-key']) {
+            sh """
+            git submodule sync
+            git submodule foreach --recursive 'git fetch --prune origin'
+            git submodule foreach --recursive 'git remote set-head origin \$(basename \$(git branch -r | tail -1))'
+            git submodule foreach --recursive 'git gc'
+            git submodule foreach --recursive 'git reset --hard origin/HEAD'
+            git submodule foreach --recursive 'git clean -fdx'
+            git submodule update --init
+            git clean -fdx sources/templates
+            git clean -fx"""
+        }
     }
 }
 
 def prepareWorkspace(directoryName){
     if (params.CLEAN_CACHES == true) {
-        dir("${directoryName}/buildspace") {
-            echo "Remove ${directoryName}/buildspace ... (CLEAN_CACHES)"
+        dir("${directoryName}/${env.BUILD_DIR}") {
+            echo "Remove ${directoryName}/${env.BUILD_DIR} ... (CLEAN_CACHES)"
             deleteDir()
         }
     }
@@ -51,28 +67,63 @@ def prepareWorkspace(directoryName){
         branches: [[name: "${YOCTO_VERSION}"]],
         doGenerateSubmoduleConfigurations: false,
         extensions: [
+            [$class: 'SubmoduleOption',
+                disableSubmodules: true,
+                parentCredentials: true,
+                recursiveSubmodules: true,
+                reference: '',
+                trackingSubmodules: false
+            ],
             [$class: 'RelativeTargetDirectory',
                 relativeTargetDir: "${directoryName}"
             ],
             [$class: 'PruneStaleBranch'],
         ],
         submoduleCfg: [],
-        userRemoteConfigs: [
-            [url: "${env.GIT_URL}"]
-        ]
+        userRemoteConfigs: [[
+            credentialsId: 'jenkins-master-key',
+            url: "${env.GIT_URL}"
+        ]]
     ])
+    echo "create shared DL_DIR ${env.WORKSPACE}/${env.DL_DIR} ..."
+    sh "mkdir -p ${env.WORKSPACE}/${env.DL_DIR}"
 }
 
+/**********************************************************************/
+/* create missing mirror packages using build-all script.             */
+/* use separate build directory since other config options are used   */
+/* clean mirror build dir to prevent old downloads are copied into    */
+/* shared dl dir                                                      */
+/**********************************************************************/
+def mirrorConfiguration(directoryName) {
+    dir("${directoryName}") {
+        sshagent(['jenkins-master-key']) {
+           echo "create mirror packages for all machines of config ${directoryName} ..."
+           sh "rm -rf ${env.BUILD_DIR}-mirror"
+           sh "./ci/build-all ${env.BUILD_DIR}-mirror \$(basename \$(pwd)) mirror"
+           sh "cp -ruv ${env.BUILD_DIR}-mirror/downloads/* ${env.WORKSPACE}/${env.DL_DIR}"
+        }
+    }
+}
+
+/**********************************************************************/
+/* build images for all machines using build-all script.              */
+/* The given directory name must match the configuration name         */
+/* which is needed as parameter for the build-all script              */
+/* Note:                                                              */
+/* all configurations use a shared dl dir                             */
+/* the build node should have the path to SSTATE_DIR in the site.conf */
+/**********************************************************************/
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
-        sh "export SSTATE_DIR=${env.WORKSPACE}/shared-sstate-cache && export DL_DIR=${env.WORKSPACE}/shared-dl-dir && ./ci/build-all buildspace \$(basename \$(pwd)) ci"
+        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build-all ${env.BUILD_DIR} \$(basename \$(pwd)) ci"
     }
 }
 
 def wipeOutBuildspace(directoryName){
-    dir("${directoryName}/buildspace/deployment") {
-        echo "Remove ${directoryName}/buildspace/deployment ..."
+    dir("${directoryName}/${env.BUILD_DIR}/${env.DEPLOY_DIR}") {
+        echo "Remove ${directoryName}/${env.BUILD_DIR}/${env.DEPLOY_DIR} ..."
         deleteDir()
     }
     dir("${directoryName}@script") {
@@ -103,10 +154,10 @@ def handleBuildCause(directoryName) {
         cause = null
         if (reason.contains("TimerTriggerCause")) {
             println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
-            sh "rm -rf ${directoryName}/buildspace/tmp"
+            sh "rm -rf ${directoryName}/${env.BUILD_DIR}/tmp"
         } else if (reason.contains("UserIdCause")) {
-            println "This job was caused by user, rm buildspace ... (RELEASE)"
-            sh "rm -rf ${directoryName}/buildspace"
+            println "This job was caused by user, rm ${env.BUILD_DIR} ... (RELEASE)"
+            sh "rm -rf ${directoryName}/${env.BUILD_DIR}"
         } else {
             println "build cause : " + reason
         }
@@ -120,28 +171,31 @@ def handleGlobalData(directoryName) {
     for(cause in causes) {
         def reason = cause.toString()
         cause = null
-        if (!reason.contains("SCMTriggerCause")) {
-            println "clear ${directoryName}/shared-dl-dir ..."
-            sh "pwd; ls -al; time rm -rf ${directoryName}/shared-dl-dir; ls -1"
-        }
         /*
-         * for nightly builds: do sstate cache maintenance
+         * for all build cases other then SCM triggered rebuild delete the
+         * DL_DIR
          */
-        if (reason.contains("TimerTriggerCause")) {
-            println "maintain ${directoryName}/${env.SSTATE_DIR} ..."
-            sh "time ${directoryName}/CONFIGS/minimal/sources/poky/scripts/sstate-cache-management.sh --cache-dir=${directoryName}/shared-sstate-cache --extra-layer=${directoryName}/CONFIGS/minimal/sources/meta-tq -d -y"
+        if (!reason.contains("SCMTriggerCause")) {
+            println "clear ${directoryName}/${env.DL_DIR} ..."
+            sh "pwd; ls -al; time rm -rf ${directoryName}/${env.DL_DIR}; ls -1"
         }
     }
     causes = null
 
+    /*
+     * last ressort only: clean SSTATE_CACHE
+     */
     if (params.CLEAN_CACHES == true) {
-        println "clear ${directoryName}/shared-state-dir ... (CLEAN_CACHES)"
-        sh "pwd; ls -al; time rm -rf ${directoryName}/shared-state-dir; ls -1"
+        println "CLEAN_CACHES not supported for shared SSTATE_CACHE"
     }
 
-    echo "clear ${directoryName}/ci-meta-tq.*.tar.gz ... "
-    sh "rm -f ${directoryName}/ci-meta-tq.*.tar.gz"
+    /*
+     * remove old archives
+     */
+    echo "clear ${directoryName}/*.tar.gz ... "
+    sh "rm -f ${directoryName}/*.tar.gz"
 }
+
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
@@ -154,7 +208,7 @@ def handleGlobalData(directoryName) {
  */
 pipeline {
     agent {
-        label 'master'
+        label 'yocto-rocko'
     }
 
     options {
@@ -164,18 +218,19 @@ pipeline {
                        numToKeepStr: '10')
         )
         disableConcurrentBuilds()
-    }
-    triggers {
-            cron('H H(0-4) * * *')
-            pollSCM('''# Alle fünf Minuten von 7.00-20.00 an jedem Wochentag
-                H/5 7-20 * * 1-5''')
+        timestamps()
     }
 
     environment {
-/*        WS_MFG = "CONFIGS/mfgtool" */
+        /*
+         * workspace name for config must be identical to config name
+         */
         WS_IMX = "CONFIGS/imx"
         WS_MIN = "CONFIGS/minimal"
         WS_TI = "CONFIGS/ti"
+        DL_DIR = "shared-dl-dir"
+        BUILD_DIR = "buildspace"
+        DEPLOY_DIR = "deployment"
     }
 
     stages {
@@ -203,12 +258,6 @@ pipeline {
                         wipeOutBuildspace("${env.WS_TI}")
                         prepareWorkspace("${env.WS_TI}")
                     },
-/*
-                    "mfgtool" : {
-                        wipeOutBuildspace("${env.WS_MFG}")
-                        prepareWorkspace("${env.WS_MFG}")
-                    }
-*/
                 )
             }
         }
@@ -224,11 +273,6 @@ pipeline {
                     "ti" : {
                         handleBuildCause("${env.WS_TI}")
                     },
-/*
-                    "mfgtool" : {
-                        handleBuildCause("${env.WS_MFG}")
-                    },
-*/
                 )
             }
         }
@@ -244,11 +288,21 @@ pipeline {
                     "ti" : {
                         checkoutMetaLayers("${env.WS_TI}")
                     },
-/*
-                    "mfgtool" : {
-                        checkoutMetaLayers("${env.WS_MFG}")
-                    }
-*/
+                )
+            }
+        }
+        stage ('Fetch'){
+            steps {
+                parallel (
+                    "imx" : {
+                        mirrorConfiguration("${env.WS_IMX}")
+                    },
+                    "minimal" : {
+                        mirrorConfiguration("${env.WS_MIN}")
+                    },
+                    "ti" : {
+                        mirrorConfiguration("${env.WS_TI}")
+                    },
                 )
             }
         }
@@ -264,11 +318,6 @@ pipeline {
                     "ti" : {
                         buildConfiguration("${env.WS_TI}")
                     },
-/*
-                    "mfgtool" : {
-                        buildConfiguration("${env.WS_MFG}")
-                    }
-*/
                 )
             }
        }
@@ -276,7 +325,9 @@ pipeline {
             steps {
                 script {
                     checkoutMetaLayers("${env.WORKSPACE}")
-                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh) && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
+                    sshagent(['jenkins-master-key']) {
+                        sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
+                    }
                 }
             }
         }
@@ -284,16 +335,12 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: "${env.WS_IMX}/buildspace/deployment/*"
+            archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_IMX}")
-            archiveArtifacts artifacts: "${env.WS_MIN}/buildspace/deployment/*"
+            archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_MIN}")
-            archiveArtifacts artifacts: "${env.WS_TI}/buildspace/deployment/*"
+            archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}/${env.DEPLOY_DIR}/*"
             wipeOutBuildspace("${env.WS_TI}")
-/*
-            archiveArtifacts artifacts: "${env.WS_MFG}/buildspace/deployment/*"
-            wipeOutBuildspace("${env.WS_MFG}")
-*/
             archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
         }
         unstable {
