@@ -9,19 +9,21 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa8.BSP.SW.0080
+
 ### Added
 
 * meta-tq: tqma8 / linux-imx-5.10: add experimental support for ath10k wifi
   with USB interface
 * meta-dumpling: add qt5 demo image
-* meta-dumpling: port camera support from zeus-tqma8
+* meta-dumpling: port camera support from zeus-tqma8 branch
 * templates: add meta-qt5 to imx config
 * meta-qt5: add layer as submodule
 * meta-dumpling: example distros
   * allows building UBI images
   * configuration specific adjustments
 * meta-dumpling: image recipes for tiny systems
-* meta-tq: support for TQMa8 families of SOM
+* meta-tq: support for TQMa8 families of SOM from zeus-tqma8 branch
 
 ### Changed
 
