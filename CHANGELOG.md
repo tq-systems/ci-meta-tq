@@ -9,6 +9,16 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa8.BSP.SW.0081
+
+### Changed
+
+* ci: optimize submodule handling
+* meta-tq: documentation updates
+
+For a list of detailed changes see changelogs in git submodules for meta-tq and
+meta-dumpling for this release.
+
 ## hardknott.TQMa8.BSP.SW.0080
 
 ### Added
