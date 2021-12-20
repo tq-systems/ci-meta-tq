@@ -19,3 +19,18 @@
 [submodule "sources/meta-ti"]
 	path = sources/meta-ti
 	url = https://git.yoctoproject.org/git/meta-ti
+[submodule "sources/meta-linaro"]
+	path = sources/meta-linaro
+	url = https://git.linaro.org/openembedded/meta-linaro.git
+[submodule "sources/meta-gplv2"]
+	path = sources/meta-gplv2
+	url = https://git.yoctoproject.org/meta-gplv2
+[submodule "sources/meta-qt5"]
+	path = sources/meta-qt5
+	url = https://github.com/meta-qt5/meta-qt5.git
+[submodule "sources/meta-rzg2"]
+	path = sources/meta-rzg2
+	url = https://github.com/renesas-rz/meta-rzg2.git
+[submodule "sources/meta-virtualization"]
+	path = sources/meta-virtualization
+	url = https://git.yoctoproject.org/git/meta-virtualization
