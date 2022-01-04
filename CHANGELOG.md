@@ -9,6 +9,21 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa8.BSP.SW.0082
+
+### Added
+
+* ci: new helper script
+* meta-tq: add TQMa8MxML 1GB variant (ported from zeus-tqma8 branch)
+
+### Changed
+
+* meta-tq: update TQMa8Xx/TQMa8Xx4/TQMa8XxS to kernel 5.10
+* meta-tq: port changes for TQMa335x from zeus branch
+
+For a list of detailed changes see changelogs in git submodules for meta-tq and
+meta-dumpling for this release.
+
 ## hardknott.TQMa8.BSP.SW.0081
 
 ### Changed
