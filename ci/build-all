@@ -147,6 +147,26 @@ function do_link_auto_conf () {
 	! [ -e ${PWD}/conf/auto.conf ] && error_out "missing auto.conf"
 }
 
+install_renesas_proprietary_files() {
+	local SRC_DIR=${SCRIPTPATH}/../sources
+	local CURRENT_DIR=$(pwd)
+
+	# NOTE: MUST BE CHANGED IN A CUSTOM SETUP
+	local RENESAS_PROPRIETARY_PATH=$(bitbake -e | grep ^"SOURCE_MIRROR_URL=" | grep "\".*\"" -o)
+	local RENESAS_PROPRIETARY_PACKAGE=RZG2_Group_Evaluation_Software_Package_for_Linux_20200619.tar.gz
+
+	# remove special characters from path
+	RENESAS_PROPRIETARY_PATH=${RENESAS_PROPRIETARY_PATH#\"*}
+	RENESAS_PROPRIETARY_PATH=${RENESAS_PROPRIETARY_PATH%\"*}
+	RENESAS_PROPRIETARY_PATH=${RENESAS_PROPRIETARY_PATH#file://*}
+
+	tar xf ${RENESAS_PROPRIETARY_PATH}/${RENESAS_PROPRIETARY_PACKAGE} -C ${SRC_DIR}
+	cd ${SRC_DIR}/meta-rzg2
+	sh docs/sample/copyscript/copy_proprietary_softwares.sh -f ${SRC_DIR}/proprietary
+	cd ${CURRENT_DIR}
+	rm -f ${RENESAS_PROPRIETARY}
+}
+
 main () {
 	# this disables network check
 	export CONNECTIVITY_CHECK_URIS=" "
@@ -211,7 +231,9 @@ main () {
 #		export EULA="y"
 #		;;
 	"rzg2" )
-		IMAGES="tq-image-generic"
+		DISTRO="dumpling-wayland-rzg2"
+		export ${DISTRO}
+		IMAGES="core-image-hmi"
 		for excl in ${RZG2_EXCLUDE}; do
 			ALL_TARGETS=$(echo ${ALL_TARGETS} | sed -e "s/ *$excl */ /")
 		done
@@ -257,6 +279,10 @@ main () {
 		rm -f ${DL_DIR}/git2_*.tar.gz
 		rm -f ${DL_DIR}/git2_*.tar.gz.done
 		ls -1 ${DL_DIR}/git2_*
+
+		if [ "${CONFIG}" == "rzg2" ]; then
+			install_renesas_proprietary_files
+		fi
 
 		for img in ${IMAGES}; do
 			# now force bitbake to do a --runall fetch for the image to generate
