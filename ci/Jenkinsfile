@@ -60,10 +60,10 @@ def checkoutMetaLayers(directoryName) {
 /* all git releated files are ignored                 */
 /**********************************************************************/
 def prepareWorkspace(directoryName){
-	sshagent(['jenkins-master-key']) {
+    sshagent(['jenkins-master-key']) {
         def command = $/mkdir --parents ${directoryName}; find $(pwd) -maxdepth 1 \( -not -wholename '*/\.git/*' -and -not -name '.git*' \) -exec ln -vs "{}" ${directoryName}/ ';'/$
         sh(returnStdout: true, script: command).trim()
-	}
+    }
     echo "create shared DL_DIR ${env.WORKSPACE}/${env.DL_DIR} ..."
     sh "mkdir -p ${env.WORKSPACE}/${env.DL_DIR}"
 }
@@ -79,10 +79,10 @@ def mirrorConfiguration(directoryName) {
     dir("${directoryName}") {
         sshagent(['jenkins-master-key']) {
            echo "create mirror packages for all machines of config ${directoryName} ..."
-           sh "rm -rf ${env.BUILD_DIR}-mirror*"
+           sh "find . -maxdepth 1 -wholename '*-mirror*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
            sh "./ci/fill_mirror ${env.BUILD_DIR}-mirror \$(basename \$(pwd))"
-           sh "cp -ruv ${env.BUILD_DIR}-mirror*/downloads/* ${env.WORKSPACE}/${env.DL_DIR}"
-           sh "rm -rf ${env.BUILD_DIR}-mirror*"
+           sh "find . -maxdepth 2 -wholename '*-mirror*downloads' | xargs -n1 -I% rsync -rl --checksum --ignore-existing --exclude 'git2*' %/ ${env.WORKSPACE}/${env.DL_DIR}/"
+           sh "find . -maxdepth 1 -wholename '*-mirror*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
         }
     }
 }
@@ -135,13 +135,13 @@ def handleBuildCause(directoryName) {
         cause = null
         if (reason.contains("TimerTriggerCause")) {
             println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
-            sh "rm -rf ${directoryName}/${env.BUILD_DIR}_*/tmp*"
+            sh "find . -maxdepth 1 -wholename '${directoryName}/${env.BUILD_DIR}_*/tmp*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
         } else if (reason.contains("UserIdCause")) {
             println "This job was caused by user, rm build directory ... (RELEASE)"
-            sh "rm -rf ${directoryName}/${env.BUILD_DIR}_*"
+            sh "find . -maxdepth 1 -wholename '${directoryName}/${env.BUILD_DIR}_*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
         } else if (reason.contains("Merge Request")) {
             println "This job was caused by Merge Request"
-            sh "rm -rf ${directoryName}/${env.BUILD_DIR}_*/tmp*"
+            sh "find . -maxdepth 1 -wholename '${directoryName}/${env.BUILD_DIR}_*/tmp*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
         } else {
             println "build cause : " + reason
         }
@@ -150,6 +150,10 @@ def handleBuildCause(directoryName) {
 }
 
 def handleGlobalData(directoryName) {
+
+    echo "create empty dir, could be used by rsync for deleting folders"
+    sh "mkdir --parents ${env.WORKSPACE}/empty"
+
     def causes = currentBuild.getBuildCauses()
 
     for(cause in causes) {
@@ -161,7 +165,8 @@ def handleGlobalData(directoryName) {
          */
         if (!reason.contains("SCMTriggerCause")) {
             println "clear ${directoryName}/${env.DL_DIR} ..."
-            sh "pwd; ls -al; time rm -rf ${directoryName}/${env.DL_DIR}; ls -1"
+            sh "find . -maxdepth 1 -wholename '${directoryName}/${env.DL_DIR}' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
+
         }
     }
     causes = null
