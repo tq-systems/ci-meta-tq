@@ -139,6 +139,9 @@ def handleBuildCause(directoryName) {
         } else if (reason.contains("UserIdCause")) {
             println "This job was caused by user, rm build directory ... (RELEASE)"
             sh "rm -rf ${directoryName}/${env.BUILD_DIR}_*"
+        } else if (reason.contains("Merge Request")) {
+            println "This job was caused by Merge Request"
+            sh "rm -rf ${directoryName}/${env.BUILD_DIR}_*/tmp*"
         } else {
             println "build cause : " + reason
         }
@@ -307,6 +310,7 @@ pipeline {
             }
        }
        stage ('Archive'){
+            when { not {environment name: 'gitlabActionType', value: 'MERGE' } }
             steps {
                 script {
                     sshagent(['jenkins-master-key']) {
@@ -319,24 +323,30 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-            archiveArtifacts artifacts: "${env.WS_IMX}/*.LIC.tar.gz"
-            archiveArtifacts artifacts: "${env.WS_IMX}/*.MIRROR.SRC.tar.gz"
-            wipeOutBuildspace("${env.WS_IMX}")
-            archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-            archiveArtifacts artifacts: "${env.WS_LS}/*.LIC.tar.gz"
-            archiveArtifacts artifacts: "${env.WS_LS}/*.MIRROR.SRC.tar.gz"
-            wipeOutBuildspace("${env.WS_LS}")
-            archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-            archiveArtifacts artifacts: "${env.WS_MIN}/*.LIC.tar.gz"
-            archiveArtifacts artifacts: "${env.WS_MIN}/*.MIRROR.SRC.tar.gz"
-            wipeOutBuildspace("${env.WS_MIN}")
-            archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-            archiveArtifacts artifacts: "${env.WS_TI}/*.LIC.tar.gz"
-            archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
-            wipeOutBuildspace("${env.WS_TI}")
-            archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
-            updateGitlabCommitStatus name: 'build', state: 'success'
+            script {
+                if ("${env.gitlabActionType}" != "MERGE") {
+                    archiveArtifacts artifacts: "${env.WS_IMX}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_IMX}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_LS}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_LS}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_MIN}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_MIN}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_TI}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
+                }
+
+                archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                wipeOutBuildspace("${env.WS_IMX}")
+                archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                wipeOutBuildspace("${env.WS_LS}")
+                archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                wipeOutBuildspace("${env.WS_MIN}")
+                archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                wipeOutBuildspace("${env.WS_TI}")
+
+                updateGitlabCommitStatus name: 'build', state: 'success'
+            }
         }
         unstable {
             emailext (
