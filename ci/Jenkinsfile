@@ -55,36 +55,15 @@ def checkoutMetaLayers(directoryName) {
     }
 }
 
+/**********************************************************************/
+/* create subdirectorys and add symbolic links for sources            */
+/* all git releated files are ignored                 */
+/**********************************************************************/
 def prepareWorkspace(directoryName){
-    if (params.CLEAN_CACHES == true) {
-        dir("${directoryName}/${env.BUILD_DIR}") {
-            echo "Remove ${directoryName}/${env.BUILD_DIR} ... (CLEAN_CACHES)"
-            deleteDir()
-        }
-    }
-    checkout([
-        $class: 'GitSCM',
-        branches: [[name: "${YOCTO_VERSION}"]],
-        doGenerateSubmoduleConfigurations: false,
-        extensions: [
-            [$class: 'SubmoduleOption',
-                disableSubmodules: true,
-                parentCredentials: true,
-                recursiveSubmodules: true,
-                reference: '',
-                trackingSubmodules: false
-            ],
-            [$class: 'RelativeTargetDirectory',
-                relativeTargetDir: "${directoryName}"
-            ],
-            [$class: 'PruneStaleBranch'],
-        ],
-        submoduleCfg: [],
-        userRemoteConfigs: [[
-            credentialsId: 'jenkins-master-key',
-            url: "${env.GIT_URL}"
-        ]]
-    ])
+	sshagent(['jenkins-master-key']) {
+        def command = $/mkdir --parents ${directoryName}; find $(pwd) -maxdepth 1 \( -not -wholename '*/\.git/*' -and -not -name '.git*' \) -exec ln -vs "{}" ${directoryName}/ ';'/$
+        sh(returnStdout: true, script: command).trim()
+	}
     echo "create shared DL_DIR ${env.WORKSPACE}/${env.DL_DIR} ..."
     sh "mkdir -p ${env.WORKSPACE}/${env.DL_DIR}"
 }
@@ -246,6 +225,11 @@ pipeline {
                 handleGlobalData("${env.WORKSPACE}")
             }
         }
+        stage ('Checkout') {
+            steps {
+                checkoutMetaLayers("${env.WORKSPACE}")
+            }
+        }
         stage ('Prepare Workspaces') {
             steps {
                 parallel (
@@ -282,24 +266,6 @@ pipeline {
                     },
                     "ti" : {
                         handleBuildCause("${env.WS_TI}")
-                    },
-                )
-            }
-        }
-        stage ('Checkout all meta-layers') {
-            steps {
-                parallel (
-                    "imx" : {
-                        checkoutMetaLayers("${env.WS_IMX}")
-                    },
-                    "ls" : {
-                        checkoutMetaLayers("${env.WS_LS}")
-                    },
-                    "minimal" : {
-                        checkoutMetaLayers("${env.WS_MIN}")
-                    },
-                    "ti" : {
-                        checkoutMetaLayers("${env.WS_TI}")
                     },
                 )
             }
@@ -343,7 +309,6 @@ pipeline {
        stage ('Archive'){
             steps {
                 script {
-                    checkoutMetaLayers("${env.WORKSPACE}")
                     sshagent(['jenkins-master-key']) {
                         sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
                     }
