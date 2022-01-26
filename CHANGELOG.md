@@ -9,6 +9,25 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Changed
+
+* meta-tq: fixes for TQMLS102xA
+* meta-tq: kernel updates for TQMa6x
+* ci: build time optimization
+* yocto: update external layers to latest hardknott head as of 2022/01/14:
+  * poky,
+  * meta-openembedded,
+  * meta-arm
+  * meta-freescale
+
+### Fixed
+
+* meta-dumpling: fixes for i.MX based SOM with dumpling distros
+* meta-dumpling: fixes for spaetzle distros / tq-image-small
+
+For a list of detailed changes see changelogs in git submodules for meta-tq and
+meta-dumpling.
+
 ## hardknott.TQMa8.BSP.SW.0082
 
 ### Added
