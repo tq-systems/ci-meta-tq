@@ -23,8 +23,23 @@
 
 CWD=$(pwd)
 PROGNAME="setup-environment"
-DEFAULT_MACHINE="tqma6q-mba6x"
-DEFAULT_DISTRO="poky"
+LIST_TQ_MACHINES=$(${CWD}/ci/ls-machines meta-tq)
+CONFIG_TEMPLATE=minimal
+
+TI_TARGETS=$(echo "${LIST_TQ_MACHINES}" | grep tqma57)
+IMX_TARGETS=$(echo "${LIST_TQ_MACHINES}" | grep tqma[6,7])
+RZG2_TARGETS=$(echo "${LIST_TQ_MACHINES}" | grep tqmarzg2)
+MINIMAL_TARGETS=$(echo "${LIST_TQ_MACHINES}" | grep -v -E "tqma6q-nav|${RZG2_TARGETS}")
+
+DEFAULT_MACHINE_minimal=$(echo ${MINIMAL_TARGETS} | awk '{ print $1 }')
+DEFAULT_MACHINE_imx=$(echo ${IMX_TARGETS} | awk '{ print $1 }')
+DEFAULT_MACHINE_ti=$(echo ${TI_TARGETS} | awk '{ print $1 }')
+DEFAULT_MACHINE_rzg2=$(echo ${RZG2_TARGETS} | awk '{ print $1 }')
+
+DEFAULT_DISTRO_minimal="poky"
+DEFAULT_DISTRO_imx="poky"
+DEFAULT_DISTRO_ti="poky"
+DEFAULT_DISTRO_rzg2="dumpling-rzg2"
 
 usage()
 {
@@ -32,7 +47,7 @@ usage()
     <build-dir>: specifies the build directory location (required)
     <template>: template bblayers.conf to use (optional)
 
-If undefined, this script will set \$MACHINE to '${DEFAULT_MACHINE}'.
+If undefined, this script will set \$MACHINE to '${DEFAULT_MACHINE_minimal}'.
 "
 
     ls sources/*/conf/machine/*.conf > /dev/null 2>&1
@@ -142,15 +157,16 @@ if [ "$(whoami)" = "root" ]; then
     echo "ERROR: do not use the BSP as root. Exiting..."
 fi
 
-if [ -z "${MACHINE}" ]; then
-    MACHINE=${DEFAULT_MACHINE}
+if ! [ -z "${2}" ]; then
+    CONFIG_TEMPLATE=${2}
 fi
 
-if [ -z "$2" ]; then
-    BBLAYERS_TEMPLATE=bblayers.conf.minimal
-else
-    BBLAYERS_TEMPLATE=bblayers.conf.${2}
+if [ -z "${MACHINE}" ]; then
+    MACHINE_VAR=DEFAULT_MACHINE_${CONFIG_TEMPLATE}
+    eval MACHINE=\$$MACHINE_VAR
 fi
+
+BBLAYERS_TEMPLATE=bblayers.conf.${CONFIG_TEMPLATE}
 
 # Check the machine type specified
 LIST_MACHINES=$(ls -1 ${CWD}/sources/*/conf/machine)
@@ -170,7 +186,8 @@ if [ -z "${SDKMACHINE}" ]; then
 fi
 
 if [ -z "${DISTRO}" ]; then
-    DISTRO=${DEFAULT_DISTRO}
+    DISTRO_VAR=DEFAULT_DISTRO_${CONFIG_TEMPLATE}
+    eval DISTRO=\$$DISTRO_VAR
 fi
 
 OEROOT=${CWD}/sources/poky
