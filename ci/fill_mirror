@@ -103,15 +103,13 @@ main () {
 
 		# clean conf, to enforce a really clean configuration and to enable
 		# incremental changes in the config using our template dir
-		rm -rf ${build_dir}_${distro}~/conf
+		rm -rf ${build_dir}_${distro}/conf
 
 		# although DISTRO and MACHINE are exported, setup-environment
-		# uses these variable only to set default in local.conf and unsets
-		# them afterwards to prevent env pollution for bitbake
-		# both variables can be set afterwards again and for MACHINE
-		# this is already the case to iterate over all buildable
+		# uses these variable mainly to set default in local.conf
+		# afterwards they can be set again to iterate over all buildable
 		# machines
-		. ./setup-environment ${build_dir}_${distro}~ ${config}
+		. ./setup-environment ${build_dir}_${distro} ${config}
 		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
 
 		echo "build mirror"
