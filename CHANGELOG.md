@@ -9,6 +9,10 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Added
+
+* meta-tq: inital support for TQMa65xx SOM
+
 ### Changed
 
 * meta-tq: support mainline graphic stack without meta-freescale for TQMa6x
