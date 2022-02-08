@@ -9,6 +9,8 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa8.BSP.SW.0083
+
 ### Added
 
 * meta-tq: inital support for TQMa65xx SOM
