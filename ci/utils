@@ -250,7 +250,7 @@ get_distros_for_config () {
 		choosen_distros="spaetzle dumpling"
 		;;
 	"minimal" )
-		choosen_distros="spaetzle dumpling dumpling-wayland"
+		choosen_distros="spaetzle dumpling-wayland"
 		;;
 	"ti" )
 		choosen_distros="spaetzle-ti dumpling-wayland-ti"

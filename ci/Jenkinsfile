@@ -55,36 +55,15 @@ def checkoutMetaLayers(directoryName) {
     }
 }
 
+/**********************************************************************/
+/* create subdirectorys and add symbolic links for sources            */
+/* all git releated files are ignored                 */
+/**********************************************************************/
 def prepareWorkspace(directoryName){
-    if (params.CLEAN_CACHES == true) {
-        dir("${directoryName}/${env.BUILD_DIR}") {
-            echo "Remove ${directoryName}/${env.BUILD_DIR} ... (CLEAN_CACHES)"
-            deleteDir()
-        }
+    sshagent(['jenkins-master-key']) {
+        def command = $/mkdir --parents ${directoryName}; find $(pwd) -maxdepth 1 \( -not -wholename '*/\.git/*' -and -not -name '.git*' \) -exec ln -vs "{}" ${directoryName}/ ';'/$
+        sh(returnStdout: true, script: command).trim()
     }
-    checkout([
-        $class: 'GitSCM',
-        branches: [[name: "${YOCTO_VERSION}"]],
-        doGenerateSubmoduleConfigurations: false,
-        extensions: [
-            [$class: 'SubmoduleOption',
-                disableSubmodules: true,
-                parentCredentials: true,
-                recursiveSubmodules: true,
-                reference: '',
-                trackingSubmodules: false
-            ],
-            [$class: 'RelativeTargetDirectory',
-                relativeTargetDir: "${directoryName}"
-            ],
-            [$class: 'PruneStaleBranch'],
-        ],
-        submoduleCfg: [],
-        userRemoteConfigs: [[
-            credentialsId: 'jenkins-master-key',
-            url: "${env.GIT_URL}"
-        ]]
-    ])
     echo "create shared DL_DIR ${env.WORKSPACE}/${env.DL_DIR} ..."
     sh "mkdir -p ${env.WORKSPACE}/${env.DL_DIR}"
 }
@@ -100,10 +79,10 @@ def mirrorConfiguration(directoryName) {
     dir("${directoryName}") {
         sshagent(['jenkins-master-key']) {
            echo "create mirror packages for all machines of config ${directoryName} ..."
-           sh "rm -rf ${env.BUILD_DIR}-mirror*"
+           sh "find . -maxdepth 1 -wholename '*-mirror*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
            sh "./ci/fill_mirror ${env.BUILD_DIR}-mirror \$(basename \$(pwd))"
-           sh "cp -ruv ${env.BUILD_DIR}-mirror*/downloads/* ${env.WORKSPACE}/${env.DL_DIR}"
-           sh "rm -rf ${env.BUILD_DIR}-mirror*"
+           sh "find . -maxdepth 2 -wholename '*-mirror*downloads' | xargs -n1 -I% rsync -rl --checksum --ignore-existing --exclude 'git2*' %/ ${env.WORKSPACE}/${env.DL_DIR}/"
+           sh "find . -maxdepth 1 -wholename '*-mirror*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
         }
     }
 }
@@ -156,10 +135,13 @@ def handleBuildCause(directoryName) {
         cause = null
         if (reason.contains("TimerTriggerCause")) {
             println "This job was caused by Timer, rm tmp ... (NIGHTLY)"
-            sh "rm -rf ${directoryName}/${env.BUILD_DIR}_*/tmp*"
+            sh "find . -maxdepth 1 -wholename '${directoryName}/${env.BUILD_DIR}_*/tmp*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
         } else if (reason.contains("UserIdCause")) {
             println "This job was caused by user, rm build directory ... (RELEASE)"
-            sh "rm -rf ${directoryName}/${env.BUILD_DIR}_*"
+            sh "find . -maxdepth 1 -wholename '${directoryName}/${env.BUILD_DIR}_*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
+        } else if (reason.contains("Merge Request")) {
+            println "This job was caused by Merge Request"
+            sh "find . -maxdepth 1 -wholename '${directoryName}/${env.BUILD_DIR}_*/tmp*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
         } else {
             println "build cause : " + reason
         }
@@ -168,6 +150,10 @@ def handleBuildCause(directoryName) {
 }
 
 def handleGlobalData(directoryName) {
+
+    echo "create empty dir, could be used by rsync for deleting folders"
+    sh "mkdir --parents ${env.WORKSPACE}/empty"
+
     def causes = currentBuild.getBuildCauses()
 
     for(cause in causes) {
@@ -179,7 +165,8 @@ def handleGlobalData(directoryName) {
          */
         if (!reason.contains("SCMTriggerCause")) {
             println "clear ${directoryName}/${env.DL_DIR} ..."
-            sh "pwd; ls -al; time rm -rf ${directoryName}/${env.DL_DIR}; ls -1"
+            sh "find . -maxdepth 1 -wholename '${directoryName}/${env.DL_DIR}' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
+
         }
     }
     causes = null
@@ -246,6 +233,11 @@ pipeline {
                 handleGlobalData("${env.WORKSPACE}")
             }
         }
+        stage ('Checkout') {
+            steps {
+                checkoutMetaLayers("${env.WORKSPACE}")
+            }
+        }
         stage ('Prepare Workspaces') {
             steps {
                 parallel (
@@ -282,24 +274,6 @@ pipeline {
                     },
                     "ti" : {
                         handleBuildCause("${env.WS_TI}")
-                    },
-                )
-            }
-        }
-        stage ('Checkout all meta-layers') {
-            steps {
-                parallel (
-                    "imx" : {
-                        checkoutMetaLayers("${env.WS_IMX}")
-                    },
-                    "ls" : {
-                        checkoutMetaLayers("${env.WS_LS}")
-                    },
-                    "minimal" : {
-                        checkoutMetaLayers("${env.WS_MIN}")
-                    },
-                    "ti" : {
-                        checkoutMetaLayers("${env.WS_TI}")
                     },
                 )
             }
@@ -341,9 +315,9 @@ pipeline {
             }
        }
        stage ('Archive'){
+            when { not {environment name: 'gitlabActionType', value: 'MERGE' } }
             steps {
                 script {
-                    checkoutMetaLayers("${env.WORKSPACE}")
                     sshagent(['jenkins-master-key']) {
                         sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
                     }
@@ -354,24 +328,30 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-            archiveArtifacts artifacts: "${env.WS_IMX}/*.LIC.tar.gz"
-            archiveArtifacts artifacts: "${env.WS_IMX}/*.MIRROR.SRC.tar.gz"
-            wipeOutBuildspace("${env.WS_IMX}")
-            archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-            archiveArtifacts artifacts: "${env.WS_LS}/*.LIC.tar.gz"
-            archiveArtifacts artifacts: "${env.WS_LS}/*.MIRROR.SRC.tar.gz"
-            wipeOutBuildspace("${env.WS_LS}")
-            archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-            archiveArtifacts artifacts: "${env.WS_MIN}/*.LIC.tar.gz"
-            archiveArtifacts artifacts: "${env.WS_MIN}/*.MIRROR.SRC.tar.gz"
-            wipeOutBuildspace("${env.WS_MIN}")
-            archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-            archiveArtifacts artifacts: "${env.WS_TI}/*.LIC.tar.gz"
-            archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
-            wipeOutBuildspace("${env.WS_TI}")
-            archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
-            updateGitlabCommitStatus name: 'build', state: 'success'
+            script {
+                if ("${env.gitlabActionType}" != "MERGE") {
+                    archiveArtifacts artifacts: "${env.WS_IMX}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_IMX}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_LS}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_LS}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_MIN}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_MIN}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_TI}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
+                }
+
+                archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                wipeOutBuildspace("${env.WS_IMX}")
+                archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                wipeOutBuildspace("${env.WS_LS}")
+                archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                wipeOutBuildspace("${env.WS_MIN}")
+                archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                wipeOutBuildspace("${env.WS_TI}")
+
+                updateGitlabCommitStatus name: 'build', state: 'success'
+            }
         }
         unstable {
             emailext (

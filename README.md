@@ -1,15 +1,23 @@
-# TQ ARM modules Yocto Project build setup
+# TQ-Systems ARM modules example workspace for Yocto Project build setup
+
+[[_TOC_]]
+
+## Foreword
 
 This repo contains setup, configuration and dependencies use to build and test
 the meta-tq hardware support layer. All Yocto Project / Open Embedded layers
-the build depends on are git submodules
+the build depends on, are included as git submodules, to allow reproducible builds.
 
 Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <url>`
 
 ## License information
 
-This repo contains shell scripts released under the GPLv2, see the file
-[COPYING](COPYING)
+This repo contains scripts released under the GPLv2, see the file [COPYING](COPYING)
+
+This repo allows you to setup a workspace / buildspace for poky / the Yocto Project
+combining several recipe collections (meta layers). When using this repo to build
+software, you need to understand and accept all licenses of the software beeing built.
+Youre are responsible, to fulfil all obligations by these licenses.
 
 ## Supported branches of meta-tq
 
