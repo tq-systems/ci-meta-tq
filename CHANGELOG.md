@@ -9,6 +9,17 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa65xx.BSP.SW.0008
+
+### Changed
+
+* templates: use meta-oe for minimal config as well
+* meta-dumpling: depends on meta-oe directly now
+
+### Fixed
+
+* documentation: update branch support docs
+
 ## hardknott.TQMa8.BSP.SW.0083
 
 ### Added
