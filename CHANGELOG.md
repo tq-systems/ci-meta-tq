@@ -10,6 +10,11 @@ Releases are named with the following scheme:
 ## Next Release
 
 ## hardknott.TQMa65xx.BSP.SW.0008
+## hardknott.TQMa8.BSP.SW.0084
+
+### Added
+
+* meta-tq: support TQMa8MPxL REV.0200
 
 ### Changed
 
@@ -19,6 +24,9 @@ Releases are named with the following scheme:
 ### Fixed
 
 * documentation: update branch support docs
+
+For a list of detailed changes see changelogs in git submodules for meta-tq and
+meta-dumpling.
 
 ## hardknott.TQMa8.BSP.SW.0083
 
