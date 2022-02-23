@@ -17,7 +17,7 @@ This repo contains scripts released under the GPLv2, see the file [COPYING](COPY
 This repo allows you to setup a workspace / buildspace for poky / the Yocto Project
 combining several recipe collections (meta layers). When using this repo to build
 software, you need to understand and accept all licenses of the software beeing built.
-Youre are responsible, to fulfil all obligations by these licenses.
+You are responsible to fulfil all obligations by these licenses.
 
 ## Supported branches of meta-tq
 
