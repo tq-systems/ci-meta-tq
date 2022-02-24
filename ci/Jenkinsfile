@@ -33,9 +33,10 @@ def wipeOutWs(){
 /* therefore                                                          */
 /* - add / remove / update submodule url                              */
 /* - fetch all repos and clean no longer existing refs                */
-/* - update default branch                                            */
-/* - do repo maintenance                                              */
+/* - update default branch to the first branch of origin              */
+/* - do repo maintenance, remove all dangling commits                 */
 /* - force a clean checkout with existing ref to make sure following  */
+/*   cleanup of submodule workdir and                                 */
 /*   'git submodule update --init' runs smoothly                      */
 /**********************************************************************/
 def checkoutMetaLayers(directoryName) {
@@ -43,8 +44,8 @@ def checkoutMetaLayers(directoryName) {
         sshagent(['jenkins-master-key']) {
             sh """
             git submodule sync
-            git submodule foreach --recursive 'git fetch --prune --no-tags origin'
-            git submodule foreach --recursive 'git remote set-head origin \$(basename \$(git branch -r | tail -1))'
+            git submodule foreach --recursive 'git fetch --force--prune --no-tags origin'
+            git submodule foreach --recursive 'git remote set-head origin "\$(git branch -r -l "origin/*" | tail -1 | cut -d/ -f2-)"'
             git submodule foreach --recursive 'git gc --prune=all'
             git submodule foreach --recursive 'git reset --hard origin/HEAD'
             git submodule foreach --recursive 'git clean -fdx'

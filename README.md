@@ -17,21 +17,21 @@ This repo contains scripts released under the GPLv2, see the file [COPYING](COPY
 This repo allows you to setup a workspace / buildspace for poky / the Yocto Project
 combining several recipe collections (meta layers). When using this repo to build
 software, you need to understand and accept all licenses of the software beeing built.
-Youre are responsible, to fulfil all obligations by these licenses.
+You are responsible to fulfil all obligations by these licenses.
 
 ## Supported branches of meta-tq
 
 - krogoth (not longer maintained)
 - morty (not longer maintained)
 - pyro (not longer maintained)
-- rocko (not longer maintained)
-- rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, not longer maintained)
-- sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK, not longer maintained)
-- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP)
-- thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, experimental)
-- warrior (not longer maintained)
-- zeus
-- zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP)
+- rocko (only for RZG2 based machines, no longer maintained for all others)
+- rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
+- sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK, no longer maintained)
+- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
+- thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
+- warrior (no longer maintained)
+- zeus (no further development, use hardknott)
+- zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
 - hardknott
 
 **Attention:** use README.md of used branch for exact details.
