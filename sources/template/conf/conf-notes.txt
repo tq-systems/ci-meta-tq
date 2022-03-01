@@ -1,0 +1,32 @@
+Welcome to TQ-Systems GmbH - TQ Embedded Starterkit BSP
+
+The Yocto Project has extensive documentation about OE including a
+reference manual which can be found at:
+    http://yoctoproject.org/documentation
+
+For more information about OpenEmbedded see their website:
+    http://www.openembedded.org/
+
+### Shell environment set up for builds. ###
+
+You can now run 'bitbake <target>'
+
+Common targets are the known poky targets as well as images defined in meta-dumpling:
+
+    tq-image-generic
+    tq-image-small
+    tq-image-weston
+    core-image-minimal
+    core-image-full-cmdline
+    core-image-sato
+    core-image-weston
+    meta-toolchain
+    meta-ide-support
+
+You can also run generated qemu images with a command like 'runqemu qemux86'.
+
+Other commonly useful commands are:
+ - 'devtool' and 'recipetool' handle common recipe tasks
+ - 'bitbake-layers' handles common layer tasks
+ - 'oe-pkgdata-util' handles common target package tasks
+
