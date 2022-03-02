@@ -82,11 +82,11 @@ def process(args):
         return False
 
     # Strip trailing slash to support auto-completed paths from shell
-    target_path = args.target_path.rstrip('/')
+    path = args.path.rstrip('/')
 
     # Is target a submodule of current repository?
-    if target_path in upper_repo.submodules:
-        submodule = upper_repo.submodule(name=target_path)
+    if path in upper_repo.submodules:
+        submodule = upper_repo.submodule(name=path)
         commit_msg = process_submodule(submodule, format=args.git_log_format)
     # TODO: Is target a stand-alone repository, e.g. no submodule
     else:
@@ -108,8 +108,8 @@ def process(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Create a commit for updating a submodule including the commit subjects')
-    parser.add_argument('target_path',
-                        metavar='target',
+    parser.add_argument('path',
+                        metavar='path',
                         type=str,
                         help='''
                             Path for the target for which an update commit shall be created
