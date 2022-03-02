@@ -77,15 +77,17 @@ def process(args):
     cwd = Path.cwd()
     upper_repo = Repo(str(cwd))
     assert not upper_repo.bare,  f"'{cwd}' does contain a bare repository"
-    if upper_repo.is_dirty(working_tree=False, index=True, untracked_files=False):
-        print('There are staged files which would be commited as well. Please use a clean index')
-        return False
 
-    # Strip trailing slash to support auto-completed paths from shell
-    path = args.path.rstrip('/')
+    if args.command == 'submodule':
+        # Strip trailing slash to support auto-completed paths from shell
+        path = args.path.rstrip('/')
 
-    # Is target a submodule of current repository?
-    if path in upper_repo.submodules:
+        if upper_repo.is_dirty(working_tree=False, index=True, untracked_files=False):
+            print('There are staged files which would be commited as well. Please use a clean index')
+            return False
+
+        if not path in upper_repo.submodules:
+            raise ValueError(f'{path} is not a submodule')
         submodule = upper_repo.submodule(name=path)
         commit_msg = process_submodule(submodule, format=args.git_log_format)
     # TODO: Is target a stand-alone repository, e.g. no submodule
@@ -108,12 +110,6 @@ def process(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Create a commit for updating a submodule including the commit subjects')
-    parser.add_argument('path',
-                        metavar='path',
-                        type=str,
-                        help='''
-                            Path for the target for which an update commit shall be created
-                        ''')
     parser.add_argument('-f', '--format',
                         metavar='format',
                         dest='git_log_format',
@@ -127,6 +123,15 @@ def main():
                         const=True,
                         help='Dry-run, do not actually create a commit'
                         )
+
+    subparsers = parser.add_subparsers(dest='command', required=True, help='usage mode')
+    parser_submodule = subparsers.add_parser('submodule', help='git submodule')
+    parser_submodule.add_argument('path',
+                                  metavar='path',
+                                  type=str,
+                                  help='''
+                                      Path for the target for which an update commit shall be created
+                                  ''')
     args = parser.parse_args()
     return 0 if process(args) else 1
 
