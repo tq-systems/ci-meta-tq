@@ -10,6 +10,16 @@ Releases are named with the following scheme:
 ## Next Release
 
 ## hardknott.TQMa65xx.BSP.SW.0008
+
+### Changed
+
+* update external meta layers to current hardknott head (poky / YP 3.3.5)
+
+### Fixes
+
+* meta-tq: TQMa65xx / TQMa6UL[L]x[L] / TQMa6x: fixes for U-Boot and linux, details
+  see CHANGELOG.md in meta-tq
+
 ## hardknott.TQMa8.BSP.SW.0084
 
 ### Added
