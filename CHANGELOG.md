@@ -9,6 +9,15 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Fixes
+
+* meta-dumpling: rootfs size increase via unused lm_sensors options
+
+### Changed
+
+* meta-tq: kernel updates for TQMa7x (LTS 5.15.y)
+* meta-dumpling: etc/issue[.net] branding
+
 ## hardknott.TQMa65xx.BSP.SW.0008
 
 ### Changed
