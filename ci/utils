@@ -173,12 +173,13 @@ get_machines () {
 	local ls_machines=$(echo "${all_machines}" | grep 'tqml[s,x]')
 	local imx_machines=$(echo "${all_machines}" | grep 'tqma[6,7,8][^0-9]')
 	local imx6ul_machines=$(echo "${all_machines}" | grep 'tqma6ul')
+	local imx7_machines=$(echo "${all_machines}" | grep 'tqma7')
 	local imx8_machines=$(echo "${all_machines}" | grep 'tqma8[^0-9]')
 	local mc_machines=$(echo "${all_machines}" | grep 'k3r5')
 	local minimal_exclude="${ls_machines} ${imx8_machines} ${tqma65_machines} ${mc_machines}"
 	local ls_exclude=$(echo "${ti_machines} ${imx_machines} ${mc_machines}")
 	# we do not maintain an imx-Kernel for TQMa6UL[L]x[L]
-	local imx_exclude=$(echo "${ls_machines} ${ti_machines} ${mc_machines} ${imx6ul_machines}")
+	local imx_exclude=$(echo "${ls_machines} ${ti_machines} ${mc_machines} ${imx6ul_machines} ${imx7_machines}")
 	local ti_exclude=$(echo "${imx_machines} ${ls_machines} ${mc_machines}")
 	local choosen_machines=${all_machines}
 
