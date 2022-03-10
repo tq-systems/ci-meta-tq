@@ -9,12 +9,21 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Added
+
+* meta-tq: 512 MB variants of TQMa6ULLx and TQMa6ULLxL
+
 ### Fixes
 
+* meta-tq: fix dirty pipe vulnerability for linux-tq 5.15 and linux-imx-tq 5.10
+* meta-dumpling: use current rng-tools
 * meta-dumpling: rootfs size increase via unused lm_sensors options
 
 ### Changed
 
+* meta-dumpling: add more tools to tq images for ease of testing
+* ci: exclude TQMa6ULx / TQMa6ULLx / TQMa6ULxL / TQMa6ULLxL / TQMa7x from builds
+  with meta-freescale and linux-imx-tq (imx configuration)
 * meta-tq: kernel updates for TQMa7x (LTS 5.15.y)
 * meta-dumpling: etc/issue[.net] branding
 
