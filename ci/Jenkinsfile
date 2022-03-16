@@ -44,10 +44,10 @@ def checkoutMetaLayers(directoryName) {
         sshagent(['jenkins-master-key']) {
             sh """
             git submodule sync
-            git submodule foreach --recursive 'git fetch --force--prune --no-tags origin'
+            git submodule foreach --recursive 'git fetch --force --prune --prune-tags --tags origin'
             git submodule foreach --recursive 'git remote set-head origin "\$(git branch -r -l "origin/*" | tail -1 | cut -d/ -f2-)"'
-            git submodule foreach --recursive 'git gc --prune=all'
             git submodule foreach --recursive 'git reset --hard origin/HEAD'
+            git submodule foreach --recursive 'git gc --prune=all'
             git submodule foreach --recursive 'git clean -fdx'
             git submodule update --init
             git clean -fdx sources/templates
