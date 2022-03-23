@@ -82,10 +82,26 @@ Examples:
 }
 
 clean_up() {
-	unset EULA LIST_MACHINES VALID_MACHINE
-	unset CWD TEMPLATECONF SHORTOPTS LONGOPTS ARGS PROGNAME
-	unset generated_config updated
-	unset SDKMACHINE OEROOT
+	unset ARGS
+	unset BBLAYERS_TEMPLATE
+	unset CONFIG_TEMPLATE
+	unset CWD
+	unset DEFAULT_MACHINE
+	unset DISTRO_VAR
+	unset generated_config
+	unset build_dir_setup_enabled
+	unset LIST_MACHINES
+	unset LIST_TQ_MACHINES
+	unset LONGOPTS
+	unset OEROOT
+	unset PROGNAME
+	unset SCRIPTDIR
+	unset SDKMACHINE
+	unset SHORTOPTS
+	unset TEMPLATECONF
+	unset THE_DISTRO
+	unset THE_MACHINE
+	unset VALID_MACHINE
 }
 
 # get command line options
@@ -222,7 +238,6 @@ Your build environment has been configured with:
 
     MACHINE=${THE_MACHINE}
     SDKMACHINE=${SDKMACHINE}
-    EULA=${EULA}
     DISTRO=${THE_DISTRO}
 EOF
 else
