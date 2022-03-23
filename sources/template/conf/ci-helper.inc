@@ -1,5 +1,8 @@
 # allow automatic building with meta-freescale
 ACCEPT_FSL_EULA = "y"
+ACCEPT_NXP_EULA = "y"
+ACCEPT_TI_EULA = "y"
+ACCEPT_QT5_EULA = "y"
 
 # clean after build to save space
 INHERIT += "rm_work"
