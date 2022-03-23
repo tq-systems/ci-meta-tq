@@ -117,7 +117,7 @@ do
 done
 
 if [ "$(whoami)" = "root" ]; then
-    echo "ERROR: do not use the BSP as root. Exiting..."
+    echo "ERROR: do not use the BSP as root. Exiting..." >&2
 fi
 
 if [ -z "${MACHINE}" ]; then
@@ -132,7 +132,7 @@ fi
 
 if [ "${build_dir_setup_enabled}" = "true" ] && [ -z "${MACHINE}" ]; then
     usage
-    echo "ERROR: You must set MACHINE when creating a new build directory."
+    echo "ERROR: You must set MACHINE when creating a new build directory."  >&2
     clean_up
     return 1
 fi
@@ -150,7 +150,7 @@ if [ -z "${MACHINE}" ] || [ "${VALID_MACHINE}" -eq "0" ]; then
     echo "
 The \$MACHINE you have specified (${MACHINE})
 is not supported by this build setup
-"
+"  >&2
     usage && clean_up
     return 1
 else
@@ -170,7 +170,7 @@ fi
 
 if [ "$build_dir_setup_enabled" = "true" ] && [ -z "${DISTRO}" ]; then
     usage
-    echo "ERROR: You must set DISTRO when creating a new build directory."
+    echo "ERROR: You must set DISTRO when creating a new build directory." >&2
     clean_up
     return 1
 fi
