@@ -11,6 +11,10 @@ Releases are named with the following scheme:
 
 ### Added
 
+* meta-dumpling: add debug enabled image recipes
+* templates: add support for poky TEMPLATECONF
+  * add bblayers.conf and local conf samples
+  * add a conf-notes.txt file
 * meta-tq: 512 MB variants of TQMa6ULLx and TQMa6ULLxL
 
 ### Fixes
@@ -21,6 +25,7 @@ Releases are named with the following scheme:
 
 ### Changed
 
+* setup-environment: use TEMPLATECONF
 * meta-dumpling: add more tools to tq images for ease of testing
 * ci: exclude TQMa6ULx / TQMa6ULLx / TQMa6ULxL / TQMa6ULLxL / TQMa7x from builds
   with meta-freescale and linux-imx-tq (imx configuration)
