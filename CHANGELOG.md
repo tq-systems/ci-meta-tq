@@ -9,6 +9,8 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa6UL.BSP.SW.0116
+
 ### Added
 
 * meta-dumpling: add debug enabled image recipes
@@ -20,17 +22,23 @@ Releases are named with the following scheme:
 ### Fixes
 
 * meta-tq: fix dirty pipe vulnerability for linux-tq 5.15 and linux-imx-tq 5.10
-* meta-dumpling: use current rng-tools
+* meta-dumpling: use current rng-tools and optimized handling of rngd
 * meta-dumpling: rootfs size increase via unused lm_sensors options
 
 ### Changed
 
+* ci: build debug enabled images
+* templates: add buildhistory and buildstats to ci config
+* meta-dumpling: remove buildhistory and buildstats from distros
 * setup-environment: use TEMPLATECONF
 * meta-dumpling: add more tools to tq images for ease of testing
 * ci: exclude TQMa6ULx / TQMa6ULLx / TQMa6ULxL / TQMa6ULLxL / TQMa7x from builds
   with meta-freescale and linux-imx-tq (imx configuration)
 * meta-tq: kernel updates for TQMa7x (LTS 5.15.y)
 * meta-dumpling: etc/issue[.net] branding
+
+For a list of detailed changes see changelogs in git submodules for meta-tq and
+meta-dumpling.
 
 ## hardknott.TQMa65xx.BSP.SW.0008
 
