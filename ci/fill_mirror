@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # File:        fill_mirror
-# Copyright (C) 2021 TQ-Systems GmbH
+# Copyright (C) 2021 - 2022 TQ-Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 # @author Paul Gerber <Paul.Gerber@tq-group.com>
 #
@@ -105,6 +105,12 @@ main () {
 		# incremental changes in the config using our template dir
 		rm -rf ${build_dir}_${distro}~/conf
 
+		# although DISTRO and MACHINE are exported, setup-environment
+		# uses these variable only to set default in local.conf and unsets
+		# them afterwards to prevent env pollution for bitbake
+		# both variables can be set afterwards again and for MACHINE
+		# this is already the case to iterate over all buildable
+		# machines
 		. ./setup-environment ${build_dir}_${distro}~ ${config}
 		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
 

@@ -134,16 +134,16 @@ get_images () {
 
 	case $(echo ${distro} | sed -e "s/${filter}//g" ) in
 		spaetzle )
-			choosen_images="tq-image-small"
+			choosen_images="tq-image-small-debug"
 			;;
 		dumpling-rt )
-			choosen_images="tq-image-small"
+			choosen_images="tq-image-small-debug"
 			;;
 		dumpling-wayland )
-			choosen_images="tq-image-weston"
+			choosen_images="tq-image-weston-debug"
 			;;
 		dumpling )
-			choosen_images="tq-image-generic"
+			choosen_images="tq-image-generic-debug"
 			;;
 		* )
 			error "no image for distro ${distro}"
