@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# File:        ls-distros
+# Copyright (C) 2022 TQ-Systems GmbH
+# @author Markus Niebel <Markus.Niebel@tq-group.com>
+#
+# Description: list all distros in a layer
+#
+# License:     GPLv2
+#
+###############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+###############################################################################
+
+LAYER="meta-dumpling"
+
+usage() {
+	echo "$1 usage:"
+	echo "\nlist available distros from layer under sources"
+	echo "$1 - use default layer meta-dumpling"
+	echo "$1 <layer name>- use layer given as parameter"
+}
+
+main() {
+	[ "${#}" -gt "1" ] && usage $0 && return 1
+	[ "${#}" -eq "1" ] && LAYER=${1}
+	! [ -d "./sources/${LAYER}/conf/distro" ] && usage $0 && return 1
+
+	# filter out machines from the layer 
+	TARGETS=$(ls sources/${LAYER}/conf/distro/*.conf | \
+		sed s/\.conf//g | xargs -n1 basename)
+
+	for t in ${TARGETS}; do
+		echo "${t}"
+	done
+
+	return 0
+}
+
+main "$@"
