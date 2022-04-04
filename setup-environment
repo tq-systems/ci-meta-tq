@@ -40,12 +40,12 @@ DEFAULT_DISTRO_ti="dumpling-wayland-ti"
 usage()
 {
     echo "
-Usage: MACHINE=<machine> DISTRO=<distro> source $PROGNAME <build-dir> <template>
-Usage:                                   source $PROGNAME <build-dir> <template>
+Usage: MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <template>
+Usage:                                   source ${PROGNAME} <build-dir> <template>
     <machine>    machine name
     <distro>     distro name
     <build-dir>  build directory
-	<template>: template bblayers.conf to use (optional)
+    <template>: template bblayers.conf to use (optional)
 
 The first usage is for creating a new build directory. In this case, the
 script creates the build directory <build-dir>, configures it for the
@@ -61,22 +61,22 @@ directory <build-dir>. The build directory configuration is unchanged.
     ls sources/meta-dumpling/conf/distro/*.conf > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo "
-Supported machines: `echo; ls sources/meta-tq/conf/machine/*.conf \
-| sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+Supported machines:
+$("${SCRIPTDIR}/ls-machines" meta-tq)
 
-Supported TQ's distros: `echo; ls sources/meta-dumpling/conf/distro/*.conf\
-| sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+Supported TQ-Systems distros:
+$("${SCRIPTDIR}/ls-distros" meta-dumpling)
 
-Available Poky's distros: `echo; ls sources/poky/meta-poky/conf/distro/*.conf \
-| sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+Available poky distros:
+$("${SCRIPTDIR}/ls-distros" poky/meta-poky)
 
 Examples:
 
 - To create a new Yocto build directory:
-  $ MACHINE=imx6qdlsabresd DISTRO=fslc-framebuffer source $PROGNAME build
+  \$ MACHINE=${DEFAULT_MACHINE} DISTRO=dumpling source ${PROGNAME} build-dir
 
 - To use an existing Yocto build directory:
-  $ source $PROGNAME build
+  \$ source ${PROGNAME} build-dir
 "
     fi
 }
