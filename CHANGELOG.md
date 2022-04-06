@@ -18,6 +18,10 @@ submodules: add meta-layers for Basler camera support
 
 ### Fixed
 
+meta-dumpling: workaround to enable building for machines from meta-tq with
+  poky-tiny based distros
+meta-freescale: update to get more weak defaults for Layerscape CPU. This fixes
+  some assignment mess for machines from meta-tq
 poky: update to 3.3.6, includes several CVE fixes including openssl (CVE 2022-0778)
 meta-freescale: allow overriding the kernel provider more generic
 
