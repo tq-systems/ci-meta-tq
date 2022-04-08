@@ -202,6 +202,11 @@ fi
 
 BB_ENV_EXTRAWHITE="${BB_ENV_EXTRAWHITE} TQ_GIT_BASEURL TQ_GIT_PROTOCOL"
 
+# Hide messages from oe-init-build-env.
+# Since we do some more stuff after the basic builddir setup
+# as setting own bblayers.conf and display some licenses
+# the output will not be read from most of the users.
+# We therefore show the content of conf-notes.txt rigth before finishing.
 . "${OEROOT}/oe-init-build-env" ${CWD}/${1} > /dev/null
 
 # if conf/local.conf not generated, no need to go further
@@ -225,7 +230,7 @@ fi
 
 "${SCRIPTDIR}/setup_builddir" handle_licenses "${CWD}"
 
-# print welcome banner ...
+# Print welcome banner, since we drop output from oe-init-build-env above
 if [ -e "${TEMPLATECONF}/conf-notes.txt" ]; then
     cat "${TEMPLATECONF}/conf-notes.txt"
 fi
