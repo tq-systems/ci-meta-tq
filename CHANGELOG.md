@@ -9,21 +9,29 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMLS1028A.BSP.SW.0107
+
+### Changed
+
+* scripts: rewrite setup-environment to reduce complexity and allow usage of
+  shells different from bash
+
 ### Added
 
-meta-tq: generic supporting kernels with PREEMPT-RT
-meta-dumpling: image recipe for PREEMPT-RT testing
-meta-tq: experimental support for Basler MIPI CSI camera for TQMa8MPxL
-submodules: add meta-layers for Basler camera support
+* meta-tq: support for new variant of TQMLS1028A
+* meta-tq: generic supporting kernels with PREEMPT-RT
+* meta-dumpling: image recipe for PREEMPT-RT testing
+* meta-tq: experimental support for Basler MIPI CSI camera for TQMa8MPxL
+* submodules: add meta-layers for Basler camera support
 
 ### Fixed
 
-meta-dumpling: workaround to enable building for machines from meta-tq with
+* meta-dumpling: workaround to enable building for machines from meta-tq with
   poky-tiny based distros
-meta-freescale: update to get more weak defaults for Layerscape CPU. This fixes
+* meta-freescale: update to get more weak defaults for Layerscape CPU. This fixes
   some assignment mess for machines from meta-tq
-poky: update to 3.3.6, includes several CVE fixes including openssl (CVE 2022-0778)
-meta-freescale: allow overriding the kernel provider more generic
+* poky: update to 3.3.6, includes several CVE fixes including openssl (CVE 2022-0778)
+* meta-freescale: allow overriding the kernel provider more generic
 
 For a list of detailed changes see changelogs in git submodules for meta-tq and
 meta-dumpling.
