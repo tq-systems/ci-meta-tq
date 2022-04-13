@@ -13,9 +13,9 @@ You can now run 'bitbake <target>'
 
 Common targets are the known poky targets as well as images defined in meta-dumpling:
 
-    tq-image-generic
-    tq-image-small
-    tq-image-weston
+    tq-image-generic[-debug]
+    tq-image-small[-debug]
+    tq-image-weston[-debug]
     core-image-minimal
     core-image-full-cmdline
     core-image-sato

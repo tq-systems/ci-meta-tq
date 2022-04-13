@@ -30,3 +30,11 @@
 	path = sources/meta-qt5
 	url = https://github.com/meta-qt5/meta-qt5.git
 	branch = hardknott
+[submodule "sources/meta-basler-imx8"]
+	path = sources/meta-basler-imx8
+	url = https://github.com/basler/meta-basler-imx8
+	branch = hardknott-5.10.72-2.2.0
+[submodule "sources/meta-basler-tools"]
+	path = sources/meta-basler-tools
+	url = https://github.com/basler/meta-basler-tools
+	branch = hardknott
