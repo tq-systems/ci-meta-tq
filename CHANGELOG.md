@@ -9,6 +9,17 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Added
+
+* meta-tq: tqmls1012al: hardknott release using updated versions:
+  * `qoriq-atf_2.4`
+  * `u-boot-lsdk-tq-2021.04`
+  * `linux-imx-tq_5.15`
+
+### Fixed
+
+* tqmls1012al: PFE hang when running on 100MBit/s ethernet link
+
 ## hardknott.TQMLS1028A.BSP.SW.0107
 
 ### Changed
