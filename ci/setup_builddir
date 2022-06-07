@@ -30,6 +30,8 @@ readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
 readonly SCRIPT="$(basename "${0}")"
 
+. ${SCRIPTPATH}/utils
+
 ##############
 # handle different type of licenses and cope with CI build setup
 # $1        - EULA_TYPE [NXP, FSL, TI, QT5]
@@ -187,32 +189,6 @@ setup_confdir() {
 	fi
 
 	return 0
-}
-
-##############
-# replace assigned variable or assign variable if not already assigned
-# $1        - variable to assign
-# $2        - value for variable
-# $3        - assignment operator
-# $4        - file to edit
-#
-# use sed to find and replace existing assignment or add assignment
-# First the assignment of local vars ensures proper formatting so that it is
-# possible to use also variables as expressions, so the finally alos assignments
-# of this types could be made in the file to edit:
-# "${VARNAME} = ${VALUE}"
-# The somewhat complex sed expression uses hold and pattern space
-# (see sed manual) to either replace a line starting with '${var} ' with
-# '${var} ${op} ${val}' (first expression) or add such a line if no line starting
-# with '${var} ' could be found in the file
-##############
-assign_or_replace() {
-	local var=${1////\\/}
-	local val=${2////\\/}
-	local op=${3////\\/}
-	local infile=${4}
-
-	sed --in-place "/^${var} /{h;s/.*/${var} ${op} \"${val}\"/};\${x;/^$/{s//${var} ${op} \"${val}\"/;H};x}" ${infile}
 }
 
 ##############
