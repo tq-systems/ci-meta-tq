@@ -208,6 +208,14 @@ patch_localconf() {
 	assign_or_replace SDKMACHINE ${SDKMACHINE} "??=" conf/local.conf
 }
 
+default_machine () {
+	local CONFIG=${1}
+	local CONFIG_MACHINES=$(get_machines ${CONFIG})
+	local DEFAULT_MACHINE=$(echo ${CONFIG_MACHINES} | awk '{ print $1 }')
+
+	echo ${DEFAULT_MACHINE}
+}
+
 main() {
 	case "${1}" in
 		handle_licenses )
@@ -221,6 +229,10 @@ main() {
 		confdir_setup )
 			shift
 			setup_confdir "${@}"
+			;;
+		default_machine )
+			shift
+			default_machine "${@}"
 			;;
 		* ) # unsupported
 			echo "Error: Unsupported action $1" >&2
