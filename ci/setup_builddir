@@ -123,7 +123,7 @@ EOF
 ##############
 handle_licenses() {
 	local BSPROOT="${1}"
-	
+
 	# call handle_eula for meta-freescale is in conf/bblayers.conf
 	# otherwise call it for meta-tq
 	if grep -q "meta-freescale" conf/bblayers.conf; then
@@ -202,7 +202,7 @@ setup_confdir() {
 # of this types could be made in the file to edit:
 # "${VARNAME} = ${VALUE}"
 # The somewhat complex sed expression uses hold and pattern space
-# (see sed manual) to either replace a line starting with '${var} ' with 
+# (see sed manual) to either replace a line starting with '${var} ' with
 # '${var} ${op} ${val}' (first expression) or add such a line if no line starting
 # with '${var} ' could be found in the file
 ##############
@@ -246,7 +246,7 @@ main() {
 			shift
 			setup_confdir "${@}"
 			;;
-		* ) # unsupported 
+		* ) # unsupported
 			echo "Error: Unsupported action $1" >&2
 			exit 1
 			;;	esac
