@@ -26,8 +26,6 @@
 CWD=$(pwd)
 PROGNAME="setup-environment"
 SCRIPTDIR="${CWD}/ci"
-LIST_TQ_MACHINES=$("${SCRIPTDIR}/ls-machines" meta-tq)
-DEFAULT_MACHINE=$(echo ${LIST_TQ_MACHINES} | awk '{ print $1 }')
 CONFIG_TEMPLATE=minimal
 # conf templates
 TEMPLATECONF=${CWD}/sources/template/conf
@@ -45,7 +43,7 @@ Usage:                                   source ${PROGNAME} <build-dir> <templat
     <machine>    machine name
     <distro>     distro name
     <build-dir>  build directory
-    <template>: template bblayers.conf to use (optional)
+    <template>: template bblayers.conf to use (optional, default: ${CONFIG_TEMPLATE})
 
 The first usage is for creating a new build directory. In this case, the
 script creates the build directory <build-dir>, configures it for the
@@ -61,6 +59,9 @@ directory <build-dir>. The build directory configuration is unchanged.
     ls sources/meta-dumpling/conf/distro/*.conf > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo "
+Supported configs:
+$(${SCRIPTDIR}/ls-configs)
+
 Supported machines:
 $("${SCRIPTDIR}/ls-machines" meta-tq)
 
@@ -73,10 +74,12 @@ $("${SCRIPTDIR}/ls-distros" poky/meta-poky)
 Examples:
 
 - To create a new Yocto build directory:
-  \$ MACHINE=${DEFAULT_MACHINE} DISTRO=dumpling source ${PROGNAME} build-dir
+  \$ MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} build-dir <config>
 
 - To use an existing Yocto build directory:
   \$ source ${PROGNAME} build-dir
+
+See README.md for valid combinations of <machine>, <distro> and <config>
 "
     fi
 }
@@ -86,12 +89,10 @@ clean_up() {
 	unset BBLAYERS_TEMPLATE
 	unset CONFIG_TEMPLATE
 	unset CWD
-	unset DEFAULT_MACHINE
 	unset DISTRO_VAR
 	unset generated_config
 	unset build_dir_setup_enabled
 	unset LIST_MACHINES
-	unset LIST_TQ_MACHINES
 	unset LONGOPTS
 	unset OEROOT
 	unset PROGNAME
@@ -136,8 +137,14 @@ if [ "$(whoami)" = "root" ]; then
     echo "ERROR: do not use the BSP as root. Exiting..." >&2
 fi
 
+if [ -n "${2}" ]; then
+    CONFIG_TEMPLATE=${2}
+fi
+
+BBLAYERS_TEMPLATE=bblayers.conf.${CONFIG_TEMPLATE}
+
 if [ -z "${MACHINE}" ]; then
-    THE_MACHINE=${DEFAULT_MACHINE}
+    THE_MACHINE=$(${SCRIPTDIR}/setup_builddir default_machine ${CONFIG_TEMPLATE})
 else
     THE_MACHINE=${MACHINE}
 fi
@@ -154,12 +161,6 @@ if [ "${build_dir_setup_enabled}" = "true" ] && [ -z "${THE_MACHINE}" ]; then
     clean_up
     return 1
 fi
-
-if ! [ -z "${2}" ]; then
-    CONFIG_TEMPLATE=${2}
-fi
-
-BBLAYERS_TEMPLATE=bblayers.conf.${CONFIG_TEMPLATE}
 
 # Check the machine type specified
 LIST_MACHINES=$(ls -1 ${CWD}/sources/*/conf/machine)
