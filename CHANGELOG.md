@@ -9,6 +9,28 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMLS1012AL.BSP.SW.0011
+
+### Added
+
+* meta-tq: tqmls1012al: hardknott release using updated versions:
+  * `qoriq-atf_2.4`
+  * `u-boot-lsdk-tq-2021.04`
+  * `linux-imx-tq_5.15`
+
+For a list of detailed changes see changelogs in git submodules for meta-tq and
+meta-dumpling.
+
+### Changed
+
+* update external layers to use latest hardknott upstream
+
+### Fixed
+
+* tqmls1012al: PFE hang when running on 100MBit/s ethernet link
+* meta-tq: compatibility with meta-freescale upstream for Layerscape based SOM
+  (handling of `WKS_FILE` assignment)
+
 ## hardknott.TQMLS1028A.BSP.SW.0107
 
 ### Changed
