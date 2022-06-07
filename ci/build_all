@@ -137,14 +137,14 @@ main () {
 
 		if ! [ -z ${SSTATE_DIR} ]; then
 			# add SSTATE dir outside of builddir, optimize global builds
-			assign_or_replace SSTATE_DIR ${SSTATE_DIR} conf/local.conf
+			assign_or_replace SSTATE_DIR ${SSTATE_DIR} "=" conf/local.conf
 		else
 			info "env SSTATE_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 
 		if ! [ -z ${DL_DIR} ]; then
 			# add DL_DIR dir outside of builddir, optimize global builds
-			assign_or_replace DL_DIR ${DL_DIR} conf/local.conf
+			assign_or_replace DL_DIR ${DL_DIR} "=" conf/local.conf
 
 		else
 			info "env DL_DIR empty, using local dir or add it to your site.conf / auto.conf"
