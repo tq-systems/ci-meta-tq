@@ -191,7 +191,7 @@ get_machines () {
 	local mc_machines=$(echo "${all_machines}" | grep 'k3r5')
 	local minimal_exclude="${ls_machines} ${imx8_machines} ${ti_machines} ${mc_machines}"
 	local ls_exclude=$(echo "${ti_machines} ${imx_machines} ${mc_machines}")
-	# we do not maintain an imx-Kernel for TQMa6UL[L]x[L]
+	# we do not maintain an imx-Kernel for TQMa6UL[L]x[L] and TQMa7x at the moment.
 	local imx_exclude=$(echo "${ls_machines} ${ti_machines} ${mc_machines} ${imx6ul_machines} ${imx7_machines}")
 	local ti_exclude=$(echo "${imx_machines} ${ls_machines} ${mc_machines}")
 	local choosen_machines=${all_machines}
@@ -227,23 +227,6 @@ get_machines () {
 		echo "${choosen_machines}"
 	else
 		echo "${MACHINE_LIST}"
-	fi
-}
-
-####
-# func:   get_distros
-# brief:  return list of distros from meta-dumpling
-# return: list of distros
-####
-get_distros () {
-	local distro_path="sources/meta-dumpling/conf/distro"
-	local distros=$(cd ${distro_path} && find ./*.conf | sed -E "s/\.\/(.*)\.(.*)/\1/")
-
-	if [ -z "${LOCAL}" ] || [ -z "${DISTRO_LIST}" ]
-	then
-		echo "${distros}"
-	else
-		echo "${DISTRO_LIST}"
 	fi
 }
 
