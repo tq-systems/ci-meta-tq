@@ -21,6 +21,8 @@ You are responsible to fulfil all obligations by these licenses.
 
 ## Supported branches of meta-tq
 
+This project supports the following branches of meta-tq:
+
 - krogoth (not longer maintained)
 - morty (not longer maintained)
 - pyro (not longer maintained)
@@ -33,6 +35,7 @@ You are responsible to fulfil all obligations by these licenses.
 - zeus (no further development, use hardknott)
 - zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
 - hardknott
+- honister (not tested)
 
 **Attention:** use README.md of used branch for exact details.
 
@@ -102,7 +105,7 @@ bblayers.conf
 
 | config  | description                                              |
 | ------- | -------------------------------------------------------- |
-| minimal | can build machines, that not depend on a vendor layer    |
+| minimal | for machines, that do not depend on a vendor layer       |
 | imx     | for machines with i.MX CPU, uses `meta-freescale`        |
 | ti      | machines with TI AM335x / AM57xx CPU, uses `meta-ti`     |
 | ls      | machines with NXP Layerscape CPU, uses `meta-freescale`  |
