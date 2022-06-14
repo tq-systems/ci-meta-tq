@@ -9,6 +9,10 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Added
+
+* Support for yocto honister
+
 ## hardknott.TQMa6UL.BSP.SW.0116
 
 ### Added
