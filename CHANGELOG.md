@@ -7,7 +7,12 @@ Releases are named with the following scheme:
 
 [[_TOC_]]
 
-## Next Release
+## hardknott.TQMLS1028A.BSP.SW.0108
+
+### Fixed
+
+* meta-tq: TQMLS1028A: RCW fixes and new variants
+* meta-tq: TQMa6x/TQMa335x: fix build error due to missing config vars for UBI
 
 ## hardknott.TQMLS1012AL.BSP.SW.0011
 
