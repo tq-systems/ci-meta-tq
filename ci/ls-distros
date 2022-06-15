@@ -26,19 +26,31 @@
 #
 ###############################################################################
 
-LAYER="meta-dumpling"
+readonly DEFAULT_LAYER="meta-dumpling"
 
 usage() {
 	echo "$1 usage:"
 	echo "\nlist available distros from layer under sources"
-	echo "$1 - use default layer meta-dumpling"
+	echo "$1 - use default layer ${DEFAULT_LAYER}"
 	echo "$1 <layer name>- use layer given as parameter"
 }
 
 main() {
-	[ "${#}" -gt "1" ] && usage $0 && return 1
-	[ "${#}" -eq "1" ] && LAYER=${1}
-	! [ -d "./sources/${LAYER}/conf/distro" ] && usage $0 && return 1
+	local LAYER=${DEFAULT_LAYER}
+
+	if [ "${#}" -gt "1" ]; then
+		usage "$0"
+		return 1
+	fi
+
+	if [ "${#}" -eq "1" ]; then
+		LAYER="${1}"
+	fi
+
+	if ! [ -d "./sources/${LAYER}/conf/distro" ]; then
+		usage "$0"
+		return 1
+	fi
 
 	# filter out machines from the layer 
 	TARGETS=$(ls sources/${LAYER}/conf/distro/*.conf | \
