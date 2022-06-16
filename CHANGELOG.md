@@ -7,6 +7,20 @@ Releases are named with the following scheme:
 
 [[_TOC_]]
 
+## Next Release
+
+### Added
+
+* ci: add script to query available configurations
+
+### Changed
+
+* ci: improve code reuse
+
+### Fixed
+
+* setup-environment: set valid default MACHINE if none is given
+
 ## hardknott.TQMLS1028A.BSP.SW.0108
 
 ### Fixed
