@@ -197,7 +197,7 @@ def handleGlobalData(directoryName) {
  */
 pipeline {
     agent {
-        label 'yocto-hardknott'
+        label 'yocto-honister'
     }
 
     options {
