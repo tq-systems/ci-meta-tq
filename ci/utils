@@ -68,17 +68,30 @@ error_out () {
 	exit 1
 }
 
+##############
+# replace assigned variable or assign variable if not already assigned
+# $1        - variable to assign
+# $2        - value for variable
+# $3        - assignment operator
+# $4        - file to edit
+#
+# use sed to find and replace existing assignment or add assignment
+# First the assignment of local vars ensures proper formatting so that it is
+# possible to use also variables as expressions, so the finally alos assignments
+# of this types could be made in the file to edit:
+# "${VARNAME} = ${VALUE}"
+# The somewhat complex sed expression uses hold and pattern space
+# (see sed manual) to either replace a line starting with '${var} ' with
+# '${var} ${op} ${val}' (first expression) or add such a line if no line starting
+# with '${var} ' could be found in the file
+##############
 assign_or_replace() {
 	local var=${1////\\/}
 	local val=${2////\\/}
-	local infile=${3}
+	local op=${3////\\/}
+	local infile=${4}
 
-	debug "trying assign/replace $1 $2:"
-	debug "/^${var} =/{h;s/=.*/= \"${val}\"/};\${x;/^$/{s//${var} = \"${val}\"/;H};x}"
-
-	sed -i "/^${var} =/{h;s/=.*/= \"${val}\"/};\${x;/^$/{s//${var} = \"${val}\"/;H};x}" ${infile}
-
-	debug "$(cat ${infile})"
+	sed --in-place "/^${var} /{h;s/.*/${var} ${op} \"${val}\"/};\${x;/^$/{s//${var} ${op} \"${val}\"/;H};x}" ${infile}
 }
 
 ####
@@ -160,6 +173,18 @@ get_images () {
 }
 
 ####
+# func:   valid_config
+# brief:  check if config is in list of supported configs
+# param:  $1 - config
+####
+valid_config() {
+	local config=${1}
+	local supported_configs="$(${SCRIPTPATH}/ls-configs)"
+
+	echo ${supported_configs} | grep -wq "${config}"
+}
+
+####
 # func:   get_machines
 # brief:  return buildable machines for config
 # param:  $1 - config (imx/ls/ti/minimal)
@@ -178,10 +203,15 @@ get_machines () {
 	local mc_machines=$(echo "${all_machines}" | grep 'k3r5')
 	local minimal_exclude="${ls_machines} ${imx8_machines} ${ti_machines} ${mc_machines}"
 	local ls_exclude=$(echo "${ti_machines} ${imx_machines} ${mc_machines}")
-	# we do not maintain an imx-Kernel for TQMa6UL[L]x[L]
+	# we do not maintain an imx-Kernel for TQMa6UL[L]x[L] and TQMa7x at the moment.
 	local imx_exclude=$(echo "${ls_machines} ${ti_machines} ${mc_machines} ${imx6ul_machines} ${imx7_machines}")
 	local ti_exclude=$(echo "${imx_machines} ${ls_machines} ${mc_machines}")
 	local choosen_machines=${all_machines}
+
+	if ! valid_config ${config}; then
+		error "invalid config: ${config}"
+		return -1
+	fi
 
 	case ${config} in
 	"imx" )
@@ -218,32 +248,19 @@ get_machines () {
 }
 
 ####
-# func:   get_distros
-# brief:  return list of distros from meta-dumpling
-# return: list of distros
-####
-get_distros () {
-	local distro_path="sources/meta-dumpling/conf/distro"
-	local distros=$(cd ${distro_path} && find ./*.conf | sed -E "s/\.\/(.*)\.(.*)/\1/")
-
-	if [ -z "${LOCAL}" ] || [ -z "${DISTRO_LIST}" ]
-	then
-		echo "${distros}"
-	else
-		echo "${DISTRO_LIST}"
-	fi
-}
-
-####
 # func:   get_distros_for_config
 # brief:  return buildable machines for config
 # param:  $1 - config (imx/ls/ti/minimal)
 # return: list of machines
 ####
 get_distros_for_config () {
-	local distro_path="sources/meta-dumpling/conf/distro"
-	local all_distros=$(cd ${distro_path} && find ./*.conf | sed -E "s/\.\/(.*)\.(.*)/\1/")
+	local all_distros=$("${SCRIPTPATH}/ls-distros" meta-dumpling)
 	local chosen_distros=${all_distros}
+
+	if ! valid_config ${config}; then
+		error "invalid config: ${config}"
+		return -1
+	fi
 
 	case ${config} in
 	"imx" )
