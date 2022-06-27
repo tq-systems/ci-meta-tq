@@ -9,8 +9,16 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa8.BSP.SW.0085
+
+*NOTE:* For details see changelogs in git submodules for meta-tq and meta-dumpling.
+
 ### Added
 
+* meta-tq / meta-dumpling: support for `wic.bootonly` images containing only of
+  boot partition with bootloader stages (usable for SOM with TI CPU)
+* meta-tq: single machine config for TQMa8MPxL, see documentation in meta-tq
+  with additional support for 1GB and 8GB RAM for TQMa8MPxL
 * ci: add script to query available configurations
 
 ### Changed
@@ -20,11 +28,6 @@ Releases are named with the following scheme:
 ### Fixed
 
 * setup-environment: set valid default MACHINE if none is given
-
-## hardknott.TQMLS1028A.BSP.SW.0108
-
-### Fixed
-
 * meta-tq: TQMLS1028A: RCW fixes and new variants
 * meta-tq: TQMa6x/TQMa335x: fix build error due to missing config vars for UBI
 
