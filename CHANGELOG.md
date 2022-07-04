@@ -9,6 +9,14 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Changed
+
+* ci: Jenkinsfile: optimized file operations and cleanup dead code
+
+### Fixed
+
+* ci: do not use ~ in path names
+
 ## hardknott.TQMa8.BSP.SW.0085
 
 *NOTE:* For details see changelogs in git submodules for meta-tq and meta-dumpling.
