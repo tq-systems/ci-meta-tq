@@ -9,6 +9,8 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa335x.BSP.SW.0122
+
 *NOTE:* For details see changelogs in git submodules for meta-tq and meta-dumpling.
 
 ### Changed
