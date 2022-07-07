@@ -9,6 +9,20 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa335x.BSP.SW.0122
+
+*NOTE:* For details see changelogs in git submodules for meta-tq and meta-dumpling.
+
+### Changed
+
+* meta-tq: TQMa335x SPI NOR boot support
+* ci: Jenkinsfile: optimized file operations and cleanup dead code
+
+### Fixed
+
+* meta-dumpling: SDK build error for distros and images in layer
+* ci: do not use ~ in path names
+
 ## hardknott.TQMa8.BSP.SW.0085
 
 *NOTE:* For details see changelogs in git submodules for meta-tq and meta-dumpling.
