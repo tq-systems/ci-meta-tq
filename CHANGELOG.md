@@ -9,6 +9,16 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMLS1028A.BSP.SW.108
+
+### Added
+
+* meta-tq: support for TQMLS1028A 4GiB RAM Variant
+
+### Changed
+
+* meta-tq: TQMLS1028A: upgrade to ATF version 2.4
+
 ## hardknott.TQMa335x.BSP.SW.0122
 
 *NOTE:* For details see changelogs in git submodules for meta-tq and meta-dumpling.
