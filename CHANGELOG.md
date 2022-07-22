@@ -9,6 +9,12 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa335x.BSP.SW.0123
+
+### Fixed
+
+* TQMa335x[L]: fixed incorrect MAC addresses in environment
+
 ## hardknott.TQMLS1028A.BSP.SW.108
 
 ### Added
