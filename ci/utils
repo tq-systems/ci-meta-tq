@@ -193,8 +193,7 @@ valid_config() {
 get_machines () {
 	local config=${1}
 	local all_machines=$("${SCRIPTPATH}"/ls-machines)
-	local ti_machines=$(echo "${all_machines}" | grep 'tqma335\|tqma57\|tqma65')
-	local tqma65_machines=$(echo "${all_machines}" | grep 'tqma65')
+	local ti_machines=$(echo "${all_machines}" | grep 'tqma335\|tqma57\|tqma64\|tqma65')
 	local ls_machines=$(echo "${all_machines}" | grep 'tqml[s,x]')
 	local imx_machines=$(echo "${all_machines}" | grep 'tqma[6,7,8][^0-9]')
 	local imx6ul_machines=$(echo "${all_machines}" | grep 'tqma6ul')
