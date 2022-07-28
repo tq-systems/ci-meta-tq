@@ -9,6 +9,10 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## hardknott.TQMa64xxL.BSP.SW.0001
+
+* meta-tq: doc: TQMa64xxL: update known issues
+
 ## hardknott.TQMa335x.BSP.SW.0123
 
 ### Fixed
