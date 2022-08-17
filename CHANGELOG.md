@@ -9,8 +9,21 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Changed
+
+* ci: Jenkinsfile: optimized file operations and cleanup dead code
+* ci: improve code reuse
+* scripts: rewrite setup-environment to reduce complexity and allow usage of
+  shells different from bash
+
+### Fixed
+
+* setup-environment: set valid default MACHINE if none is given
+* ci: do not use ~ in path names
+
 ### Added
 
+* ci: add script to query available configurations
 * Support for yocto honister
 
 ## hardknott.TQMa6UL.BSP.SW.0116

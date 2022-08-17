@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 # -*- mode: shell-script; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
 #
 # Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
 # Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
 #
 # Copyright (C) TQ-Systems GmbH
-# 2017 - 2021 Markus Niebel <Markus.Niebel@tq-group.com>
+# 2017 - 2022 Markus Niebel <Markus.Niebel@ew.tq-group.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -25,8 +25,7 @@
 
 CWD=$(pwd)
 PROGNAME="setup-environment"
-LIST_TQ_MACHINES=$(${CWD}/ci/ls-machines meta-tq)
-DEFAULT_MACHINE=$(echo ${LIST_TQ_MACHINES} | awk '{ print $1 }')
+SCRIPTDIR="${CWD}/ci"
 CONFIG_TEMPLATE=minimal
 # conf templates
 TEMPLATECONF=${CWD}/sources/template/conf
@@ -38,13 +37,13 @@ DEFAULT_DISTRO_ti="dumpling-wayland-ti"
 
 usage()
 {
-    echo -e "
-Usage: MACHINE=<machine> DISTRO=<distro> source $PROGNAME <build-dir> <template>
-Usage:                                   source $PROGNAME <build-dir> <template>
+    echo "
+Usage: MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <template>
+Usage:                                   source ${PROGNAME} <build-dir> <template>
     <machine>    machine name
     <distro>     distro name
     <build-dir>  build directory
-	<template>: template bblayers.conf to use (optional)
+    <template>: template bblayers.conf to use (optional, default: ${CONFIG_TEMPLATE})
 
 The first usage is for creating a new build directory. In this case, the
 script creates the build directory <build-dir>, configures it for the
@@ -59,145 +58,51 @@ directory <build-dir>. The build directory configuration is unchanged.
     ls sources/meta-tq/conf/machine/*.conf > /dev/null 2>&1
     ls sources/meta-dumpling/conf/distro/*.conf > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-        echo -e "
-Supported machines: `echo; ls sources/meta-tq/conf/machine/*.conf \
-| sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+        echo "
+Supported configs:
+$(${SCRIPTDIR}/ls-configs)
 
-Supported TQ's distros: `echo; ls sources/meta-dumpling/conf/distro/*.conf\
-| sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+Supported machines:
+$("${SCRIPTDIR}/ls-machines" meta-tq)
 
-Available Poky's distros: `echo; ls sources/poky/meta-poky/conf/distro/*.conf \
-| sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+Supported TQ-Systems distros:
+$("${SCRIPTDIR}/ls-distros" meta-dumpling)
+
+Available poky distros:
+$("${SCRIPTDIR}/ls-distros" poky/meta-poky)
 
 Examples:
 
 - To create a new Yocto build directory:
-  $ MACHINE=imx6qdlsabresd DISTRO=fslc-framebuffer source $PROGNAME build
+  \$ MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} build-dir <config>
 
 - To use an existing Yocto build directory:
-  $ source $PROGNAME build
+  \$ source ${PROGNAME} build-dir
+
+See README.md for valid combinations of <machine>, <distro> and <config>
 "
     fi
 }
 
 clean_up() {
-	unset EULA LIST_MACHINES VALID_MACHINE
-	unset CWD TEMPLATECONF SHORTOPTS LONGOPTS ARGS PROGNAME
-	unset generated_config updated
-	unset MACHINE SDKMACHINE DISTRO OEROOT
-}
-
-##############
-# replace assigned variable or assign variable if not already assigned
-# $1        - variable to assign
-# $2        - value for variable
-# $3        - assignment operator
-# $4        - file to edit
-#
-# use sed to find and replace existing assignment or add assignment
-# First the assignment of local vars ensures proper formatting so that it is
-# possible to use also variables as expressions, so the finally alos assignments
-# of this types could be made in the file to edit:
-# "${VARNAME} = ${VALUE}"
-# The somewhat complex sed expression uses hold and pattern space
-# (see sed manual) to either replace a line starting with '${var} ' with 
-# '${var} ${op} ${val}' (first expression) or add such a line if no line starting
-# with '${var} ' could be found in the file
-##############
-assign_or_replace() {
-	local var=${1////\\/}
-	local val=${2////\\/}
-	local op=${3////\\/}
-	local infile=${4}
-
-	sed --in-place "/^${var} /{h;s/.*/${var} ${op} \"${val}\"/};\${x;/^$/{s//${var} ${op} \"${val}\"/;H};x}" ${infile}
-}
-
-##############
-# handle differnt type of licenses and cope with CI build setup
-# $1        - EULA_TYPE [NXP, FSL, TI, QT5]
-# $2 ... $n - names of LICENSE files needed to accept
-#
-# - check for ACCEPT_${EULA_TYPE}_EULA in [local,auto].conf
-# - check for ${EULA} in env
-# if not set, show LICENSE files given with a preface depending on ${EULA_TYPE}
-# and query for acception. If accepted, set ACCEPT_${EULA_TYPE}_EULA in local.conf
-# Additionally add 'NXP-EULA-v24' to the list of enabled licenses if ${EULA_TYPE}
-# is 'NXP''
-##############
-handle_eula() {
-	local EULA_TYPE="${1}"
-	shift
-	local EULA_FILES="${@}"
-	# Handle EULA setting
-	local EULA_ACCEPTED=
-
-	if grep -q "^\s*ACCEPT_${EULA_TYPE}_EULA\s*=\s*[\"'\'']..*[\"'\'']" conf/local.conf; then
-		EULA_ACCEPTED=1
-	fi
-	if grep -q "^\s*ACCEPT_${EULA_TYPE}_EULA\s*=\s*[\"'\'']..*[\"'\'']" conf/auto.conf; then
-		EULA_ACCEPTED=1
-	fi
-
-	if [ -z "${EULA_ACCEPTED}" ] && [ -n "${EULA}" ]; then
-		# The EULA is not set as accepted in [local,auto].conf, but the EULA
-		# variable is set in the environment, so we just configure
-		# ACCEPT_${EULA_TYPE}_EULA in local.conf according to $EULA.
-		echo "ACCEPT_${EULA_TYPE}_EULA = \"${EULA}\"" >> conf/local.conf
-	elif [ -n "${EULA_ACCEPTED}" ]; then
-		# The EULA has been accepted once, so ACCEPT_${EULA_TYPE}_EULA is set
-		# in local.conf.  No need to do anything.
-		:
-	else
-		# The EULA is not set as accepted in local.conf / auto.conf,
-		# and EULA is not set in the environment, so we need to ask user
-		# if he/she accepts the EULA:
-
-		case ${EULA_TYPE} in
-			FSL|NXP)
-cat <<EOF
-Some BSPs depend on libraries and packages which are covered by NXP's
-End User License Agreement (EULA). To have the right to use these binaries in
-your images, you need to read and accept the following...
-EOF
-				;;
-			TI)
-cat <<EOF
-Some BSPs depend on libraries and packages which are covered by TI's licenses
-(TI-TFL and TI-TSPA). To have the right to use these software in your images,
-you need to read and accept the following...
-EOF
-				;;
-			QT5)
-cat <<EOF
-The BSP configuration includes meta-qt5. This BSP is configured to build the
-Open Source version of Qt5. Therefore you need to read and accept the following ...
-EOF
-				;;
-		esac
-
-		sleep 4
-
-		more -d ${EULA_FILES}
-		echo
-		REPLY=
-		while [ -z "${REPLY}" ]; do
-			echo -n "Do you accept the EULA you just read? (y/n)"
-			read REPLY
-			case "${REPLY}" in
-			y|Y)
-				echo "EULA has been accepted."
-				echo "ACCEPT_${EULA_TYPE}_EULA = \"1\"" >> conf/local.conf
-				;;
-			n|N)
-				echo "EULA has not been accepted."
-				;;
-			*)
-				REPLY=
-				;;
-			esac
-		done
-	fi
+	unset ARGS
+	unset BBLAYERS_TEMPLATE
+	unset CONFIG_TEMPLATE
+	unset CWD
+	unset DISTRO_VAR
+	unset generated_config
+	unset build_dir_setup_enabled
+	unset LIST_MACHINES
+	unset LONGOPTS
+	unset OEROOT
+	unset PROGNAME
+	unset SCRIPTDIR
+	unset SDKMACHINE
+	unset SHORTOPTS
+	unset TEMPLATECONF
+	unset THE_DISTRO
+	unset THE_MACHINE
+	unset VALID_MACHINE
 }
 
 # get command line options
@@ -229,11 +134,19 @@ do
 done
 
 if [ "$(whoami)" = "root" ]; then
-    echo "ERROR: do not use the BSP as root. Exiting..."
+    echo "ERROR: do not use the BSP as root. Exiting..." >&2
 fi
 
+if [ -n "${2}" ]; then
+    CONFIG_TEMPLATE=${2}
+fi
+
+BBLAYERS_TEMPLATE=bblayers.conf.${CONFIG_TEMPLATE}
+
 if [ -z "${MACHINE}" ]; then
-    MACHINE=${DEFAULT_MACHINE}
+    THE_MACHINE=$(${SCRIPTDIR}/setup_builddir default_machine ${CONFIG_TEMPLATE})
+else
+    THE_MACHINE=${MACHINE}
 fi
 
 if [ ! -e $1/conf/local.conf.sample ]; then
@@ -242,29 +155,26 @@ else
     build_dir_setup_enabled="false"
 fi
 
-if [ "${build_dir_setup_enabled}" = "true" ] && [ -z "${MACHINE}" ]; then
+if [ "${build_dir_setup_enabled}" = "true" ] && [ -z "${THE_MACHINE}" ]; then
     usage
-    echo -e "ERROR: You must set MACHINE when creating a new build directory."
+    echo "ERROR: You must set MACHINE when creating a new build directory."  >&2
     clean_up
     return 1
 fi
 
-if ! [ -z "${2}" ]; then
-    CONFIG_TEMPLATE=${2}
-fi
-
-BBLAYERS_TEMPLATE=bblayers.conf.${CONFIG_TEMPLATE}
-
 # Check the machine type specified
 LIST_MACHINES=$(ls -1 ${CWD}/sources/*/conf/machine)
-VALID_MACHINE=$(echo -e "${LIST_MACHINES}" | grep ${MACHINE}.conf$ | wc -l)
-if [ -z "${MACHINE}" ] || [ "${VALID_MACHINE}" -eq "0" ]; then
-    echo -e "\nThe \$MACHINE you have specified (${MACHINE}) is not supported by this build setup"
+VALID_MACHINE=$(echo "${LIST_MACHINES}" | grep ${THE_MACHINE}.conf$ | wc -l)
+if [ -z "${THE_MACHINE}" ] || [ "${VALID_MACHINE}" -eq "0" ]; then
+    echo "
+The \$MACHINE you have specified (${MACHINE})
+is not supported by this build setup
+"  >&2
     usage && clean_up
     return 1
 else
     if [ ! -e $1/conf/local.conf.sample ]; then
-        echo "Configuring for ${MACHINE}"
+        echo "Configuring for ${THE_MACHINE}"
     fi
 fi
 
@@ -274,12 +184,14 @@ fi
 
 if [ -z "${DISTRO}" ]; then
     DISTRO_VAR=DEFAULT_DISTRO_${CONFIG_TEMPLATE}
-    eval DISTRO=\$$DISTRO_VAR
+    eval THE_DISTRO=\$$DISTRO_VAR
+else
+    eval THE_DISTRO=${DISTRO}
 fi
 
-if [ "$build_dir_setup_enabled" = "true" ] && [ -z "${DISTRO}" ]; then
+if [ "$build_dir_setup_enabled" = "true" ] && [ -z "${THE_DISTRO}" ]; then
     usage
-    echo -e "ERROR: You must set DISTRO when creating a new build directory."
+    echo "ERROR: You must set DISTRO when creating a new build directory." >&2
     clean_up
     return 1
 fi
@@ -291,6 +203,11 @@ fi
 
 BB_ENV_EXTRAWHITE="${BB_ENV_EXTRAWHITE} TQ_GIT_BASEURL TQ_GIT_PROTOCOL"
 
+# Hide messages from oe-init-build-env.
+# Since we do some more stuff after the basic builddir setup
+# as setting own bblayers.conf and display some licenses
+# the output will not be read from most of the users.
+# We therefore show the content of conf-notes.txt rigth before finishing.
 . "${OEROOT}/oe-init-build-env" ${CWD}/${1} > /dev/null
 
 # if conf/local.conf not generated, no need to go further
@@ -304,69 +221,17 @@ export PATH="`echo ${PATH} | sed 's/\(:.\|:\)*:/:/g;s/^.\?://;s/:.\?$//'`"
 
 generated_config=
 if [ "$build_dir_setup_enabled" = "true" ]; then
-    mv conf/local.conf conf/local.conf.sample
-
-    # Generate the local.conf based on the defaults
-    grep -v '^#\|^$' "conf/local.conf.sample" > "conf/local.conf"
-
-    echo "link additional includes from ${TEMPLATES} to ./conf/ ..."
-    FILES=$(find "${TEMPLATECONF}" -maxdepth 1 -type f -name "*.inc")
-    echo "link ${FILES}"
-    for f in ${FILES}; do
-        ln -s ${f} conf/$(basename ${f})
-    done
-
-    echo "link auto.conf templates from ${TEMPLATES} to ./conf/ ..."
-    FILES=$(find "${TEMPLATECONF}" -maxdepth 1 -type f -name "auto.conf*")
-    echo "link ${FILES}"
-    for f in ${FILES}; do
-        ln -s ${f} conf/$(basename ${f})
-    done
-
-    ln -s "${TEMPLATECONF}/auto.conf.normal" ./conf/auto.conf
-    ! [ -e ./conf/auto.conf ] && "missing auto.conf" && clean_up && return 1
-
-    # copy local bblayers.conf templates
-    if [ -e "${TEMPLATECONF}/${BBLAYERS_TEMPLATE}" ]; then
-        ln -s "${TEMPLATECONF}/${BBLAYERS_TEMPLATE}" conf/bblayers.conf.tmpl
-        cp "${TEMPLATECONF}/${BBLAYERS_TEMPLATE}" conf/bblayers.conf
+    "${SCRIPTDIR}/setup_builddir" confdir_setup "${TEMPLATECONF}" "${BBLAYERS_TEMPLATE}"
+    if [ "${?}" -ne "0" ]; then
+        clean_up && return 1
     fi
-
-    # Change settings according environment
-
-    assign_or_replace MACHINE ${MACHINE} "??=" conf/local.conf
-    assign_or_replace DISTRO ${DISTRO} "?=" conf/local.conf
-    assign_or_replace SDKMACHINE ${SDKMACHINE} "??=" conf/local.conf
-
-    # check for site.conf and create link if available
-    for s in ${HOME}/.oe ${HOME}/.yocto; do
-        if [ -e ${s}/site.conf ]; then
-            echo "Linking ${s}/site.conf to conf/site.conf"
-            ln -s ${s}/site.conf conf
-        fi
-    done
-
+    "${SCRIPTDIR}/setup_builddir" localconf_defaults "${THE_MACHINE}" "${THE_DISTRO}" "${SDKMACHINE}"
     generated_config=1
 fi
 
-# call handle_eula if meta-freescale is in conf/bblayers.conf
-# otherwise call it for meta-tq
-if grep -q "meta-freescale" conf/bblayers.conf; then
-	handle_eula FSL "${CWD}/sources/meta-freescale/EULA"
-else
-	handle_eula NXP "${CWD}/sources/meta-tq/NXP-EULA"
-fi
+"${SCRIPTDIR}/setup_builddir" handle_licenses "${CWD}"
 
-if grep -q "meta-ti" conf/bblayers.conf; then
-	handle_eula TI "${CWD}/sources/meta-ti/licenses/TI-TFL ${CWD}/sources/meta-ti/licenses/TI-TSPA"
-fi
-
-if grep -q "meta-qt5" conf/bblayers.conf; then
-	handle_eula QT5 "${CWD}/sources/meta-qt5/licenses/Digia-Qt-LGPL-Exception-1.1 \
-		${CWD}/sources/meta-qt5/licenses/The-Qt-Company-GPL-Exception-1.0"
-fi
-
-# print welcome banner ...
+# Print welcome banner, since we drop output from oe-init-build-env above
 if [ -e "${TEMPLATECONF}/conf-notes.txt" ]; then
     cat "${TEMPLATECONF}/conf-notes.txt"
 fi
@@ -377,10 +242,9 @@ if [ -n "${generated_config}" ]; then
     cat <<EOF
 Your build environment has been configured with:
 
-    MACHINE=${MACHINE}
+    MACHINE=${THE_MACHINE}
     SDKMACHINE=${SDKMACHINE}
-    DISTRO=${DISTRO}
-    EULA=${EULA}
+    DISTRO=${THE_DISTRO}
 EOF
 else
     echo "Your configuration files at $1 have not been touched."
