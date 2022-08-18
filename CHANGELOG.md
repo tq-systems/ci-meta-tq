@@ -9,6 +9,12 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+*NOTE:* For details see changelogs in git submodules for meta-tq and meta-dumpling.
+
+meta-tq: 
+  * TQMa8x/TQMa8Xx[S]: upgrade to use SCU firmware based on `SCFW 1.13.0`
+  * tqmlx2160a-mblx2160a: upgrade TF-A to `qoriq-atf_2.4`
+
 ## hardknott.TQMa64xxL.BSP.SW.0001
 
 * meta-tq: doc: TQMa64xxL: update known issues
