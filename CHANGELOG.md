@@ -12,6 +12,8 @@ Releases are named with the following scheme:
 *NOTE:* For details see changelogs in git submodules for meta-tq and meta-dumpling.
 
 meta-tq: 
+  * linux-tq-5.15 add wifi, bluetooth support
+  * linux-imx-tq-5.10 add wifi, bluetooth support
   * TQMa8x/TQMa8Xx[S]: upgrade to use SCU firmware based on `SCFW 1.13.0`
   * tqmlx2160a-mblx2160a: upgrade TF-A to `qoriq-atf_2.4`
 
