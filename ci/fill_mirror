@@ -76,7 +76,7 @@ main () {
 	fi
 
 	local build_dir=${1}
-	local config="minimal"
+	local config="mainline"
 	if ! [ -z "${2}" ]
 	then
 		config=${2}

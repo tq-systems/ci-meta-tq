@@ -187,7 +187,7 @@ valid_config() {
 ####
 # func:   get_machines
 # brief:  return buildable machines for config
-# param:  $1 - config (imx/ls/ti/minimal)
+# param:  $1 - config (imx/ls/ti/mainline)
 # return: list of machines
 ####
 get_machines () {
@@ -200,7 +200,7 @@ get_machines () {
 	local imx7_machines=$(echo "${all_machines}" | grep 'tqma7')
 	local imx8_machines=$(echo "${all_machines}" | grep 'tqma8[^0-9]')
 	local mc_machines=$(echo "${all_machines}" | grep 'k3r5')
-	local minimal_exclude="${ls_machines} ${imx8_machines} ${ti_machines} ${mc_machines}"
+	local ml_exclude="${ls_machines} ${imx8_machines} ${ti_machines} ${mc_machines}"
 	local ls_exclude=$(echo "${ti_machines} ${imx_machines} ${mc_machines}")
 	# we do not maintain an imx-Kernel for TQMa6UL[L]x[L] and TQMa7x at the moment.
 	local imx_exclude=$(echo "${ls_machines} ${ti_machines} ${mc_machines} ${imx6ul_machines} ${imx7_machines}")
@@ -223,8 +223,8 @@ get_machines () {
 			choosen_machines=$(echo ${choosen_machines} | sed -e "s/ *${excl} */ /")
 		done
 		;;
-	"minimal" )
-		for excl in ${minimal_exclude}; do
+	"mainline" )
+		for excl in ${ml_exclude}; do
 			choosen_machines=$(echo ${choosen_machines} | sed -e "s/ *${excl} */ /")
 		done
 		;;
@@ -249,7 +249,7 @@ get_machines () {
 ####
 # func:   get_distros_for_config
 # brief:  return buildable machines for config
-# param:  $1 - config (imx/ls/ti/minimal)
+# param:  $1 - config (imx/ls/ti/mainline)
 # return: list of machines
 ####
 get_distros_for_config () {
@@ -268,7 +268,7 @@ get_distros_for_config () {
 	"ls" )
 		choosen_distros="spaetzle dumpling"
 		;;
-	"minimal" )
+	"mainline" )
 		choosen_distros="spaetzle dumpling-wayland"
 		;;
 	"ti" )
