@@ -35,7 +35,8 @@ This project supports the following branches of meta-tq:
 - zeus (no further development, use hardknott)
 - zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
 - hardknott
-- honister (not tested)
+- honister (not tested, only transitional)
+- kirkstone (not tested)
 
 **Attention:** use README.md of used branch for exact details.
 
