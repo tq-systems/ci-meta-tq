@@ -104,12 +104,12 @@ To return to an existing buildspace go to the checked out dir and
 Under sources/templates several configs are supplied as starting point for own
 bblayers.conf
 
-| config   | description                                              |
-| -------- | -------------------------------------------------------- |
-| mainline | for machines not depending on a vendor layer (`mainline`)|
-| imx      | for machines with i.MX CPU, uses `meta-freescale`        |
-| ti       | machines with TI AM335x / AM57xx CPU, uses `meta-ti`     |
-| ls       | machines with NXP Layerscape CPU, uses `meta-freescale`  |
+| config   | description                                                  |
+| -------- | ------------------------------------------------------------ |
+| mainline | for machines not depending on a SOC vendor layer (`mainline`)|
+| imx      | for machines with i.MX CPU, uses `meta-freescale`            |
+| ti       | machines with TI AM335x / AM57xx CPU, uses `meta-ti`         |
+| ls       | machines with NXP Layerscape CPU, uses `meta-freescale`      |
 
 ### Reproducible build environment
 
@@ -146,11 +146,11 @@ can be found in `meta-dumpling`.
 
 Images:
 
-| image            | description                                          |
-| ---------------- | ---------------------------------------------------- |
-| tq-image-small   | small image depending on `MACHINE_FEATURES`          |
-| tq-image-generic | basic set of tools depending on `MACHINE_FEATURES`   |
-| tq-image-weston  | weston GUI and multimedia support                    |
+| image                      | description                                          |
+| -------------------------- | ---------------------------------------------------- |
+| `tq-image-small[-debug]`   | small image depending on `MACHINE_FEATURES`          |
+| `tq-image-generic[-debug]` | basic set of tools depending on `MACHINE_FEATURES`   |
+| `tq-image-weston[-debug]`  | weston GUI and multimedia support                    |
 
 ### Clean build
 
