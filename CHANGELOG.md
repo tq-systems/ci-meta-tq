@@ -11,6 +11,18 @@ Releases are named with the following scheme:
 
 ### Changed
 
+* meta-tq: forward port changes from hardknott to kirkstone
+* meta-dumpling: forward port changes from hardknott to kirkstone
+
+### Added
+
+* Support for yocto kirkstone
+
+__Start of porting to kirkstone__
+------------------------------------------------------------------------
+
+### Changed
+
 * ci: Jenkinsfile: optimized file operations and cleanup dead code
 * ci: improve code reuse
 * scripts: rewrite setup-environment to reduce complexity and allow usage of
