@@ -35,7 +35,8 @@ This project supports the following branches of meta-tq:
 - zeus (no further development, use hardknott)
 - zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
 - hardknott
-- honister (not tested)
+- honister (not tested, only transitional)
+- kirkstone (not tested)
 
 **Attention:** use README.md of used branch for exact details.
 
@@ -88,7 +89,7 @@ specific overrides. Good use case for this are things like
 * local PREMIRROR
 
 Internally the `oe-init-build-env` script from the used openembedded / poky
-meta layer will be sourced from `sertup-environment` to get the bitbake environment
+meta layer will be sourced from `setup-environment` to get the bitbake environment
 
 After this step, everything is setup to build an image using bitbake.
 

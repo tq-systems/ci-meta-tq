@@ -164,7 +164,7 @@ def cleanupBuild() {
  */
 pipeline {
     agent {
-        label 'yocto-honister'
+        label 'yocto-kirkstone'
     }
 
     options {

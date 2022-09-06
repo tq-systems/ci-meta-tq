@@ -201,7 +201,7 @@ if [ -e "${CWD}/sources/oe-core" ]; then
     OEROOT="${CWD}/sources/oe-core"
 fi
 
-BB_ENV_EXTRAWHITE="${BB_ENV_EXTRAWHITE} TQ_GIT_BASEURL TQ_GIT_PROTOCOL"
+BB_ENV_PASSTHROUGH_ADDITIONS="${BB_ENV_PASSTHROUGH_ADDITIONS} TQ_GIT_BASEURL TQ_GIT_PROTOCOL"
 
 # Hide messages from oe-init-build-env.
 # Since we do some more stuff after the basic builddir setup
