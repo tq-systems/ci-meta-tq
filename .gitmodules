@@ -18,3 +18,9 @@
 	path = sources/meta-qt5
 	url = https://github.com/meta-qt5/meta-qt5.git
 	branch = hardknott
+[submodule "sources/meta-gplv2"]
+	path = sources/meta-gplv2
+	url = https://git.yoctoproject.org/git/meta-gplv2
+[submodule "sources/meta-renesas"]
+	path = sources/meta-renesas
+	url = https://github.com/renesas-rz/meta-renesas.git
