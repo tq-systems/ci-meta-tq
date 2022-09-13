@@ -253,7 +253,7 @@ get_machines () {
 # return: list of machines
 ####
 get_distros_for_config () {
-	local all_distros=$("${SCRIPTPATH}/ls-distros" meta-dumpling)
+	local all_distros=$("${SCRIPTPATH}/ls-distros" "meta-tq/meta-dumpling")
 	local chosen_distros=${all_distros}
 
 	if ! valid_config ${config}; then

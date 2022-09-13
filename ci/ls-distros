@@ -26,7 +26,7 @@
 #
 ###############################################################################
 
-readonly DEFAULT_LAYER="meta-dumpling"
+readonly DEFAULT_LAYER="meta-tq/meta-dumpling"
 
 usage() {
 	echo "$1 usage:"
