@@ -183,7 +183,7 @@ pipeline {
          */
         WS_IMX = "CONFIGS/imx"
         WS_LS = "CONFIGS/ls"
-        WS_MIN = "CONFIGS/minimal"
+        WS_ML = "CONFIGS/mainline"
         WS_TI = "CONFIGS/ti"
         DL_DIR = "shared-dl-dir"
         BUILD_DIR = "buildspace"
@@ -211,8 +211,8 @@ pipeline {
                     "ls" : {
                         prepareWorkspace("${env.WS_LS}")
                     },
-                    "minimal" : {
-                        prepareWorkspace("${env.WS_MIN}")
+                    "mainline" : {
+                        prepareWorkspace("${env.WS_ML}")
                     },
                     "ti" : {
                         prepareWorkspace("${env.WS_TI}")
@@ -229,8 +229,8 @@ pipeline {
                     "ls" : {
                         mirrorConfiguration("${env.WS_LS}")
                     },
-                    "minimal" : {
-                        mirrorConfiguration("${env.WS_MIN}")
+                    "mainline" : {
+                        mirrorConfiguration("${env.WS_ML}")
                     },
                     "ti" : {
                         mirrorConfiguration("${env.WS_TI}")
@@ -247,8 +247,8 @@ pipeline {
                     "ls" : {
                         buildConfiguration("${env.WS_LS}")
                     },
-                    "minimal" : {
-                        buildConfiguration("${env.WS_MIN}")
+                    "mainline" : {
+                        buildConfiguration("${env.WS_ML}")
                     },
                     "ti" : {
                         buildConfiguration("${env.WS_TI}")
@@ -266,8 +266,8 @@ pipeline {
                     archiveArtifacts artifacts: "${env.WS_IMX}/*.MIRROR.SRC.tar.gz"
                     archiveArtifacts artifacts: "${env.WS_LS}/*.LIC.tar.gz"
                     archiveArtifacts artifacts: "${env.WS_LS}/*.MIRROR.SRC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_MIN}/*.LIC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_MIN}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_ML}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_ML}/*.MIRROR.SRC.tar.gz"
                     archiveArtifacts artifacts: "${env.WS_TI}/*.LIC.tar.gz"
                     archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
                     sshagent(['jenkins-master-key']) {
@@ -278,7 +278,7 @@ pipeline {
 
                 archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
                 archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-                archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                archiveArtifacts artifacts: "${env.WS_ML}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
                 archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
                 cleanupBuild()
 

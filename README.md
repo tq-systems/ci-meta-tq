@@ -104,12 +104,12 @@ To return to an existing buildspace go to the checked out dir and
 Under sources/templates several configs are supplied as starting point for own
 bblayers.conf
 
-| config  | description                                              |
-| ------- | -------------------------------------------------------- |
-| minimal | for machines, that do not depend on a vendor layer       |
-| imx     | for machines with i.MX CPU, uses `meta-freescale`        |
-| ti      | machines with TI AM335x / AM57xx CPU, uses `meta-ti`     |
-| ls      | machines with NXP Layerscape CPU, uses `meta-freescale`  |
+| config   | description                                                  |
+| -------- | ------------------------------------------------------------ |
+| mainline | for machines not depending on a SOC vendor layer (`mainline`)|
+| imx      | for machines with i.MX CPU, uses `meta-freescale`            |
+| ti       | machines with TI AM335x / AM57xx CPU, uses `meta-ti`         |
+| ls       | machines with NXP Layerscape CPU, uses `meta-freescale`      |
 
 ### Reproducible build environment
 
@@ -129,28 +129,28 @@ use the CI helper script:
 
 Depending on the configuration, following images will be built:
 
-| config  | distro               | image            | kernel       |
-| ------- | -------------------- | ---------------- | -----------  |
-| minimal | spaetzle             | tq-image-small   | linux-tq     |
-| minimal | dumpling             | tq-image-generic | linux-tq     |
-| minimal | dumpling-wayland     | tq-image-weston  | linux-tq     |
-| imx     | spaetzle-nxp         | tq-image-small   | linux-imx-tq |
-| imx     | dumpling-wayland-nxp | tq-image-weston  | linux-imx-tq |
-| ti      | spaetzle-ti          | tq-image-small   | linux-ti-tq  |
-| ti      | dumpling-wayland-ti  | tq-image-weston  | linux-ti-tq  |
-| ls      | spaetzle             | tq-image-small   | TBD          |
-| ls      | dumpling             | tq-image-generic | TBD          |
+| config   | distro               | image                  | kernel       |
+| -------- | -------------------- | ---------------------- | -----------  |
+| mainline | spaetzle             | tq-image-small-debug   | linux-tq     |
+| mainline | dumpling             | tq-image-generic-debug | linux-tq     |
+| mainline | dumpling-wayland     | tq-image-weston-debug  | linux-tq     |
+| imx      | spaetzle-nxp         | tq-image-small-debug   | linux-imx-tq |
+| imx      | dumpling-wayland-nxp | tq-image-weston-debug  | linux-imx-tq |
+| ti       | spaetzle-ti          | tq-image-small-debug   | linux-ti-tq  |
+| ti       | dumpling-wayland-ti  | tq-image-weston-debug  | linux-ti-tq  |
+| ls       | spaetzle             | tq-image-small-debug   | TBD          |
+| ls       | dumpling             | tq-image-generic-debug | TBD          |
 
 The kernel recipes are defined in `meta-tq`, image recipes and distro configs
 can be found in `meta-dumpling`.
 
 Images:
 
-| image            | description                                          |
-| ---------------- | ---------------------------------------------------- |
-| tq-image-small   | small image depending on `MACHINE_FEATURES`          |
-| tq-image-generic | basic set of tools depending on `MACHINE_FEATURES`   |
-| tq-image-weston  | weston GUI and multimedia support                    |
+| image                      | description                                          |
+| -------------------------- | ---------------------------------------------------- |
+| `tq-image-small[-debug]`   | small image depending on `MACHINE_FEATURES`          |
+| `tq-image-generic[-debug]` | basic set of tools depending on `MACHINE_FEATURES`   |
+| `tq-image-weston[-debug]`  | weston GUI and multimedia support                    |
 
 ### Clean build
 
@@ -206,4 +206,3 @@ Please make sure, to remove things like
 
 from `IMAGE_FEATURES` and / or `IMAGE_EXTRA_FEATURES` before release. View the
 openembedded / Yocto Project and bitbake documentation.
-
