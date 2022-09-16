@@ -11,6 +11,12 @@ Releases are named with the following scheme:
 
 ### Changed
 
+* layers / scripts / templates: the content of meta-dumpling repo was
+  integrated into meta-tq repo. Both layers are now located in subdirectories
+  of the meta-tq repo. This results in:
+  * changes of paths to layers
+  * changes of bblayers templates
+  * remove git submodule of meta-dumpling
 * meta-tq: forward port changes from hardknott to kirkstone
 * meta-dumpling: forward port changes from hardknott to kirkstone
 

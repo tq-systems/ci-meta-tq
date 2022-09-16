@@ -131,7 +131,7 @@ handle_licenses() {
 	if grep -q "meta-freescale" conf/bblayers.conf; then
 		handle_eula FSL "${BSPROOT}/sources/meta-freescale/EULA"
 	else
-		handle_eula NXP "${BSPROOT}/sources/meta-tq/NXP-EULA"
+		handle_eula NXP "${BSPROOT}/sources/meta-tq/meta-tq/NXP-EULA"
 	fi
 
 	if grep -q "meta-ti" conf/bblayers.conf; then

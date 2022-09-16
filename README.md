@@ -34,9 +34,9 @@ This project supports the following branches of meta-tq:
 - warrior (no longer maintained)
 - zeus (no further development, use hardknott)
 - zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
-- hardknott
+- hardknott (maintained until transition to kirkstone completed)
 - honister (not tested, only transitional)
-- kirkstone (not tested)
+- kirkstone (current active maintained branch)
 
 **Attention:** use README.md of used branch for exact details.
 
@@ -69,9 +69,10 @@ change to checked out dir and
 
 You can override defaults with:
 
-* `export MACHINE=<machine>` (default is first tqma\* MACHINE from meta-tq)
+* `export MACHINE=<machine>` (default is first MACHINE from meta-tq/meta-tq
+   that matches `<config>`)
 * `export DISTRO=<distro>` (tested distros are based on poky and could be found
-   in meta-dumpling)
+   in `meta-tq/meta-dumpling`)
 
 before sourcing the script. This script uses the requested configuration from
 `sources/template/conf/bblayers.conf.<config>` as initial template for your
@@ -138,11 +139,12 @@ Depending on the configuration, following images will be built:
 | imx      | dumpling-wayland-nxp | tq-image-weston-debug  | linux-imx-tq |
 | ti       | spaetzle-ti          | tq-image-small-debug   | linux-ti-tq  |
 | ti       | dumpling-wayland-ti  | tq-image-weston-debug  | linux-ti-tq  |
-| ls       | spaetzle             | tq-image-small-debug   | TBD          |
-| ls       | dumpling             | tq-image-generic-debug | TBD          |
+| ls       | spaetzle             | tq-image-small-debug   | linux-imx-tq or linux-tq |
+| ls       | dumpling             | tq-image-generic-debug | linux-imx-tq or linux-tq |
 
-The kernel recipes are defined in `meta-tq`, image recipes and distro configs
-can be found in `meta-dumpling`.
+The kernel recipes are defined in `meta-tq` hardware support layer,
+image recipes and distro configs can be found in the `meta-dumpling`
+distro layer. Both layers are part of the meta-tq repository.
 
 Images:
 
