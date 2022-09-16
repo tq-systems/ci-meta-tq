@@ -11,6 +11,9 @@ Releases are named with the following scheme:
 
 ### Changed
 
+* meta-tq: support for linux-imx-tq 5.15 (based on fslc imx flavour):
+  * TQMa8Mx
+  * TQMa8MPxL
 * layers / scripts / templates: the content of meta-dumpling repo was
   integrated into meta-tq repo. Both layers are now located in subdirectories
   of the meta-tq repo. This results in:
