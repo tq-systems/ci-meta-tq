@@ -34,6 +34,7 @@ DEFAULT_DISTRO_minimal="spaetzle"
 DEFAULT_DISTRO_imx="dumpling-wayland-nxp"
 DEFAULT_DISTRO_ls="dumpling"
 DEFAULT_DISTRO_ti="dumpling-wayland-ti"
+DEFAULT_DISTRO_rzg2="dumpling-wayland-rzg2"
 
 usage()
 {
