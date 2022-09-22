@@ -7,9 +7,12 @@ Releases are named with the following scheme:
 
 [[_TOC_]]
 
+**NOTE:** For details to the changes in a release see the CHANGELOG.md
+files in git submodules for meta-tq and meta-dumpling.
+
 ## Next Release
 
-*NOTE:* For details see changelogs in git submodules for meta-tq and meta-dumpling.
+## hardknott.TQMa8.BSP.SW.0086
 
 ### Added
 
