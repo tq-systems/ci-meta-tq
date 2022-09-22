@@ -7,7 +7,31 @@ Releases are named with the following scheme:
 
 [[_TOC_]]
 
+**NOTE:** For details to the changes in a release see the CHANGELOG.md
+files in git submodules for meta-tq and meta-dumpling.
+
 ## Next Release
+
+## hardknott.TQMa8.BSP.SW.0086
+
+### Added
+
+* meta-tq: TQMa8MPxL: support for 4GiB variant
+* meta-tq: enable wifi and bluetooth support for all i.MX based machines
+
+### Changed
+
+* meta-tq: TQMa8x/TQMa8Xx[S]: upgrade to use SCU firmware based on `SCFW 1.13.0`
+* meta-tq: tqmlx2160a-mblx2160a: upgrade TF-A to `qoriq-atf_2.4`
+
+### Fixed
+
+* meta-dumpling: missing environment for wayland / weston
+* meta-dumpling: missing media packages in tq-image-weston / tq-image-weston-debug
+
+### Removed
+
+* meta-tq: TQMa8MPxL: support for hardware REV.010x
 
 ## hardknott.TQMa64xxL.BSP.SW.0001
 
