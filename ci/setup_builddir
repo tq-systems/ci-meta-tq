@@ -135,7 +135,7 @@ handle_licenses() {
 	fi
 
 	if grep -q "meta-ti" conf/bblayers.conf; then
-		handle_eula TI "${BSPROOT}/sources/meta-ti/licenses/TI-TFL ${BSPROOT}/sources/meta-ti/licenses/TI-TSPA"
+		handle_eula TI "${BSPROOT}/sources/meta-ti/meta-ti-bsp/licenses/TI-TFL ${BSPROOT}/sources/meta-ti/meta-ti-bsp/licenses/TI-TSPA"
 	fi
 
 	if grep -q "meta-qt5" conf/bblayers.conf; then
