@@ -16,6 +16,9 @@ Releases are named with the following scheme:
   * TQMa8MPxL
   * TQMa8MxML
   * TQMa8MxNL
+  * TQMa8x
+  * TQMa8Xx
+  * TQMa8XxS
 * layers / scripts / templates: the content of meta-dumpling repo was
   integrated into meta-tq repo. Both layers are now located in subdirectories
   of the meta-tq repo. This results in:
