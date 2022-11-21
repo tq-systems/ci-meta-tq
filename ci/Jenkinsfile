@@ -152,6 +152,28 @@ def cleanupBuild() {
     sh "find . -type f -name '*.tar.gz' -delete"
 }
 
+/******************************************************************/
+/* Send a Mail to responsible user in case of errors              */
+/* - responsible user is gitlabUser in case of an MR              */
+/* - responsible user is git author of the last commit if no  MR  */
+/******************************************************************/
+def sendMail() {
+    if ("MERGE".equals(env.gitlabActionType)) {
+        gitCommitAuthorEmailAddr = env.gitlabUserEmail
+        echo "GitLab Usermail is ${gitCommitAuthorEmailAddr}"
+    } else {
+        gitCommitAuthorEmailAddr = sh returnStdout: true, script: 'git log -n1 --pretty=format:%ae ${GIT_COMMIT}'
+        echo "GitLab Usermail is ${gitCommitAuthorEmailAddr}"
+    }
+    emailext (
+    to: "${gitCommitAuthorEmailAddr}",
+    subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
+    body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
+        Check console output at ${env.BUILD_URL} to view the results.""",
+    attachLog: false	,
+    )
+}
+
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
@@ -286,25 +308,13 @@ pipeline {
             }
         }
         unstable {
-            emailext (
-                to: "${gitlabUserEmail}",
-                subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
-                body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
-                  Check console output at ${env.BUILD_URL} to view the results.""",
-                attachLog: false	,
-            )
+            sendMail()
             updateGitlabCommitStatus name: 'build', state: 'failed'
         }
         failure {
-            emailext (
-                to: "${gitlabUserEmail}",
-                subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
-                body: """\
-                ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
-                Check console output at ${env.BUILD_URL} to view the results.""",
-                attachLog: false,
-            )
+            sendMail()
             updateGitlabCommitStatus name: 'build', state: 'failed'
         }
     }
 }
+
