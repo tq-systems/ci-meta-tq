@@ -184,7 +184,7 @@ main () {
 			git log -1 > ${git_stamp_file}
 
 			for machine in ${machines}; do
-				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${stamp}
+				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${distro}_${stamp}
 				echo "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}/${MACHINE}, clean them before recreate
 				rm -f ${artifactsdir}/${machine}/*.info
