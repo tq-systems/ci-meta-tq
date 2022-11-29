@@ -152,6 +152,28 @@ def cleanupBuild() {
     sh "find . -type f -name '*.tar.gz' -delete"
 }
 
+/******************************************************************/
+/* Send a Mail to responsible user in case of errors              */
+/* - responsible user is gitlabUser in case of an MR              */
+/* - responsible user is git author of the last commit if no  MR  */
+/******************************************************************/
+def sendMail() {
+    if ("MERGE".equals(env.gitlabActionType)) {
+        gitCommitAuthorEmailAddr = env.gitlabUserEmail
+        echo "GitLab Usermail is ${gitCommitAuthorEmailAddr}"
+    } else {
+        gitCommitAuthorEmailAddr = sh returnStdout: true, script: 'git log -n1 --pretty=format:%ae ${GIT_COMMIT}'
+        echo "GitLab Usermail is ${gitCommitAuthorEmailAddr}"
+    }
+    emailext (
+    to: "${gitCommitAuthorEmailAddr}",
+    subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
+    body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
+        Check console output at ${env.BUILD_URL} to view the results.""",
+    attachLog: false,
+    )
+}
+
 /**********************************************************************/
 /*******************         Pipeline         *************************/
 /**********************************************************************/
@@ -181,10 +203,6 @@ pipeline {
         /*
          * workspace name for config must be identical to config name
          */
-        WS_IMX = "CONFIGS/imx"
-        WS_LS = "CONFIGS/ls"
-        WS_ML = "CONFIGS/mainline"
-        WS_TI = "CONFIGS/ti"
         DL_DIR = "shared-dl-dir"
         BUILD_DIR = "buildspace"
         DEPLOY_DIR = "deployment"
@@ -202,109 +220,70 @@ pipeline {
                 checkoutMetaLayers("${env.WORKSPACE}")
             }
         }
-        stage ('Prepare Workspaces') {
-            steps {
-                parallel (
-                    "imx" : {
-                        prepareWorkspace("${env.WS_IMX}")
-                    },
-                    "ls" : {
-                        prepareWorkspace("${env.WS_LS}")
-                    },
-                    "mainline" : {
-                        prepareWorkspace("${env.WS_ML}")
-                    },
-                    "ti" : {
-                        prepareWorkspace("${env.WS_TI}")
-                    },
-                )
+        stage ('Matrix Build') {
+            matrix {
+                axes {
+                    axis {
+                        name 'CONFIGURATION'
+                        values 'imx', 'ls', 'mainline', 'ti'
+                    }
+                }
+                stages {
+                    stage('Prepare Workspace') {
+                        steps{
+                            echo "Prepare Workspace for ${CONFIGURATION} configuration"
+                            prepareWorkspace("CONFIGS/${CONFIGURATION}")
+                        }
+                    }
+                    stage('Fetch') {
+                        steps{
+                            echo "Fetch ${CONFIGURATION} configuration"
+                            mirrorConfiguration("CONFIGS/${CONFIGURATION}")
+                        }
+                    }
+                    stage('Build') {
+                        steps{
+                            echo "Build ${CONFIGURATION} configuration"
+                            buildConfiguration("CONFIGS/${CONFIGURATION}")
+                        }
+                    }
+                }
+                post {
+                    success {
+                        script {
+                            if ("${env.gitlabActionType}" != "MERGE") {
+                                archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.LIC.tar.gz"
+                                archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.MIRROR.SRC.tar.gz"
+                            }
+                            archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                        }
+                    }
+                }
             }
         }
-        stage ('Fetch') {
-            steps {
-                parallel (
-                    "imx" : {
-                        mirrorConfiguration("${env.WS_IMX}")
-                    },
-                    "ls" : {
-                        mirrorConfiguration("${env.WS_LS}")
-                    },
-                    "mainline" : {
-                        mirrorConfiguration("${env.WS_ML}")
-                    },
-                    "ti" : {
-                        mirrorConfiguration("${env.WS_TI}")
-                    },
-                )
-            }
-        }
-        stage ('Build') {
-            steps {
-                parallel (
-                    "imx" : {
-                        buildConfiguration("${env.WS_IMX}")
-                    },
-                    "ls" : {
-                        buildConfiguration("${env.WS_LS}")
-                    },
-                    "mainline" : {
-                        buildConfiguration("${env.WS_ML}")
-                    },
-                    "ti" : {
-                        buildConfiguration("${env.WS_TI}")
-                    },
-                )
-            }
-       }
     }
 
     post {
         success {
             script {
                 if ("${env.gitlabActionType}" != "MERGE") {
-                    archiveArtifacts artifacts: "${env.WS_IMX}/*.LIC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_IMX}/*.MIRROR.SRC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_LS}/*.LIC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_LS}/*.MIRROR.SRC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_ML}/*.LIC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_ML}/*.MIRROR.SRC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_TI}/*.LIC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
                     sshagent(['jenkins-master-key']) {
                         sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
                     }
                     archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
                 }
-
-                archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-                archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-                archiveArtifacts artifacts: "${env.WS_ML}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-                archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
                 cleanupBuild()
-
                 updateGitlabCommitStatus name: 'build', state: 'success'
             }
         }
         unstable {
-            emailext (
-                to: "${gitlabUserEmail}",
-                subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
-                body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
-                  Check console output at ${env.BUILD_URL} to view the results.""",
-                attachLog: false	,
-            )
+            sendMail()
             updateGitlabCommitStatus name: 'build', state: 'failed'
         }
         failure {
-            emailext (
-                to: "${gitlabUserEmail}",
-                subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
-                body: """\
-                ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
-                Check console output at ${env.BUILD_URL} to view the results.""",
-                attachLog: false,
-            )
+            sendMail()
             updateGitlabCommitStatus name: 'build', state: 'failed'
         }
     }
 }
+
