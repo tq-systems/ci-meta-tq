@@ -9,9 +9,19 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## kirkstone.TQMa6UL.BSP.SW.0117
+
 ### Changed
 
+* ci:
+  * include distro name in artifacts
+  * use matrix builds
+* meta-tq: Updates for machines using kernels based on TI linux fork
+  * Update to latest upstream meta-ti kirkstone branch
+  * TQMa65xx: adjustments for kirkstone
+  * TQMa64xx: updates for new hardware version
 * meta-tq: support for linux-imx-tq 5.15 (based on fslc imx flavour):
+  * TQMa6x
   * TQMa8Mx
   * TQMa8MPxL
   * TQMa8MxML
