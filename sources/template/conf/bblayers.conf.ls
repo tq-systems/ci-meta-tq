@@ -14,6 +14,6 @@ BBLAYERS = "\
     \
     ${BSPDIR}/sources/meta-freescale \
     \
-    ${BSPDIR}/sources/meta-tq \
-    ${BSPDIR}/sources/meta-dumpling \
+    ${BSPDIR}/sources/meta-tq/meta-tq \
+    ${BSPDIR}/sources/meta-tq/meta-dumpling \
 "

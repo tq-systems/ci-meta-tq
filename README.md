@@ -21,6 +21,8 @@ You are responsible to fulfil all obligations by these licenses.
 
 ## Supported branches of meta-tq
 
+This project supports the following branches of meta-tq:
+
 - krogoth (not longer maintained)
 - morty (not longer maintained)
 - pyro (not longer maintained)
@@ -32,7 +34,9 @@ You are responsible to fulfil all obligations by these licenses.
 - warrior (no longer maintained)
 - zeus (no further development, use hardknott)
 - zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
-- hardknott
+- hardknott (maintained until transition to kirkstone completed)
+- honister (not tested, only transitional)
+- kirkstone (current active maintained branch)
 
 **Attention:** use README.md of used branch for exact details.
 
@@ -65,9 +69,10 @@ change to checked out dir and
 
 You can override defaults with:
 
-* `export MACHINE=<machine>` (default is first tqma\* MACHINE from meta-tq)
+* `export MACHINE=<machine>` (default is first MACHINE from meta-tq/meta-tq
+   that matches `<config>`)
 * `export DISTRO=<distro>` (tested distros are based on poky and could be found
-   in meta-dumpling)
+   in `meta-tq/meta-dumpling`)
 
 before sourcing the script. This script uses the requested configuration from
 `sources/template/conf/bblayers.conf.<config>` as initial template for your
@@ -85,7 +90,7 @@ specific overrides. Good use case for this are things like
 * local PREMIRROR
 
 Internally the `oe-init-build-env` script from the used openembedded / poky
-meta layer will be sourced from `sertup-environment` to get the bitbake environment
+meta layer will be sourced from `setup-environment` to get the bitbake environment
 
 After this step, everything is setup to build an image using bitbake.
 
@@ -100,12 +105,12 @@ To return to an existing buildspace go to the checked out dir and
 Under sources/templates several configs are supplied as starting point for own
 bblayers.conf
 
-| config  | description                                              |
-| ------- | -------------------------------------------------------- |
-| minimal | can build machines, that not depend on a vendor layer    |
-| imx     | for machines with i.MX CPU, uses `meta-freescale`        |
-| ti      | machines with TI AM335x / AM57xx CPU, uses `meta-ti`     |
-| ls      | machines with NXP Layerscape CPU, uses `meta-freescale`  |
+| config   | description                                                  |
+| -------- | ------------------------------------------------------------ |
+| mainline | for machines not depending on a SOC vendor layer (`mainline`)|
+| imx      | for machines with i.MX CPU, uses `meta-freescale`            |
+| ti       | machines with TI AM335x / AM57xx CPU, uses `meta-ti`         |
+| ls       | machines with NXP Layerscape CPU, uses `meta-freescale`      |
 
 ### Reproducible build environment
 
@@ -125,28 +130,29 @@ use the CI helper script:
 
 Depending on the configuration, following images will be built:
 
-| config  | distro               | image            | kernel       |
-| ------- | -------------------- | ---------------- | -----------  |
-| minimal | spaetzle             | tq-image-small   | linux-tq     |
-| minimal | dumpling             | tq-image-generic | linux-tq     |
-| minimal | dumpling-wayland     | tq-image-weston  | linux-tq     |
-| imx     | spaetzle-nxp         | tq-image-small   | linux-imx-tq |
-| imx     | dumpling-wayland-nxp | tq-image-weston  | linux-imx-tq |
-| ti      | spaetzle-ti          | tq-image-small   | linux-ti-tq  |
-| ti      | dumpling-wayland-ti  | tq-image-weston  | linux-ti-tq  |
-| ls      | spaetzle             | tq-image-small   | TBD          |
-| ls      | dumpling             | tq-image-generic | TBD          |
+| config   | distro               | image                  | kernel       |
+| -------- | -------------------- | ---------------------- | -----------  |
+| mainline | spaetzle             | tq-image-small-debug   | linux-tq     |
+| mainline | dumpling             | tq-image-generic-debug | linux-tq     |
+| mainline | dumpling-wayland     | tq-image-weston-debug  | linux-tq     |
+| imx      | spaetzle-nxp         | tq-image-small-debug   | linux-imx-tq |
+| imx      | dumpling-wayland-nxp | tq-image-weston-debug  | linux-imx-tq |
+| ti       | spaetzle-ti          | tq-image-small-debug   | linux-ti-tq  |
+| ti       | dumpling-wayland-ti  | tq-image-weston-debug  | linux-ti-tq  |
+| ls       | spaetzle             | tq-image-small-debug   | linux-imx-tq or linux-tq |
+| ls       | dumpling             | tq-image-generic-debug | linux-imx-tq or linux-tq |
 
-The kernel recipes are defined in `meta-tq`, image recipes and distro configs
-can be found in `meta-dumpling`.
+The kernel recipes are defined in `meta-tq` hardware support layer,
+image recipes and distro configs can be found in the `meta-dumpling`
+distro layer. Both layers are part of the meta-tq repository.
 
 Images:
 
-| image            | description                                          |
-| ---------------- | ---------------------------------------------------- |
-| tq-image-small   | small image depending on `MACHINE_FEATURES`          |
-| tq-image-generic | basic set of tools depending on `MACHINE_FEATURES`   |
-| tq-image-weston  | weston GUI and multimedia support                    |
+| image                      | description                                          |
+| -------------------------- | ---------------------------------------------------- |
+| `tq-image-small[-debug]`   | small image depending on `MACHINE_FEATURES`          |
+| `tq-image-generic[-debug]` | basic set of tools depending on `MACHINE_FEATURES`   |
+| `tq-image-weston[-debug]`  | weston GUI and multimedia support                    |
 
 ### Clean build
 
@@ -202,4 +208,3 @@ Please make sure, to remove things like
 
 from `IMAGE_FEATURES` and / or `IMAGE_EXTRA_FEATURES` before release. View the
 openembedded / Yocto Project and bitbake documentation.
-

@@ -1,10 +1,10 @@
 #!/bin/sh
 #
-# File:        ls-machines
-# Copyright (C) 2017 - 2022 TQ-Systems GmbH
+# File:        ls-configs
+# Copyright (C) 2022 TQ-Systems GmbH
 # @author Markus Niebel <Markus.Niebel@tq-group.com>
 #
-# Description: list all machines in a layer
+# Description: list all configs in buildspace
 #
 # License:     GPLv2
 #
@@ -26,17 +26,17 @@
 #
 ###############################################################################
 
-readonly DEFAULT_LAYER="meta-tq/meta-tq"
+readonly DEFAULT_TEMPLATEDIR="template"
 
 usage() {
 	echo "$1 usage:"
-	echo "\nlist available machines from layer under sources"
-	echo "$1 - use default layer ${DEFAULT_LAYER}"
-	echo "$1 <layer name>- use layer given as parameter"
+	echo "\nlist available configs from template dir under sources"
+	echo "$1 - use default template dir ${DEFAULT_TEMPLATEDIR}"
+	echo "$1 <template> - use template dir given as parameter"
 }
 
 main() {
-	local LAYER=${DEFAULT_LAYER}
+	local TEMPLATEDIR=${DEFAULT_TEMPLATEDIR}
 
 	if [ "${#}" -gt "1" ]; then
 		usage "$0"
@@ -44,20 +44,21 @@ main() {
 	fi
 
 	if [ "${#}" -eq "1" ]; then
-		LAYER="${1}"
+		TEMPLATEDIR="${1}"
 	fi
 
-	if ! [ -d "./sources/${LAYER}/conf/machine" ]; then
+	if ! [ -d "./sources/${TEMPLATEDIR}/conf" ]; then
 		usage "$0"
 		return 1
 	fi
 
-	# filter out machines from the layer 
-	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
-		sed s/\.conf//g | xargs -n1 basename)
-
-	for t in ${TARGETS}; do
-		echo "${t}"
+	# filter out configs from the template dir
+	local EXCLUDE="bblayers.conf.sample"
+	local CONFIGURATIONS="$(ls -1 sources/${TEMPLATEDIR}/conf/bblayers.conf.* |
+		xargs -n1 basename)"
+	CONFIGURATIONS=$(echo "${CONFIGURATIONS}" | grep -vxF "${EXCLUDE}")
+	for c in ${CONFIGURATIONS}; do
+		echo "${c##*.}"
 	done
 
 	return 0

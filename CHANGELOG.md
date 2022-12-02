@@ -9,6 +9,59 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+## kirkstone.TQMa6UL.BSP.SW.0117
+
+### Changed
+
+* ci:
+  * include distro name in artifacts
+  * use matrix builds
+* meta-tq: Updates for machines using kernels based on TI linux fork
+  * Update to latest upstream meta-ti kirkstone branch
+  * TQMa65xx: adjustments for kirkstone
+  * TQMa64xx: updates for new hardware version
+* meta-tq: support for linux-imx-tq 5.15 (based on fslc imx flavour):
+  * TQMa6x
+  * TQMa8Mx
+  * TQMa8MPxL
+  * TQMa8MxML
+  * TQMa8MxNL
+  * TQMa8x
+  * TQMa8Xx
+  * TQMa8XxS
+* layers / scripts / templates: the content of meta-dumpling repo was
+  integrated into meta-tq repo. Both layers are now located in subdirectories
+  of the meta-tq repo. This results in:
+  * changes of paths to layers
+  * changes of bblayers templates
+  * remove git submodule of meta-dumpling
+* meta-tq: forward port changes from hardknott to kirkstone
+* meta-dumpling: forward port changes from hardknott to kirkstone
+
+### Added
+
+* Support for yocto kirkstone
+
+__Start of porting to kirkstone__
+------------------------------------------------------------------------
+
+### Changed
+
+* ci: Jenkinsfile: optimized file operations and cleanup dead code
+* ci: improve code reuse
+* scripts: rewrite setup-environment to reduce complexity and allow usage of
+  shells different from bash
+
+### Fixed
+
+* setup-environment: set valid default MACHINE if none is given
+* ci: do not use ~ in path names
+
+### Added
+
+* ci: add script to query available configurations
+* Support for yocto honister
+
 ## hardknott.TQMa6UL.BSP.SW.0116
 
 ### Added

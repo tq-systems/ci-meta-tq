@@ -76,7 +76,7 @@ main () {
 	fi
 
 	local build_dir=${1}
-	local config="minimal"
+	local config="mainline"
 	if ! [ -z "${2}" ]
 	then
 		config=${2}
@@ -104,15 +104,13 @@ main () {
 
 		# clean conf, to enforce a really clean configuration and to enable
 		# incremental changes in the config using our template dir
-		rm -rf ${build_dir}_${distro}~/conf
+		rm -rf ${build_dir}_${distro}/conf
 
 		# although DISTRO and MACHINE are exported, setup-environment
-		# uses these variable only to set default in local.conf and unsets
-		# them afterwards to prevent env pollution for bitbake
-		# both variables can be set afterwards again and for MACHINE
-		# this is already the case to iterate over all buildable
+		# uses these variable mainly to set default in local.conf
+		# afterwards they can be set again to iterate over all buildable
 		# machines
-		. ./setup-environment ${build_dir}_${distro}~ ${config}
+		. ./setup-environment ${build_dir}_${distro} ${config}
 		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
 
 		info "build images"
@@ -137,14 +135,14 @@ main () {
 
 		if ! [ -z ${SSTATE_DIR} ]; then
 			# add SSTATE dir outside of builddir, optimize global builds
-			assign_or_replace SSTATE_DIR ${SSTATE_DIR} conf/local.conf
+			assign_or_replace SSTATE_DIR ${SSTATE_DIR} "=" conf/local.conf
 		else
 			info "env SSTATE_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 
 		if ! [ -z ${DL_DIR} ]; then
 			# add DL_DIR dir outside of builddir, optimize global builds
-			assign_or_replace DL_DIR ${DL_DIR} conf/local.conf
+			assign_or_replace DL_DIR ${DL_DIR} "=" conf/local.conf
 
 		else
 			info "env DL_DIR empty, using local dir or add it to your site.conf / auto.conf"
@@ -186,7 +184,7 @@ main () {
 			git log -1 > ${git_stamp_file}
 
 			for machine in ${machines}; do
-				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${DISTRO_VERSION}_${stamp}
+				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${distro}_${stamp}
 				echo "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}/${MACHINE}, clean them before recreate
 				rm -f ${artifactsdir}/${machine}/*.info
