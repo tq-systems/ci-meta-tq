@@ -106,7 +106,7 @@ def process(args):
 
     print(commit_msg)
     if not args.dryrun:
-        answer = query_yes_no(f'\nCreate signed-off-by commit?', default='no')
+        answer = True if args.yes else query_yes_no(f'\nCreate signed-off-by commit?', default='no')
         if answer == False:
             # Ensure all files are unstaged again
             upper_repo.index.reset()
@@ -132,6 +132,12 @@ def main():
                         default=False,
                         const=True,
                         help='Dry-run, do not actually create a commit'
+                        )
+    parser.add_argument('-y', '--yes',
+                        action='store_const',
+                        default=False,
+                        const=True,
+                        help='Disable interactive mode. No confirmation is asked. Intended to be used in scripts'
                         )
 
     subparsers = parser.add_subparsers(dest='command', required=True, help='usage mode')
