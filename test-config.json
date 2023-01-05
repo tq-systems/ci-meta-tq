@@ -1,0 +1,34 @@
+{
+	"test-plans" :[
+		{
+			"lava-device": "tqma8mq-4gb-mba8mx",
+			"devicetree": "imx8mq-tqma8mq-mba8mx.dtb",
+			"yocto-machine": "tqma8mx-4gb-mba8mx"
+		},
+		{
+			"lava-device": "tqma8mqnl-1gb-mba8mx",
+			"devicetree": "imx8mn-tqma8mqnl-mba8mx.dtb",
+			"yocto-machine": "tqma8mxnl-1gb-mba8mx"
+		},
+		{
+			"lava-device": "tqma7d-1gb-mba7",
+			"devicetree": "imx7d-mba7.dtb",
+			"yocto-machine": "tqma7x-1gb-mba7"
+		},
+		{
+			"lava-device": "tqma6s-mba6x",
+			"devicetree": "imx6dl-mba6a.dtb",
+			"yocto-machine": "tqma6s-mba6x"
+		},
+		{
+			"lava-device": "tqma8xqp4-mba8xx",
+			"devicetree": "imx8qxp-tqma8xqp-mba8xx.dtb",
+			"yocto-machine": "tqma8xqp4-mba8xx"
+		},
+		{
+			"lava-device": "tqma8xqps-mb-smarc-2",
+			"devicetree": "imx8qxp-tqma8xqps-mb-smarc-2.dtb",
+			"yocto-machine": "tqma8xqps-mb-smarc-2"
+		}
+	]
+}
