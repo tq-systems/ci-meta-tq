@@ -254,7 +254,7 @@ get_machines () {
 # func:   get_distros_for_config
 # brief:  return buildable machines for config
 # param:  $1 - config (imx/ls/ti/mainline)
-# return: list of machines
+# return: list of supported distros for the given config
 ####
 get_distros_for_config () {
 	local all_distros=$("${SCRIPTPATH}/ls-distros" "meta-tq/meta-dumpling")
