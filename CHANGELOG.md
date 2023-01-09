@@ -9,6 +9,13 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Added
+
+* ci: TQMa8M[x,xML,xNL,PxL]: support building with upstream stable kernel
+* Templates: add meta-freescale to `mainline` template
+  needed to support TQMa8M[x,xML,xNL,PxL] with upstream kernel. Otherwise
+  it would be needed to duplicate a lot of recipes
+
 ### Changed
 
 * ci: move templates to a location that fits the new requirements for
