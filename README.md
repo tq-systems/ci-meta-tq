@@ -75,11 +75,11 @@ You can override defaults with:
    in `meta-tq/meta-dumpling`)
 
 before sourcing the script. This script uses the requested configuration from
-`sources/template/conf/bblayers.conf.<config>` as initial template for your
-bblayer.conf
+`sources/template/conf/templates/ci/bblayers.conf.<config>` as initial template
+for your bblayer.conf
 
 Additionally some config variables are injected via `auto.conf.normal` from
-`sources/template/conf/`
+`sources/template/conf/templates/ci/`
 
 In case you have a `~/.oe` or `~/.yocto` dir a `site.conf` file from this dir
 will be symlinked to the conf dir inside the build directory to allow machine
@@ -102,8 +102,8 @@ To return to an existing buildspace go to the checked out dir and
 
 ### Configurations
 
-Under sources/templates several configs are supplied as starting point for own
-bblayers.conf
+Under sources/template/conf/templates/ci several configs are supplied as starting
+point for own bblayers.conf
 
 | config   | description                                                  |
 | -------- | ------------------------------------------------------------ |
@@ -115,7 +115,7 @@ bblayers.conf
 ### Reproducible build environment
 
 Devolopment and automated builds are supported by the scripts under ci and
-configuration under `./sources/templates`, notably
+configuration under `./sources/template/conf/templates/ci`, notably
 
 - sample `bblayer.conf` files
 - sample `auto.conf` files and inclusion fragments (see Yocto Project doc for

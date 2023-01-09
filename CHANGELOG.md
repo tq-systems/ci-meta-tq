@@ -9,6 +9,11 @@ Releases are named with the following scheme:
 
 ## Next Release
 
+### Changed
+
+* ci: move templates to a location that fits the new requirements for
+  `TEMPLATECONF` in upcoming langdale
+
 ## kirkstone.TQMa335x.BSP.SW.0124
 ## kirkstone.TQMLS1012AL.BSP.SW.0012
 ## kirkstone.TQMLS102xA.BSP.SW.0116

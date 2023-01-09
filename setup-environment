@@ -28,7 +28,7 @@ PROGNAME="setup-environment"
 SCRIPTDIR="${CWD}/ci"
 CONFIG_TEMPLATE=ml
 # conf templates
-TEMPLATECONF=${CWD}/sources/template/conf
+TEMPLATECONF=${CWD}/sources/template/conf/templates/ci
 
 DEFAULT_DISTRO_ml="spaetzle"
 DEFAULT_DISTRO_imx="dumpling-wayland-nxp"
