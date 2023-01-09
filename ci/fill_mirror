@@ -152,7 +152,7 @@ main () {
 
 		DL_DIR=${DL_DIR#\"*}
 		DL_DIR=${DL_DIR%\"*}
-		
+
 		echo "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
 		if [ -z ${dryrun} ]
 			then

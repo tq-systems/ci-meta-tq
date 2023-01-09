@@ -96,7 +96,7 @@ assign_or_replace() {
 
 ####
 # func:   get_md5sum
-# brief:  calculate md5sum for all files directory 
+# brief:  calculate md5sum for all files directory
 # param:  $1 - directory
 # return: file containing md5sum of files
 ####

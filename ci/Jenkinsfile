@@ -102,7 +102,7 @@ def cleanupBuild() {
     def causes = currentBuild.getBuildCauses()
 
     echo "create empty dir, could be used by rsync for deleting folders"
-    sh "mkdir --parents ${env.WORKSPACE}/empty"    
+    sh "mkdir --parents ${env.WORKSPACE}/empty"
     println causes.toString()
 
     for(cause in causes) {
@@ -190,9 +190,9 @@ pipeline {
     }
 
     options {
-        buildDiscarder(logRotator(artifactDaysToKeepStr: '', 
-                       artifactNumToKeepStr: '3', 
-                       daysToKeepStr: '', 
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '',
+                       artifactNumToKeepStr: '3',
+                       daysToKeepStr: '',
                        numToKeepStr: '10')
         )
         timestamps()
@@ -286,4 +286,3 @@ pipeline {
         }
     }
 }
-
