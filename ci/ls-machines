@@ -52,7 +52,7 @@ main() {
 		return 1
 	fi
 
-	# filter out machines from the layer 
+	# filter out machines from the layer
 	TARGETS=$(ls sources/${LAYER}/conf/machine/*.conf | \
 		sed s/\.conf//g | xargs -n1 basename)
 

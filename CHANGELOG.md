@@ -5,14 +5,32 @@ Releases are named with the following scheme:
 
 `<Yocto Project version name>.<TQ module family>.BSP.SW.<version number>`
 
+**NOTE:** For details to the changes in a release see the CHANGELOG.md
+files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
+
 [[_TOC_]]
 
 ## Next Release
 
+### Added
+
+* ci: TQMa8M[x,xML,xNL,PxL]: support building with upstream stable kernel
+* Templates: add meta-freescale to `mainline` template
+  needed to support TQMa8M[x,xML,xNL,PxL] with upstream kernel. Otherwise
+  it would be needed to duplicate a lot of recipes
+
 ### Changed
 
+* poky: update to 4.0.6
 * ci: move templates to a location that fits the new requirements for
   `TEMPLATECONF` in upcoming langdale
+
+### Fixed
+
+* meta-tq:
+  * TQMLS1028A: u-boot and linux bugfixes
+  * TQMa335x: linux-ti-tq: PMIC IRQ
+  * TQMa8MPxL: u-boot-imx-tq: TSN / Eqos long delay
 
 ## kirkstone.TQMa335x.BSP.SW.0124
 ## kirkstone.TQMLS1012AL.BSP.SW.0012
