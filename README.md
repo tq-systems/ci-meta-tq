@@ -85,7 +85,7 @@ specific overrides. Good use case for this are things like
 * local PREMIRROR
 
 Internally the `oe-init-build-env` script from the used openembedded / poky
-meta layer will be sourced from `sertup-environment` to get the bitbake environment
+meta layer will be sourced from `setup-environment` to get the bitbake environment
 
 After this step, everything is setup to build an image using bitbake.
 
