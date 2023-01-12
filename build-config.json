@@ -96,7 +96,15 @@
 		},
 		{
 			"name": "i.MX8x",
-			"pattern": "tqma8[^0-9]"
+			"pattern": "tqma8x"
+		},
+		{
+			"name": "i.MX8m",
+			"pattern": "tqma8m"
+		},
+		{
+			"name": "i.MX8qm",
+			"pattern": "tqma8qm"
 		},
 		{
 			"name": "i.MX93x",
@@ -113,6 +121,8 @@
 			"groups": [
 				"i.MX6x",
 				"i.MX8x",
+				"i.MX8m",
+				"i.MX8qm",
 				"i.MX93x"
 			]
 		},
@@ -136,7 +146,8 @@
 			"groups": [
 				"i.MX6x",
 				"i.MX6ULx",
-				"i.MX7x"
+				"i.MX7x",
+				"i.MX8m"
 			]
 		},
 		{
