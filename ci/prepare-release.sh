@@ -95,7 +95,7 @@ function main () {
 		    ;;
 
 		-* )
-		    error "Unrecognized option: $1" 
+		    error "Unrecognized option: $1"
 		    usage
 		    exit $E_BAD_OPTION
 		    ;;
