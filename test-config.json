@@ -1,6 +1,11 @@
 {
 	"test-plans" :[
 		{
+			"lava-device": "tqma8md-1gb-mba8mx",
+			"devicetree": "imx8mq-tqma8mq-mba8mx.dtb",
+			"yocto-machine": "tqma8mx-1gb-mba8mx"
+		},
+		{
 			"lava-device": "tqma8mq-4gb-mba8mx",
 			"devicetree": "imx8mq-tqma8mq-mba8mx.dtb",
 			"yocto-machine": "tqma8mx-4gb-mba8mx"
@@ -11,14 +16,49 @@
 			"yocto-machine": "tqma8mxnl-1gb-mba8mx"
 		},
 		{
+			"lava-device": "tqma8mdml-2gb-mba8mx",
+			"devicetree": "imx8mm-tqma8mqml-mba8mx.dtb",
+			"yocto-machine": "tqma8mxml-2gb-mba8mx"
+		},
+		{
+			"lava-device": "tqma8mqml-2gb-mba8mx",
+			"devicetree": "imx8mm-tqma8mqml-mba8mx.dtb",
+			"yocto-machine": "tqma8mxml-2gb-mba8mx"
+		},
+		{
+			"lava-device": "tqma8mpql-2gb-mba8mpxl",
+			"devicetree": "imx8mp-tqma8mpql-mba8mpxl.dtb",
+			"yocto-machine": "tqma8mpxl-mba8mpxl"
+		},
+		{
+			"lava-device": "tqma8qm-8gb-mba8x",
+			"devicetree": "imx8qm-tqma8qm-mba8x.dtb",
+			"yocto-machine": "tqma8qm-8gb-mba8x"
+		},
+		{
 			"lava-device": "tqma7d-1gb-mba7",
 			"devicetree": "imx7d-mba7.dtb",
 			"yocto-machine": "tqma7x-1gb-mba7"
 		},
 		{
+			"lava-device": "tqma7s-512mb-mba7",
+			"devicetree": "imx7s-mba7.dtb",
+			"yocto-machine": "tqma7x-512mb-mba7"
+		},
+		{
 			"lava-device": "tqma6s-mba6x",
 			"devicetree": "imx6dl-mba6a.dtb",
 			"yocto-machine": "tqma6s-mba6x"
+		},
+		{
+			"lava-device": "tqma6q-2gb-mba6x",
+			"devicetree": "imx6q-mba6a.dtb",
+			"yocto-machine": "tqma6q-2gb-mba6x"
+		},
+		{
+			"lava-device": "tqma6ull2-512mb-mba6ulx",
+			"devicetree": "imx6ull-tqma6ull2-mba6ulx.dtb",
+			"yocto-machine": "tqma6ullx-512mb-mba6ulx"
 		},
 		{
 			"lava-device": "tqma8xqp4-mba8xx",
@@ -31,4 +71,4 @@
 			"yocto-machine": "tqma8xqps-mb-smarc-2"
 		}
 	]
-}
+}	
