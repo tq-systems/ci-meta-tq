@@ -12,6 +12,15 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0003
+
+### Module BSP Revisions
+
+* kirkstone.TQMa335x.BSP.SW.0125
+* kirkstone.TQMa64xxL.BSP.SW.0002
+* kirkstone.TQMa65xx.BSP.SW.0009
+* kirkstone.TQMa8.BSP.SW.0088
+
 ### Added
 
 * ci: TQMa8M[x,xML,xNL,PxL]: support building with upstream stable kernel
@@ -28,6 +37,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 ### Fixed
 
 * meta-tq:
+  * TQMa65xx: PRU and GPU working now under kirkstone
+  * TQMa64xx: u-boot and linux bugfixes
   * TQMLS1028A: u-boot and linux bugfixes
   * TQMa335x: linux-ti-tq: PMIC IRQ
   * TQMa8MPxL: u-boot-imx-tq: TSN / Eqos long delay
