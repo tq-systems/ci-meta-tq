@@ -27,34 +27,43 @@
 ###############################################################################
 
 readonly DEFAULT_TEMPLATEDIR="template"
+readonly DEFAULT_TEMPLATE="ci"
 
 usage() {
 	echo "$1 usage:"
 	echo "\nlist available configs from template dir under sources"
-	echo "$1 - use default template dir ${DEFAULT_TEMPLATEDIR}"
-	echo "$1 <template> - use template dir given as parameter"
+	echo "$1 - use default template dir ${DEFAULT_TEMPLATEDIR} and template ${DEFAULT_TEMPLATE}"
+	echo "$1 <templatedir> <template>- use templatedir aand template given as parameter"
+	echo "templates must reside in a layer under conf/templates/<template>"
 }
 
 main() {
-	local TEMPLATEDIR=${DEFAULT_TEMPLATEDIR}
+	local TEMPLATEDIR="${DEFAULT_TEMPLATEDIR}"
+	local TEMPLATE="${DEFAULT_TEMPLATE}"
 
-	if [ "${#}" -gt "1" ]; then
+	if [ "${#}" -gt "2" ] ; then
 		usage "$0"
 		return 1
 	fi
 
-	if [ "${#}" -eq "1" ]; then
+	if [ "${#}" -gt "1" ]; then
+		TEMPLATE="${2}"
+	fi
+
+	if [ "${#}" -gt "0" ]; then
 		TEMPLATEDIR="${1}"
 	fi
 
-	if ! [ -d "./sources/${TEMPLATEDIR}/conf" ]; then
+	local TEMPLATEPATH="${TEMPLATEDIR}/conf/templates/${TEMPLATE}"
+
+	if ! [ -d "./sources/${TEMPLATEPATH}" ]; then
 		usage "$0"
 		return 1
 	fi
 
 	# filter out configs from the template dir
 	local EXCLUDE="bblayers.conf.sample"
-	local CONFIGURATIONS="$(ls -1 sources/${TEMPLATEDIR}/conf/bblayers.conf.* |
+	local CONFIGURATIONS="$(ls -1 sources/${TEMPLATEPATH}/bblayers.conf.* |
 		xargs -n1 basename)"
 	CONFIGURATIONS=$(echo "${CONFIGURATIONS}" | grep -vxF "${EXCLUDE}")
 	for c in ${CONFIGURATIONS}; do

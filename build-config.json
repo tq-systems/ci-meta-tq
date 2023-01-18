@@ -1,0 +1,167 @@
+{
+	"yocto-release": "kirkstone",
+	"yocto-machine-folder": "sources/meta-tq/meta-tq/conf/machine",
+	"distros": [
+		{
+			"name": "spaetzle-ti",
+			"images": [
+				"tq-image-small-debug"
+			]
+		},
+		{
+			"name": "spaetzle-nxp",
+			"images": [
+				"tq-image-small-debug"
+			]
+		},
+		{
+			"name": "spaetzle",
+			"images": [
+				"tq-image-small-debug"
+			]
+		},
+		{
+			"name": "dumpling",
+			"images": [
+				"tq-image-generic-debug"
+			]
+		},
+		{
+			"name": "dumpling-nxp",
+			"images": [
+				"tq-image-generic-debug"
+			]
+		},
+		{
+			"name": "dumpling-ti",
+			"images": [
+				"tq-image-generic-debug"
+			]
+		},
+		{
+			"name": "dumpling-wayland",
+			"images": [
+				"tq-image-weston-debug"
+			]
+		},
+		{
+			"name": "dumpling-wayland-ti",
+			"images": [
+				"tq-image-weston-debug"
+			]
+		},
+		{
+			"name": "dumpling-wayland-nxp",
+			"images": [
+				"tq-image-weston-debug"
+			]
+		}
+	],
+	"machine_groups": [
+		{
+			"name": "AM335x",
+			"pattern": "tqma335"
+		},
+		{
+			"name": "AM57x",
+			"pattern": "tqma57"
+		},
+		{
+			"name": "AM654x",
+			"pattern": "tqma65(?!.*?\\bk3r5\\b)"
+		},
+		{
+			"name": "AM64x",
+			"pattern": "tqma64(?!.*?\\bk3r5\\b)"
+		},
+		{
+			"name": "LS10x",
+			"pattern": "tqmls10[0-9]+"
+		},
+		{
+			"name": "LX2160x",
+			"pattern": "tqmlx2160"
+		},
+		{
+			"name": "i.MX6x",
+			"pattern": "tqma6[^0-9u]"
+		},
+		{
+			"name": "i.MX6ULx",
+			"pattern": "tqma6ul"
+		},
+		{
+			"name": "i.MX7x",
+			"pattern": "tqma7"
+		},
+		{
+			"name": "i.MX8x",
+			"pattern": "tqma8x"
+		},
+		{
+			"name": "i.MX8m",
+			"pattern": "tqma8m"
+		},
+		{
+			"name": "i.MX8qm",
+			"pattern": "tqma8qm"
+		},
+		{
+			"name": "i.MX93x",
+			"pattern": "tqma93[^0-9]"
+		}
+	],
+	"configs": [
+		{
+			"name": "imx",
+			"distros": [
+				"spaetzle-nxp",
+				"dumpling-wayland-nxp"
+			],
+			"groups": [
+				"i.MX6x",
+				"i.MX8x",
+				"i.MX8m",
+				"i.MX8qm",
+				"i.MX93x"
+			]
+		},
+		{
+			"name": "ls",
+			"distros": [
+				"spaetzle",
+				"dumpling"
+			],
+			"groups": [
+				"LS10x",
+				"LX2160x"
+			]
+		},
+		{
+			"name": "mainline",
+			"distros": [
+				"spaetzle",
+				"dumpling-wayland"
+			],
+			"groups": [
+				"i.MX6x",
+				"i.MX6ULx",
+				"i.MX7x",
+				"i.MX8m"
+			]
+		},
+		{
+			"name": "ti",
+			"distros": [
+				"spaetzle-ti",
+				"dumpling-wayland-ti"
+			],
+			"groups": [
+				"AM335x",
+				"AM57x",
+				"AM64x",
+				"AM654x"
+			]
+		}
+	]
+}
