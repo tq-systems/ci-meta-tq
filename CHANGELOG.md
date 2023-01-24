@@ -12,6 +12,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* ci:
+  * Do not set SDKMACHINE in local.conf. SDKMACHINE defaults to the
+    architecture of the build host now.
+
 ## kirkstone.TQ.ARM.BSP.0003
 
 ### Module BSP Revisions
