@@ -195,17 +195,14 @@ setup_confdir() {
 # set some defaults in local.conf file
 # $1        - MACHINE
 # $2        - DISTRO
-# $3        - SDKMACHINE
 ##############
 patch_localconf() {
 	MACHINE=${1}
 	DISTRO=${2}
-	SDKMACHINE=${3}
 
 	# Change settings according environment
 	assign_or_replace MACHINE ${MACHINE} "??=" conf/local.conf
 	assign_or_replace DISTRO ${DISTRO} "?=" conf/local.conf
-	assign_or_replace SDKMACHINE ${SDKMACHINE} "??=" conf/local.conf
 }
 
 default_machine () {

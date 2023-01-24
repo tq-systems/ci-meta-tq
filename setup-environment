@@ -97,7 +97,6 @@ clean_up() {
 	unset OEROOT
 	unset PROGNAME
 	unset SCRIPTDIR
-	unset SDKMACHINE
 	unset SHORTOPTS
 	unset TEMPLATECONF
 	unset THE_DISTRO
@@ -164,10 +163,6 @@ if [ "${build_dir_setup_enabled}" = "true" ]; then
        return 1
     fi
 
-    if [ -z "${SDKMACHINE}" ]; then
-        SDKMACHINE="i686"
-    fi
-
     if [ -z "${DISTRO}" ]; then
         DISTRO_VAR=DEFAULT_DISTRO_${CONFIG_TEMPLATE}
         eval THE_DISTRO=\$$DISTRO_VAR
@@ -212,7 +207,7 @@ if [ "$build_dir_setup_enabled" = "true" ]; then
     if [ "${?}" -ne "0" ]; then
         clean_up && return 1
     fi
-    "${SCRIPTDIR}/setup_builddir" localconf_defaults "${THE_MACHINE}" "${THE_DISTRO}" "${SDKMACHINE}"
+    "${SCRIPTDIR}/setup_builddir" localconf_defaults "${THE_MACHINE}" "${THE_DISTRO}"
     generated_config=1
 fi
 
@@ -230,7 +225,6 @@ if [ -n "${generated_config}" ]; then
 Your build environment has been configured with:
 
     MACHINE=${THE_MACHINE}
-    SDKMACHINE=${SDKMACHINE}
     DISTRO=${THE_DISTRO}
 EOF
 else
