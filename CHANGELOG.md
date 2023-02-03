@@ -14,8 +14,18 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* meta-tq:
+  * tqmls1046a: new machine configuration
+  * Qt5 support improvements
+  * TQMa8Xx[S] / TQMa8x SPI fixes
+* layers: update meta-freescale / poky / meta-openembedded / meta-qt5 / meta-arm
+  to integrate fixes and stay in sync with upstream
+* ci: extend test-config.json to enable multiple linux images for a machine
+
+### Fixed
+
 * ci:
-  * Do not set SDKMACHINE in local.conf. SDKMACHINE defaults to the
+  * Do not set `SDKMACHINE` in local.conf. `SDKMACHINE` defaults to the
     architecture of the build host now.
 
 ## kirkstone.TQ.ARM.BSP.0003
