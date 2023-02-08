@@ -15,6 +15,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 ### Changed
 
 * meta-tq:
+  * harmonize usage of variables in machine files
+  * adjust usage of `MACHINE_FEATURES` for screen and touchscreen support to
+    poky / OE core
+* meta-tq:
   * tqmls1046a: new machine configuration
   * Qt5 support improvements
   * TQMa8Xx[S] / TQMa8x SPI fixes
