@@ -14,6 +14,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: update to 4.0.7
 * meta-tq:
   * harmonize usage of variables in machine files
   * adjust usage of `MACHINE_FEATURES` for screen and touchscreen support to
