@@ -12,6 +12,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* ci: enable builing TQMT10xx SOM in ls config
+* meta-tq: Add support for TQMT10xx SOM with QORIQ T10xx CPU
+
 ### Changed
 
 * poky: update to 4.0.7
@@ -64,18 +69,26 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
   * TQMa335x: linux-ti-tq: PMIC IRQ
   * TQMa8MPxL: u-boot-imx-tq: TSN / Eqos long delay
 
-## kirkstone.TQMa335x.BSP.SW.0124
-## kirkstone.TQMLS1012AL.BSP.SW.0012
-## kirkstone.TQMLS102xA.BSP.SW.0116
+## kirkstone.TQ.ARM.BSP.0002
+
+### Module BSP Revisions
+
+* kirkstone.TQMa335x.BSP.SW.0124
+* kirkstone.TQMLS1012AL.BSP.SW.0012
+* kirkstone.TQMLS102xA.BSP.SW.0116
 
 ### Added
 
 * meta-tq: initial support for TQMa93xxLA
 
-## kirkstone.TQMa8.BSP.SW.0087
-## kirkstone.TQMa6x.BSP.SW.0121
-## kirkstone.TQMa7x.BSP.SW.0115
-## kirkstone.TQMa6UL.BSP.SW.0117
+## kirkstone.TQ.ARM.BSP.0001
+
+### Module BSP Revisions
+
+* kirkstone.TQMa8.BSP.SW.0087
+* kirkstone.TQMa6x.BSP.SW.0121
+* kirkstone.TQMa7x.BSP.SW.0115
+* kirkstone.TQMa6UL.BSP.SW.0117
 
 ### Changed
 
