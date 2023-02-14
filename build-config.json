@@ -83,6 +83,10 @@
 			"pattern": "tqmlx2160"
 		},
 		{
+			"name": "T10xx",
+			"pattern": "tqmt"
+		},
+		{
 			"name": "i.MX6x",
 			"pattern": "tqma6[^0-9u]"
 		},
@@ -134,7 +138,8 @@
 			],
 			"groups": [
 				"LS10x",
-				"LX2160x"
+				"LX2160x",
+				"T10xx"
 			]
 		},
 		{
