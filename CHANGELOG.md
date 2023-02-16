@@ -19,6 +19,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* treewide: update TQ copyrights
+* treewide: switch to SPDX-License-Identifier
 * poky: update to 4.0.7
 * meta-tq:
   * harmonize usage of variables in machine files
