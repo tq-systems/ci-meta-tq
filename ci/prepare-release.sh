@@ -2,8 +2,10 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
 # File:        prepare-release.sh
-# Copyright (C) 2016 - 2021 TQ-Systems GmbH
-# @author Markus Niebel <Markus.Niebel@tq-group.com>
+#
+# Copyright (C) 2016-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# D-82229 Seefeld, Germany.
+# Author: Markus Niebel
 #
 # Description: A utility script to tag current version and optionally submodules
 #

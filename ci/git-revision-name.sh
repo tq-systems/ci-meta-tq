@@ -2,8 +2,10 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
 # File:        git-revision-name.sh
-# Copyright (C) 2014 - 2018 TQ-Systems GmbH
-# @author Markus Niebel <Markus.Niebel@tq-group.com>
+#
+# Copyright (C) 2014-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# D-82229 Seefeld, Germany.
+# Author: Markus Niebel
 #
 # Description: A utility to get a pretty string for
 #              current revision of your project.

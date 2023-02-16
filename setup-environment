@@ -6,8 +6,9 @@
 # Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
 # Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
 #
-# Copyright (C) TQ-Systems GmbH
-# 2017 - 2022 Markus Niebel <Markus.Niebel@ew.tq-group.com>
+# Copyright (C) 2017-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# D-82229 Seefeld, Germany.
+# Author: Markus Niebel
 #
 # Add options for the script
 # Copyright (C) 2013 Freescale Semiconductor, Inc.

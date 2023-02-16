@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
 # File:        fill_mirror
-# Copyright (C) 2021 - 2022 TQ-Systems GmbH
-# @author Markus Niebel <Markus.Niebel@tq-group.com>
-# @author Paul Gerber <Paul.Gerber@tq-group.com>
+#
+# Copyright (C) 2021-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# D-82229 Seefeld, Germany.
+# Author: Markus Niebel, Paul Gerber
 #
 # Description: build all machines in a layer with a given config
 #
