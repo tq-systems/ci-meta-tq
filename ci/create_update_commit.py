@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
+#
 # file    commit_meta_layer.py
-# note    Copyright 2021, TQ-Systems GmbH, Germany
-# @author Alexander Stein <Alexander.Stein@tq-group.com>
+#
+# Copyright (C) 2021-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# D-82229 Seefeld, Germany.
+# Author: Alexander Stein
+#
 # brief   utility script to create a commit for updating a submodule
 
 from git import Repo, Submodule

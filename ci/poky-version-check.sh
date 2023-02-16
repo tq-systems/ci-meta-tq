@@ -1,27 +1,13 @@
 #!/bin/bash -
+# SPDX-License-Identifier: GPL-2.0-or-later
 #
 # File:        poky-version-check.sh
-# Copyright (C) 2018 TQ-Systems GmbH
-# @author Markus Niebel <Markus.Niebel@tq-group.com>
+#
+# Copyright (C) 2018-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# D-82229 Seefeld, Germany.
+# Author: Markus Niebel
 #
 # Description: utility script for poky / bitbake version checking
-#
-# License:     GPLv2
-#
-###############################################################################
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; version 2 of the License
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
 ###############################################################################
 

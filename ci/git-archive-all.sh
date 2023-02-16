@@ -1,8 +1,11 @@
 #!/bin/bash -
+# SPDX-License-Identifier: GPL-2.0-or-later
 #
 # File:        git-archive-all.sh
-# Copyright (C) 2014 - 2018 TQ Systems GmbH
-# @author Markus Niebel <Markus.Niebel@tq-group.com>
+#
+# Copyright (C) 2014-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# D-82229 Seefeld, Germany.
+# Author: Markus Niebel
 #
 # Description: A utility script that builds an archive file(s) of all
 #              git repositories and submodules in the current path.
@@ -15,24 +18,6 @@
 #                  cd $GIT_DIR; git-archive-all.sh
 #
 #              where $GIT_DIR is the root of your git superproject.
-#
-# License:     GPLv2
-#
-###############################################################################
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
 ###############################################################################
 
