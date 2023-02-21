@@ -243,6 +243,7 @@ get_machines () {
 get_distros_for_config () {
 	local all_distros=$("${SCRIPTPATH}/ls-distros" "meta-tq/meta-dumpling")
 	local chosen_distros=${all_distros}
+	local config=${1}
 
 	if ! valid_config ${config}; then
 		error "invalid config: ${config}"
