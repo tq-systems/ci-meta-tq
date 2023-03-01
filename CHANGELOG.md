@@ -14,11 +14,13 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Added
 
+* meta-tq: Add support for TQMa93xxLA on MBa93xxLA SBC
 * ci: enable builing TQMT10xx SOM in ls config
 * meta-tq: Add support for TQMT10xx SOM with QORIQ T10xx CPU
 
 ### Changed
 
+* meta-tq: Rename machine for TQMa93xxLA / TQMa93xxCA starter kit
 * treewide: update TQ copyrights
 * treewide: switch to SPDX-License-Identifier
 * poky: update to 4.0.7
