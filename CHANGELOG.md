@@ -34,10 +34,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
   * TQMa8Xx[S] / TQMa8x SPI fixes
 * layers: update meta-freescale / poky / meta-openembedded / meta-qt5 / meta-arm
   to integrate fixes and stay in sync with upstream
-* ci: extend test-config.json to enable multiple linux images for a machine
+* ci:
+  * do not build `cpio.gz` images to save space.
+  * extend test-config.json to enable multiple linux images for a machine
 
 ### Fixed
 
+* meta-tq:
+  * all machines: Fix a race condition due to missing dependencies for `WKS_FILE_DEPENDS`.
 * ci:
   * Do not set `SDKMACHINE` in local.conf. `SDKMACHINE` defaults to the
     architecture of the build host now.
