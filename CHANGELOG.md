@@ -20,6 +20,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* meta-tq: use upstream i.MX93 support from meta-freescale and drop local copies
+  of recipies from meta-imx
+* meta-freescale: update to include upstream i.MX93 support
+* poky: update to 4.0.8
 * meta-tq: Rename machine for TQMa93xxLA / TQMa93xxCA starter kit
 * treewide: update TQ copyrights
 * treewide: switch to SPDX-License-Identifier
