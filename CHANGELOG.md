@@ -20,6 +20,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* meta-tq: use upstream i.MX93 support from meta-freescale and drop local copies
+  of recipies from meta-imx
+* meta-freescale: update to include upstream i.MX93 support
+* poky: update to 4.0.8
 * meta-tq: Rename machine for TQMa93xxLA / TQMa93xxCA starter kit
 * treewide: update TQ copyrights
 * treewide: switch to SPDX-License-Identifier
@@ -34,10 +38,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
   * TQMa8Xx[S] / TQMa8x SPI fixes
 * layers: update meta-freescale / poky / meta-openembedded / meta-qt5 / meta-arm
   to integrate fixes and stay in sync with upstream
-* ci: extend test-config.json to enable multiple linux images for a machine
+* ci:
+  * do not build `cpio.gz` images to save space.
+  * extend test-config.json to enable multiple linux images for a machine
 
 ### Fixed
 
+* meta-tq:
+  * all machines: Fix a race condition due to missing dependencies for `WKS_FILE_DEPENDS`.
 * ci:
   * Do not set `SDKMACHINE` in local.conf. `SDKMACHINE` defaults to the
     architecture of the build host now.

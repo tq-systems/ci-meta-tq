@@ -7,6 +7,8 @@ IMAGE_FSTYPES:remove = "wic.gz wic.bz2 wic.xz"
 IMAGE_FSTYPES:remove = "sdcard sdcard.bz2"
 # remove packed ext images
 IMAGE_FSTYPES:remove = "ext2.gz ext4.gz"
+# remove cpio.gz (poky-tiny)
+IMAGE_FSTYPES:remove = "cpio.gz"
 
 # we will have tar.gz for NFS, wic for SD / e-MMC
 IMAGE_FSTYPES:append = " tar.gz wic"
