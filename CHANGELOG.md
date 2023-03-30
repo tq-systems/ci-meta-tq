@@ -12,6 +12,13 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0004
+
+### Module BSP Revisions
+
+* kirkstone.TQMa64xxL.BSP.SW.0003
+* kirkstone.TQMa8.BSP.SW.0089
+
 ### Added
 
 * meta-tq: Add support for TQMa93xxLA on MBa93xxLA SBC
