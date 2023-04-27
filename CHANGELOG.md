@@ -12,6 +12,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* poky: update to 4.0.9
+* meta-freescale / meta-openembedded: update to integrate fixes and stay in
+  sync with upstream
+* meta-tq: switch from using the outdated PPA and fixed RCW in U-Boot to use
+  RCW and TF-A with FIP for TQMLS104[3,6]A and TQMLS1088A
+
 ## kirkstone.TQ.ARM.BSP.0004
 
 ### Module BSP Revisions
