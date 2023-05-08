@@ -12,6 +12,17 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0005
+
+### Module BSP Revisions
+
+* kirkstone.TQMa8.BSP.SW.0090
+* kirkstone.TQMa64xxL.BSP.SW.0004
+
+### Added
+
+* meta-tq: Add support for TQMaMxML with 4 GB RAM
+
 ### Changed
 
 * poky: update to 4.0.9
