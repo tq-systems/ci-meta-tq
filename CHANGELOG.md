@@ -12,6 +12,15 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* poky: update to 4.0.10
+* meta-openembedded: update to integrate fixes and stay in sync with upstream
+
+### Added
+
+* meta-tq: Add support for more TQMLX2160a CPU and memory variants
+
 ## kirkstone.TQ.ARM.BSP.0005
 
 ### Module BSP Revisions
