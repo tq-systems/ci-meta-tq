@@ -255,7 +255,7 @@ get_distros_for_config () {
 		choosen_distros="spaetzle-nxp dumpling-wayland-nxp"
 		;;
 	"ls" )
-		choosen_distros="spaetzle dumpling"
+		choosen_distros="spaetzle-ls dumpling-ls"
 		;;
 	"mainline" )
 		choosen_distros="spaetzle dumpling-wayland"
