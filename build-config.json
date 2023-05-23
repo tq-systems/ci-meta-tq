@@ -3,6 +3,12 @@
 	"yocto-machine-folder": "sources/meta-tq/meta-tq/conf/machine",
 	"distros": [
 		{
+			"name": "spaetzle-ls",
+			"images": [
+				"tq-image-small-debug"
+			]
+		},
+		{
 			"name": "spaetzle-ti",
 			"images": [
 				"tq-image-small-debug"
@@ -22,6 +28,12 @@
 		},
 		{
 			"name": "dumpling",
+			"images": [
+				"tq-image-generic-debug"
+			]
+		},
+		{
+			"name": "dumpling-ls",
 			"images": [
 				"tq-image-generic-debug"
 			]
@@ -133,8 +145,8 @@
 		{
 			"name": "ls",
 			"distros": [
-				"spaetzle",
-				"dumpling"
+				"spaetzle-ls",
+				"dumpling-ls"
 			],
 			"groups": [
 				"LS10x",
