@@ -12,8 +12,16 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0006
+
+### Module BSP Revisions
+
+* kirkstone.TQMa8.BSP.SW.0091
+
 ### Changed
 
+* ci: use new distro for layerscape boards allowing build of multiple boot
+  only images per machine.
 * poky: update to 4.0.10
 * meta-openembedded: update to integrate fixes and stay in sync with upstream
 
