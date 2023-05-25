@@ -12,6 +12,11 @@ files in git submodules for meta-tq and meta-dumpling.
 
 ## Next Release
 
+### Changed
+
+* meta-tq: update for codeaurora.org to github move of imx / qoriq packages
+* meta-freescale: update for codeaurora.org to github move of imx / qoriq packages
+
 ## hardknott.TQMa8.BSP.SW.0086
 
 ### Added
