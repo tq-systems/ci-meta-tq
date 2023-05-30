@@ -73,6 +73,13 @@ def process_submodule(submodule: Submodule, format: str) -> str:
     msg += create_commit_msg_body(repo=lower_repo, range=range, format=format)
     return msg
 
+def process_git_repository(repo: Repo, pkg: str, range:str, format: str, args) -> str:
+    # subject
+    sha1 = range.split('..')[1]
+    msg = f"{pkg}: update to {sha1}\n\n"
+    msg += create_commit_msg_body(repo=repo, range=range, format=format, args=args)
+    return msg
+
 def process(args):
     cwd = Path.cwd()
     upper_repo = Repo(str(cwd))
@@ -90,7 +97,10 @@ def process(args):
             raise ValueError(f'{path} is not a submodule')
         submodule = upper_repo.submodule(name=path)
         commit_msg = process_submodule(submodule, format=args.git_log_format)
-    # TODO: Is target a stand-alone repository, e.g. no submodule
+    elif args.command == 'git':
+        # Strip trailing slash to support auto-completed paths from shell
+        path = args.path.rstrip('/')
+        commit_msg = process_git_repository(Repo(path), args.package, args.range, format=args.git_log_format, args=args.logargs)
     else:
         raise NotImplementedError('Unsupported type for target repository')
 
@@ -109,7 +119,7 @@ def process(args):
     return True
 
 def main():
-    parser = argparse.ArgumentParser(description='Create a commit for updating a submodule including the commit subjects')
+    parser = argparse.ArgumentParser(description='Create an update commit including git commit subjects')
     parser.add_argument('-f', '--format',
                         metavar='format',
                         dest='git_log_format',
@@ -132,6 +142,23 @@ def main():
                                   help='''
                                       Path for the target for which an update commit shall be created
                                   ''')
+
+    parser_git = subparsers.add_parser('git', help='regular git repository')
+    parser_git.add_argument('path',
+                            metavar='path',
+                            type=str,
+                            help='''
+                                Path for the target for which an update commit shall be created
+                            ''')
+    parser_git.add_argument('package',
+                            type=str,
+                            help="package to update, will be part of commit message",
+                            )
+    parser_git.add_argument('range',
+                            type=str,
+                            help="git revision range",
+                            )
+
     args = parser.parse_args()
     return 0 if process(args) else 1
 
