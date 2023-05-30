@@ -46,8 +46,8 @@ def query_yes_no(question, default="yes"):
         else:
             sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
 
-def create_commit_msg_body(repo: Repo, range: str, format: str) -> str:
-    return repo.git.log(range, format=format, stdout_as_string=True)
+def create_commit_msg_body(repo: Repo, range: str, format: str, args: str = None) -> str:
+    return repo.git.log(args, range, format=format, stdout_as_string=True)
 
 def process_submodule(submodule: Submodule, format: str) -> str:
     upper_repo = submodule.repo
@@ -150,6 +150,12 @@ def main():
                             help='''
                                 Path for the target for which an update commit shall be created
                             ''')
+    parser_git.add_argument('--logargs',
+                            dest='logargs',
+                            type=str,
+                            help="Additional arguments to 'git log' command. Default: '%(default)s'",
+                            default='--first-parent',
+                            )
     parser_git.add_argument('package',
                             type=str,
                             help="package to update, will be part of commit message",
