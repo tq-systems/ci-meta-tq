@@ -113,7 +113,7 @@ def process(args):
             return True
         upper_repo.git.commit(message=commit_msg, signoff=True)
         print(f'\nCreated commit with SHA1: {upper_repo.commit().hexsha}')
-    else:
+    elif args.command == 'submodule':
         # Ensure all files are unstaged again
         upper_repo.index.reset()
     return True
