@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
 #
-# file    commit_meta_layer.py
-#
 # Copyright (C) 2021-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
 # D-82229 Seefeld, Germany.
 # Author: Alexander Stein

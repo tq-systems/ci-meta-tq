@@ -1,8 +1,6 @@
 #!/bin/bash -
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
-# File:        git-revision-name.sh
-#
 # Copyright (C) 2014-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
 # D-82229 Seefeld, Germany.
 # Author: Markus Niebel
