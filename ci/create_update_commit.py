@@ -46,8 +46,8 @@ def query_yes_no(question, default="yes"):
         else:
             sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
 
-def create_commit_msg_body(repo: Repo, range: str, format: str) -> str:
-    return repo.git.log(range, format=format, stdout_as_string=True)
+def create_commit_msg_body(repo: Repo, range: str, format: str, args: str = None) -> str:
+    return repo.git.log(args, range, format=format, stdout_as_string=True)
 
 def process_submodule(submodule: Submodule, format: str) -> str:
     upper_repo = submodule.repo
@@ -73,47 +73,53 @@ def process_submodule(submodule: Submodule, format: str) -> str:
     msg += create_commit_msg_body(repo=lower_repo, range=range, format=format)
     return msg
 
+def process_git_repository(repo: Repo, pkg: str, range:str, format: str, args) -> str:
+    # subject
+    sha1 = range.split('..')[1]
+    msg = f"{pkg}: update to {sha1}\n\n"
+    msg += create_commit_msg_body(repo=repo, range=range, format=format, args=args)
+    return msg
+
 def process(args):
     cwd = Path.cwd()
     upper_repo = Repo(str(cwd))
     assert not upper_repo.bare,  f"'{cwd}' does contain a bare repository"
-    if upper_repo.is_dirty(working_tree=False, index=True, untracked_files=False):
-        print('There are staged files which would be commited as well. Please use a clean index')
-        return False
 
-    # Strip trailing slash to support auto-completed paths from shell
-    target_path = args.target_path.rstrip('/')
+    if args.command == 'submodule':
+        # Strip trailing slash to support auto-completed paths from shell
+        path = args.path.rstrip('/')
 
-    # Is target a submodule of current repository?
-    if target_path in upper_repo.submodules:
-        submodule = upper_repo.submodule(name=target_path)
+        if upper_repo.is_dirty(working_tree=False, index=True, untracked_files=False):
+            print('There are staged files which would be commited as well. Please use a clean index')
+            return False
+
+        if not path in upper_repo.submodules:
+            raise ValueError(f'{path} is not a submodule')
+        submodule = upper_repo.submodule(name=path)
         commit_msg = process_submodule(submodule, format=args.git_log_format)
-    # TODO: Is target a stand-alone repository, e.g. no submodule
+    elif args.command == 'git':
+        # Strip trailing slash to support auto-completed paths from shell
+        path = args.path.rstrip('/')
+        commit_msg = process_git_repository(Repo(path), args.package, args.range, format=args.git_log_format, args=args.logargs)
     else:
         raise NotImplementedError('Unsupported type for target repository')
 
     print(commit_msg)
     if not args.dryrun:
-        answer = query_yes_no(f'\nCreate signed-off-by commit?', default='no')
+        answer = True if args.yes else query_yes_no(f'\nCreate signed-off-by commit?', default='no')
         if answer == False:
             # Ensure all files are unstaged again
             upper_repo.index.reset()
             return True
         upper_repo.git.commit(message=commit_msg, signoff=True)
         print(f'\nCreated commit with SHA1: {upper_repo.commit().hexsha}')
-    else:
+    elif args.command == 'submodule':
         # Ensure all files are unstaged again
         upper_repo.index.reset()
     return True
 
 def main():
-    parser = argparse.ArgumentParser(description='Create a commit for updating a submodule including the commit subjects')
-    parser.add_argument('target_path',
-                        metavar='target',
-                        type=str,
-                        help='''
-                            Path for the target for which an update commit shall be created
-                        ''')
+    parser = argparse.ArgumentParser(description='Create an update commit including git commit subjects')
     parser.add_argument('-f', '--format',
                         metavar='format',
                         dest='git_log_format',
@@ -127,6 +133,44 @@ def main():
                         const=True,
                         help='Dry-run, do not actually create a commit'
                         )
+    parser.add_argument('-y', '--yes',
+                        action='store_const',
+                        default=False,
+                        const=True,
+                        help='Disable interactive mode. No confirmation is asked. Intended to be used in scripts'
+                        )
+
+    subparsers = parser.add_subparsers(dest='command', required=True, help='usage mode')
+    parser_submodule = subparsers.add_parser('submodule', help='git submodule')
+    parser_submodule.add_argument('path',
+                                  metavar='path',
+                                  type=str,
+                                  help='''
+                                      Path for the target for which an update commit shall be created
+                                  ''')
+
+    parser_git = subparsers.add_parser('git', help='regular git repository')
+    parser_git.add_argument('path',
+                            metavar='path',
+                            type=str,
+                            help='''
+                                Path for the target for which an update commit shall be created
+                            ''')
+    parser_git.add_argument('--logargs',
+                            dest='logargs',
+                            type=str,
+                            help="Additional arguments to 'git log' command. Default: '%(default)s'",
+                            default='--first-parent',
+                            )
+    parser_git.add_argument('package',
+                            type=str,
+                            help="package to update, will be part of commit message",
+                            )
+    parser_git.add_argument('range',
+                            type=str,
+                            help="git revision range",
+                            )
+
     args = parser.parse_args()
     return 0 if process(args) else 1
 
