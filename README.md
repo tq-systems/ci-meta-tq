@@ -52,7 +52,7 @@ git submodule update --init
 
 ## Supported boards
 
-See README of TQ Sytems layer (meta-tq) or use `./ls-machines` to list machines
+See README of TQ-Sytems GmbH hardware support layer (`meta-tq/meta-tq`) or use `./ls-machines` to list machines
 from meta-tq.
 
 ## Quick Start Guide
@@ -109,7 +109,7 @@ point for own bblayers.conf
 | -------- | ------------------------------------------------------------ |
 | mainline | for machines not depending on a SOC vendor layer (`mainline`)|
 | imx      | for machines with i.MX CPU, uses `meta-freescale`            |
-| ti       | machines with TI AM335x / AM57xx CPU, uses `meta-ti`         |
+| ti       | machines with TI Sitara (AM335x, AM57xx, AM65xx, AM64xx), uses `meta-ti`         |
 | ls       | machines with NXP Layerscape CPU, uses `meta-freescale`      |
 
 ### Reproducible build environment
