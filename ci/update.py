@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
-# File:        update-modules.py
-#
 # Copyright (C) 2019-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
 # D-82229 Seefeld, Germany.
 # Author: Markus Niebel
