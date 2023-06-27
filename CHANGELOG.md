@@ -12,6 +12,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* meta-tq:
+  * TQMa8M*: support for linux-stable / linux-stable-rt (upstream support without
+    additional features)
+  * TQMa8M*: initial support for U-Boot distro boot / extlinux (still needs some
+    bootloader environment modifications)
+
 ## kirkstone.TQ.ARM.BSP.0007
 
 ### Module BSP Revisions
