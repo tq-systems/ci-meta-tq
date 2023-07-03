@@ -22,9 +22,16 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: update to 4.0.11
+* meta-openembedded / meta-freescale: update to integrate fixes and stay in sync
+  with upstream
 * meta-tq:
   * TQMLS1088A: use ATF FIP bootstream
   * TQMLS1088A: update RCW, U-Boot and ATF
+
+### Fixed
+
+* meta-tq: compatibility to poky 4.0.11
 
 ## kirkstone.TQ.ARM.BSP.0007
 
