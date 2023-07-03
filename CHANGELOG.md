@@ -20,6 +20,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
   * TQMa8M*: initial support for U-Boot distro boot / extlinux (still needs some
     bootloader environment modifications)
 
+### Changed
+
+* meta-tq:
+  * TQMLS1088A: use ATF FIP bootstream
+  * TQMLS1088A: update RCW, U-Boot and ATF
+
 ## kirkstone.TQ.ARM.BSP.0007
 
 ### Module BSP Revisions
