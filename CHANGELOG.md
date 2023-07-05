@@ -1,3 +1,6 @@
+**ATTENTION**: This branch is only maintained for TQMaRZG2x machines, use
+a more recent branch for all other machines
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -7,7 +10,16 @@ Releases are named with the following scheme:
 
 [[_TOC_]]
 
-## Next Release
+## dunfell.TQMaRZG2x.BSP.SW.0020
+
+### Changed
+
+* Downgrade to Yocto Dunfell
+
+### Added
+
+* ci: Support for TQMaRZG2x machines
+* meta-tq/meta-dumpling: Support for TQMaRZG2x machines
 
 ## hardknott.TQMa64xxL.BSP.SW.0001
 
