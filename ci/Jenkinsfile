@@ -181,10 +181,7 @@ pipeline {
         /*
          * workspace name for config must be identical to config name
          */
-        WS_IMX = "CONFIGS/imx"
-        WS_LS = "CONFIGS/ls"
-        WS_MIN = "CONFIGS/minimal"
-        WS_TI = "CONFIGS/ti"
+        WS_RZG2 = "CONFIGS/rzg2"
         DL_DIR = "shared-dl-dir"
         BUILD_DIR = "buildspace"
         DEPLOY_DIR = "deployment"
@@ -205,17 +202,8 @@ pipeline {
         stage ('Prepare Workspaces') {
             steps {
                 parallel (
-                    "imx" : {
-                        prepareWorkspace("${env.WS_IMX}")
-                    },
-                    "ls" : {
-                        prepareWorkspace("${env.WS_LS}")
-                    },
-                    "minimal" : {
-                        prepareWorkspace("${env.WS_MIN}")
-                    },
-                    "ti" : {
-                        prepareWorkspace("${env.WS_TI}")
+                    "rzg2" : {
+                        prepareWorkspace("${env.WS_RZG2}")
                     },
                 )
             }
@@ -223,17 +211,8 @@ pipeline {
         stage ('Fetch') {
             steps {
                 parallel (
-                    "imx" : {
-                        mirrorConfiguration("${env.WS_IMX}")
-                    },
-                    "ls" : {
-                        mirrorConfiguration("${env.WS_LS}")
-                    },
-                    "minimal" : {
-                        mirrorConfiguration("${env.WS_MIN}")
-                    },
-                    "ti" : {
-                        mirrorConfiguration("${env.WS_TI}")
+                    "rzg2" : {
+                        mirrorConfiguration("${env.WS_RZG2}")
                     },
                 )
             }
@@ -241,17 +220,8 @@ pipeline {
         stage ('Build') {
             steps {
                 parallel (
-                    "imx" : {
-                        buildConfiguration("${env.WS_IMX}")
-                    },
-                    "ls" : {
-                        buildConfiguration("${env.WS_LS}")
-                    },
-                    "minimal" : {
-                        buildConfiguration("${env.WS_MIN}")
-                    },
-                    "ti" : {
-                        buildConfiguration("${env.WS_TI}")
+                    "rzg2" : {
+                        buildConfiguration("${env.WS_RZG2}")
                     },
                 )
             }
@@ -262,24 +232,15 @@ pipeline {
         success {
             script {
                 if ("${env.gitlabActionType}" != "MERGE") {
-                    archiveArtifacts artifacts: "${env.WS_IMX}/*.LIC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_IMX}/*.MIRROR.SRC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_LS}/*.LIC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_LS}/*.MIRROR.SRC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_MIN}/*.LIC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_MIN}/*.MIRROR.SRC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_TI}/*.LIC.tar.gz"
-                    archiveArtifacts artifacts: "${env.WS_TI}/*.MIRROR.SRC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_RZG2}/*.LIC.tar.gz"
+                    archiveArtifacts artifacts: "${env.WS_RZG2}/*.MIRROR.SRC.tar.gz"
                     sshagent(['jenkins-master-key']) {
                         sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
                     }
                     archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
                 }
 
-                archiveArtifacts artifacts: "${env.WS_IMX}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-                archiveArtifacts artifacts: "${env.WS_LS}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-                archiveArtifacts artifacts: "${env.WS_MIN}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
-                archiveArtifacts artifacts: "${env.WS_TI}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                archiveArtifacts artifacts: "${env.WS_RZG2}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
                 cleanupBuild()
 
                 updateGitlabCommitStatus name: 'build', state: 'success'

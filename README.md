@@ -1,3 +1,6 @@
+**ATTENTION**: This branch is only maintained for TQMaRZG2x machines, use
+a more recent branch for all other machines
+
 # TQ-Systems ARM modules example workspace for Yocto Project build setup
 
 [[_TOC_]]
@@ -32,7 +35,8 @@ You are responsible to fulfil all obligations by these licenses.
 - warrior (no longer maintained)
 - zeus (no further development, use hardknott)
 - zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
-- hardknott
+- dunfell (only for RZG2 based machines, no longer maintained for all others)
+- hardknott (no longer maintained)
 
 **Attention:** use README.md of used branch for exact details.
 
@@ -106,6 +110,7 @@ bblayers.conf
 | imx     | for machines with i.MX CPU, uses `meta-freescale`        |
 | ti      | machines with TI AM335x / AM57xx CPU, uses `meta-ti`     |
 | ls      | machines with NXP Layerscape CPU, uses `meta-freescale`  |
+| rzg2    | machines with Renesas RZ/G2 CPU, uses `meta-renesas`     |
 
 ### Reproducible build environment
 
@@ -125,28 +130,30 @@ use the CI helper script:
 
 Depending on the configuration, following images will be built:
 
-| config  | distro               | image            | kernel       |
-| ------- | -------------------- | ---------------- | -----------  |
-| minimal | spaetzle             | tq-image-small   | linux-tq     |
-| minimal | dumpling             | tq-image-generic | linux-tq     |
-| minimal | dumpling-wayland     | tq-image-weston  | linux-tq     |
-| imx     | spaetzle-nxp         | tq-image-small   | linux-imx-tq |
-| imx     | dumpling-wayland-nxp | tq-image-weston  | linux-imx-tq |
-| ti      | spaetzle-ti          | tq-image-small   | linux-ti-tq  |
-| ti      | dumpling-wayland-ti  | tq-image-weston  | linux-ti-tq  |
-| ls      | spaetzle             | tq-image-small   | TBD          |
-| ls      | dumpling             | tq-image-generic | TBD          |
+| config  | distro                | image             | kernel        |
+| ------- | --------------------- | ----------------- | ------------- |
+| minimal | spaetzle              | tq-image-small    | linux-tq      |
+| minimal | dumpling              | tq-image-generic  | linux-tq      |
+| minimal | dumpling-wayland      | tq-image-weston   | linux-tq      |
+| imx     | spaetzle-nxp          | tq-image-small    | linux-imx-tq  |
+| imx     | dumpling-wayland-nxp  | tq-image-weston   | linux-imx-tq  |
+| ti      | spaetzle-ti           | tq-image-small    | linux-ti-tq   |
+| ti      | dumpling-wayland-ti   | tq-image-weston   | linux-ti-tq   |
+| ls      | spaetzle              | tq-image-small    | TBD           |
+| ls      | dumpling              | tq-image-generic  | TBD           |
+| rzg2    | dumpling-wayland-rzg2 | rzg2-image-weston | linux-renesas |
 
 The kernel recipes are defined in `meta-tq`, image recipes and distro configs
 can be found in `meta-dumpling`.
 
 Images:
 
-| image            | description                                          |
-| ---------------- | ---------------------------------------------------- |
-| tq-image-small   | small image depending on `MACHINE_FEATURES`          |
-| tq-image-generic | basic set of tools depending on `MACHINE_FEATURES`   |
-| tq-image-weston  | weston GUI and multimedia support                    |
+| image             | description                                          |
+| ----------------- | ---------------------------------------------------- |
+| tq-image-small    | small image depending on `MACHINE_FEATURES`          |
+| tq-image-generic  | basic set of tools depending on `MACHINE_FEATURES`   |
+| tq-image-weston   | weston GUI and multimedia support                    |
+| rzg2-image-weston | weston GUI and multimedia support for RZ/G2 machines |
 
 ### Clean build
 

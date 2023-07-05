@@ -10,31 +10,17 @@
 	path = sources/meta-openembedded
 	url = https://github.com/openembedded/meta-openembedded.git
 	branch = hardknott
-[submodule "sources/meta-freescale"]
-	path = sources/meta-freescale
-	url = https://git.yoctoproject.org/git/meta-freescale
-	branch = hardknott
 [submodule "sources/meta-dumpling"]
 	path = sources/meta-dumpling
 	url = ../meta-dumpling.git
-	branch = hardknott
-[submodule "sources/meta-ti"]
-	path = sources/meta-ti
-	url = https://git.yoctoproject.org/git/meta-ti
-	branch = master
-[submodule "sources/meta-arm"]
-	path = sources/meta-arm
-	url = https://git.yoctoproject.org/git/meta-arm
 	branch = hardknott
 [submodule "sources/meta-qt5"]
 	path = sources/meta-qt5
 	url = https://github.com/meta-qt5/meta-qt5.git
 	branch = hardknott
-[submodule "sources/meta-basler-imx8"]
-	path = sources/meta-basler-imx8
-	url = https://github.com/basler/meta-basler-imx8
-	branch = hardknott-5.10.72-2.2.0
-[submodule "sources/meta-basler-tools"]
-	path = sources/meta-basler-tools
-	url = https://github.com/basler/meta-basler-tools
-	branch = hardknott
+[submodule "sources/meta-gplv2"]
+	path = sources/meta-gplv2
+	url = https://git.yoctoproject.org/git/meta-gplv2
+[submodule "sources/meta-renesas"]
+	path = sources/meta-renesas
+	url = https://github.com/renesas-rz/meta-renesas.git

@@ -158,6 +158,9 @@ get_images () {
 		dumpling )
 			choosen_images="tq-image-generic-debug"
 			;;
+		dumpling-wayland-rzg2 )
+			choosen_images="rzg2-image-weston-debug"
+			;;
 		* )
 			error "no image for distro ${distro}"
 			exit 1
@@ -187,7 +190,7 @@ valid_config() {
 ####
 # func:   get_machines
 # brief:  return buildable machines for config
-# param:  $1 - config (imx/ls/ti/minimal)
+# param:  $1 - config (imx/ls/ti/minimal/rzg2)
 # return: list of machines
 ####
 get_machines () {
@@ -200,11 +203,13 @@ get_machines () {
 	local imx7_machines=$(echo "${all_machines}" | grep 'tqma7')
 	local imx8_machines=$(echo "${all_machines}" | grep 'tqma8[^0-9]')
 	local mc_machines=$(echo "${all_machines}" | grep 'k3r5')
+	local rzg2_machines=$(echo "${all_machines}" | grep 'tqmarzg2')
 	local minimal_exclude="${ls_machines} ${imx8_machines} ${ti_machines} ${mc_machines}"
-	local ls_exclude=$(echo "${ti_machines} ${imx_machines} ${mc_machines}")
+	local ls_exclude=$(echo "${ti_machines} ${imx_machines} ${mc_machines} ${rzg2_machines}")
 	# we do not maintain an imx-Kernel for TQMa6UL[L]x[L] and TQMa7x at the moment.
-	local imx_exclude=$(echo "${ls_machines} ${ti_machines} ${mc_machines} ${imx6ul_machines} ${imx7_machines}")
-	local ti_exclude=$(echo "${imx_machines} ${ls_machines} ${mc_machines}")
+	local imx_exclude=$(echo "${ls_machines} ${ti_machines} ${mc_machines} ${imx6ul_machines} ${imx7_machines} ${rzg2_machines}")
+	local ti_exclude=$(echo "${imx_machines} ${ls_machines} ${mc_machines} ${rzg2_machines}")
+	local rzg2_exclude=$(echo "${imx_machines} ${ls_machines} ${mc_machines} ${ti_machines}")
 	local choosen_machines=${all_machines}
 
 	if ! valid_config ${config}; then
@@ -233,6 +238,11 @@ get_machines () {
 			choosen_machines=$(echo ${choosen_machines} | sed -e "s/ *${excl} */ /")
 		done
 		;;
+	"rzg2" )
+		for excl in ${rzg2_exclude}; do
+			choosen_machines=$(echo ${choosen_machines} | sed -e "s/ *${excl} */ /")
+		done
+		;;
 	* )
 		exit 1
 		;;
@@ -249,7 +259,7 @@ get_machines () {
 ####
 # func:   get_distros_for_config
 # brief:  return buildable machines for config
-# param:  $1 - config (imx/ls/ti/minimal)
+# param:  $1 - config (imx/ls/ti/minimal/rzg2)
 # return: list of machines
 ####
 get_distros_for_config () {
@@ -273,6 +283,9 @@ get_distros_for_config () {
 		;;
 	"ti" )
 		choosen_distros="spaetzle-ti dumpling-wayland-ti"
+		;;
+	"rzg2" )
+		choosen_distros="dumpling-wayland-rzg2"
 		;;
 	* )
 		exit 1
