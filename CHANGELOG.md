@@ -12,6 +12,33 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0008
+
+### Module BSP Revisions
+
+* kirkstone.TQMLS1028A.BSP.SW.0109
+
+### Added
+
+* meta-tq:
+  * TQMa8M*: support for linux-stable / linux-stable-rt (upstream support without
+    additional features)
+  * TQMa8M*: initial support for U-Boot distro boot / extlinux (still needs some
+    bootloader environment modifications)
+
+### Changed
+
+* poky: update to 4.0.11
+* meta-openembedded / meta-freescale: update to integrate fixes and stay in sync
+  with upstream
+* meta-tq:
+  * TQMLS1088A: use ATF FIP bootstream
+  * TQMLS1088A: update RCW, U-Boot and ATF
+
+### Fixed
+
+* meta-tq: compatibility to poky 4.0.11
+
 ## kirkstone.TQ.ARM.BSP.0007
 
 ### Module BSP Revisions
