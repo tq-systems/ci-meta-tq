@@ -13,8 +13,7 @@
 # Usage:
 # git-revision-name.sh [ PREFERRED-TAG ]
 
-# DEBUGGING
-### set -e
+set -e
 set -C # noclobber
 
 # For security reasons, explicitly set the internal field separator
