@@ -12,6 +12,25 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0009
+
+### Module BSP Revisions
+
+* kirkstone.TQMa8.BSP.SW.0092
+
+### Fixed
+
+* meta-tq:
+  * TQMa8x/TQMa8Xx[4,S]: fix LPI2C driver in linux-imx-tq 5.15
+
+
+### Changed
+
+* meta-tq:
+  * TQMa8x/TQMa8Xx[4,S]: update SCU to new version (no functional change)
+  * TQMLS104xA / TQMLS1088A: update to kernel based on 6.1.y
+  * TQMLS104xA / TQMLS1088A: recipe adjusments for linux 6.1.y
+
 ## kirkstone.TQ.ARM.BSP.0008
 
 ### Module BSP Revisions
