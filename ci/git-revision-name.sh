@@ -22,9 +22,24 @@ OLD_IFS="$IFS"
 IFS='
  	'
 
+# TRAP SIGNALS
+trap 'cleanup' QUIT EXIT
+
+trap 'error_abort $LINENO' ERR
+
+function cleanup () {
+	IFS="${OLD_IFS}"
+	return 0
+}
+
+function error_abort () {
+	cleanup
+	echo "error at $1"
+}
+
 # Internal variables and initializations.
 readonly PROGRAM="$(basename "$0")"
-readonly VERSION=0.2
+readonly VERSION=0.3
 
  # Create a place to store our work's progress
 function main () {
@@ -48,6 +63,7 @@ function main () {
 	else
 		STAMP="git-g${GITHEAD:0:12}"
 	fi
+
 	echo "${STAMP}"
 }
 
