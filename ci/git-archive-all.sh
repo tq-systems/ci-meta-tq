@@ -25,6 +25,8 @@ set -C # noclobber
 # TRAP SIGNALS
 trap 'cleanup' QUIT EXIT
 
+trap 'error_abort $LINENO' ERR
+
 # For security reasons, explicitly set the internal field separator
 # to newline, space, tab
 OLD_IFS=$IFS
@@ -63,9 +65,23 @@ function cleanup () {
 	return 0
 }
 
+function error_abort () {
+	echo "error at $1"
+	cleanup
+}
+
 function debug() {
 	[ ${VERBOSE} -eq 1 ] && echo $@
 	return 0
+}
+
+function error () {
+	echo $1 >&2
+}
+
+function exit_error () {
+	error "$2"
+	exit $1
 }
 
 function usage () {
@@ -112,7 +128,9 @@ function version () {
 }
 
 function rm_file () {
-	[ -f ${1} ] && rm ${1}
+	if [ -f ${1} ]; then
+		rm -f ${1}
+	fi
 }
 
 function main () {
@@ -184,12 +202,11 @@ function main () {
 
 	# Validate parameters; error early, error often.
 	if [ ${SEPARATE} -eq 1 -a ! -d ${OUT_FILE} ]; then
-	    echo "When creating multiple archives, your destination must be a directory."
-	    echo "If it's not, you risk being surprised when your files are overwritten."
+	    error "When creating multiple archives, your destination must be a directory."
+	    error "If it's not, you risk being surprised when your files are overwritten."
 	    exit -1
 	elif [ `git config -l | grep -q '^core\.bare=false'; echo $?` -ne 0 ]; then
-	    echo "${PROGRAM} must be run from a git working copy (i.e., not a bare repository)."
-	    exit -2
+	    exit_error -2 "${PROGRAM} must be run from a git working copy (i.e., not a bare repository)."
 	fi
 
 	if [ "${TREEISH}" == "${COMMIT}" ]; then
@@ -200,21 +217,17 @@ function main () {
 		HEAD_STAMP=$(git log -1 --pretty=%H);
 		COMMIT_STAMP=$(git log ${COMMIT} -1 --pretty=%H);
 		if [ "$HEAD_STAMP" != "${COMMIT}_STAMP" ]; then
-		    echo -n "temp branch is currently in use but is not what should be archived, give up ...";
-		    exit -3;
+		    exit_error -3 "temp branch is currently in use but is not what should be archived, give up ...";
 		fi
 		echo -n "use current branch HEAD ...";
 	    else
 		echo "check for tmp_release_${COMMIT} ..."
-		git branch | grep "tmp_release_${COMMIT}" > /dev/null;
-		ret=$?
-	      echo "ret $ret ..."
-		if [ $ret -eq 0 ]; then
+		if git branch | grep "tmp_release_${COMMIT}" > /dev/null; then
 		    echo "tmp_release_${COMMIT} exists ..."
 		    HEAD_STAMP=$(git log "tmp_release_${COMMIT}" -1 --pretty=%H);
 		    COMMIT_STAMP=$(git log ${COMMIT} -1 --pretty=%H);
 		    if [ "$HEAD_STAMP" != "${COMMIT}_STAMP" ]; then
-		        echo "temp branch exists but is not what should be archived, give up ...";
+		        error "temp branch exists but is not what should be archived, give up ...";
 		        git log "tmp_release_${COMMIT}" -1 --pretty=%H;
 		        git log ${COMMIT} -1 --pretty=%H;
 		        exit -4;
@@ -238,9 +251,9 @@ function main () {
 
 	rm_file "${TMPDIR}/$(basename "$(pwd)").${FORMAT}"
 
-	git archive --format=${FORMAT} --prefix="$PREFIX" ${TREEISH} > ${TMPDIR}/$(basename "$(pwd)").${FORMAT}
-
-	debug "done"
+	if ! git archive --format="${FORMAT}" --prefix="${PREFIX}" ${TREEISH} > "${TMPDIR}/$(basename "$(pwd)").${FORMAT}"; then
+		error_exit -6 "creating superproject archive failed"
+	fi
 
 	echo ${TMPDIR}/$(basename "$(pwd)").${FORMAT} >| ${TMPFILE} # clobber on purpose
 	superfile=$(head -n 1 ${TMPFILE})
@@ -316,9 +329,11 @@ function main () {
 	# TODO: SEPARATE=1 case not tested - should fail???
 	#
 	while read file; do
-		mv "$file" "${OUT_FILE}"
-		if [ $DO_TARGZ -eq 1 ]; then
-			gzip "${OUT_FILE}";
+		mv "${file}" "${OUT_FILE}"
+		if [ "${DO_TARGZ}" -eq "1" ]; then
+			if ! gzip "${OUT_FILE}"; then
+				exit_error -5 "gzip error for ${OUT_FILE}, give up ..."
+			fi
 		fi
 	done < ${TMPFILE}
 
@@ -346,4 +361,3 @@ function main () {
 }
 
 main "$@"
-# exit $?
