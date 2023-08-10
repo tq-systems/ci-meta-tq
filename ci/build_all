@@ -8,6 +8,29 @@
 # Description: build all machines in a layer with a given config
 #
 ###############################################################################
+set -e
+set -C # noclobber
+
+# TRAP SIGNALS
+trap 'cleanup' QUIT EXIT
+
+trap 'error_abort $LINENO' ERR
+
+# For security reasons, explicitly set the internal field separator
+# to newline, space, tab
+OLD_IFS=$IFS
+IFS='
+ 	'
+
+function cleanup () {
+	IFS="${OLD_IFS}"
+	return 0
+}
+
+function error_abort () {
+	echo "error at $1"
+	cleanup
+}
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
@@ -112,8 +135,10 @@ main () {
 		# uses these variable mainly to set default in local.conf
 		# afterwards they can be set again to iterate over all buildable
 		# machines
-		. ./setup-environment ${build_dir}_${distro} ${config}
-		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
+		if ! . ./setup-environment ${build_dir}_${distro} ${config}
+		then
+			error_out "sourcing setup-environment failed"
+		fi
 
 		info "build images"
 		local deploydir=$(readlink -f ./deployment)
@@ -169,13 +194,16 @@ main () {
 
 				if [ -z ${dryrun} ]
 				then
-					bitbake ${img}
-					[ "$?" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
+					if ! bitbake ${img}
+					then
+						error_out "bitbake ${img} for ${MACHINE} failed"
+					fi
 				fi
 			done
 		done
 		if [ "${disable_archive}" = "no" ]
 		then
+			# TODO: use bitbake variables
 			local artifactsdir=$(pwd)/tmp/deploy/images
 			local git_stamp_file="${deploydir}/${config}-stamp"
 
@@ -198,8 +226,10 @@ main () {
 				printf "\ngit submodule info:\n\n" >> ${artifactsdir}/${machine}/${machine_archive}.info
 				git submodule >> ${artifactsdir}/${machine}/${machine_archive}.info
 				# create image archive for $MACHINE
-				tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${artifactsdir} ${machine} --use-compress-program=pigz
-				[ "$?" -ne "0" ] && error_out "archiving for ${machine} failed"
+				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${artifactsdir} ${machine} --use-compress-program=pigz
+				then
+					error_out "archiving for ${machine} failed"
+				fi
 			done
 		fi
 
