@@ -168,9 +168,9 @@ def sendMail() {
     }
     emailext (
     to: "${gitCommitAuthorEmailAddr}",
-    subject: "Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
-    body: """ ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}:
-        Check console output at ${env.BUILD_URL} to view the results.""",
+    subject: "[JENKINS] Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
+    body: """You received this email because you are author of the last git commit that leads to this build.
+             Check the console output at ${env.BUILD_URL} to view the results and find the cause of the build issue.""",
     attachLog: false,
     )
 }
