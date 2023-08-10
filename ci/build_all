@@ -37,6 +37,10 @@ main () {
 			dryrun="on"
 			shift
 			;;
+		--devel )
+			develmode="on"
+			shift
+			;;
 		-*|--*=) # unsupported flags
 			echo "Error: Unsupported flag $1" >&2
 			exit 1
@@ -55,6 +59,13 @@ main () {
 	then
 		usage
 		exit 1
+	fi
+
+	# TODO: can we split this?
+	local disable_archive="no"
+	if ! [ -z ${LOCAL} ]
+	then
+		disable_archive="yes"
 	fi
 
 	local build_dir=${1}
@@ -100,16 +111,13 @@ main () {
 
 		#
 		# clean deploydir for CI builds
+		# config bitbake from autoconf template
 		#
-		if [ -z ${LOCAL} ]
+		if [ -z ${develmode} ]
 		then
 			if [ -d "${deploydir}" ]; then
 				rm -rf "${deploydir}"
 			fi
-		fi
-
-		if [ -z ${LOCAL} ]
-		then
 			do_link_auto_conf "ci"
 		else
 			do_link_auto_conf "normal"
@@ -157,7 +165,7 @@ main () {
 				fi
 			done
 		done
-		if [ -z ${LOCAL} ]
+		if [ "${disable_archive}" = "no" ]
 		then
 			local artifactsdir=$(pwd)/tmp/deploy/images
 			local git_stamp_file="${deploydir}/${config}-stamp"
@@ -188,7 +196,7 @@ main () {
 
 		cd ${top_dir}
 	done
-	if [ -z ${LOCAL} ]
+	if [ "${disable_archive}" = "no" ]
 	then
 		# create licenses and mirror archive
 		local archive_basename=${config}_${stamp}
