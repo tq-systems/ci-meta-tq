@@ -87,6 +87,10 @@
 			"pattern": "tqma64(?!.*?\\bk3r5\\b)"
 		},
 		{
+			"name": "AM62x",
+			"pattern": "tqma62(?!.*?\\bk3r5\\b)"
+		},
+		{
 			"name": "LS10x",
 			"pattern": "tqmls10[0-9]+"
 		},
@@ -176,6 +180,7 @@
 			"groups": [
 				"AM335x",
 				"AM57x",
+				"AM62x",
 				"AM64x",
 				"AM654x"
 			]
