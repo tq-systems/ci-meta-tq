@@ -69,8 +69,7 @@ main () {
 			shift
 			;;
 		-*|--*=) # unsupported flags
-			echo "Error: Unsupported flag $1" >&2
-			exit 1
+			error_out "Error: Unsupported flag $1"
 			;;
 		*) # preserve positional arguments
 			pos_params="$pos_params $1"
@@ -127,9 +126,9 @@ main () {
 			error_out "sourcing setup-environment failed"
 		fi
 
-		echo "build mirror"
+		info "build mirror"
 		do_link_auto_conf "mirror"
-		echo "clean local dirs in $(pwd) ..."
+		info "clean local dirs in $(pwd) ..."
 		rm -rf ./cache ./tmp* ./sstate-cache
 
 		# get DL_DIR to cleanup packages generated from git ...
@@ -174,7 +173,7 @@ main () {
 		DL_DIR=${DL_DIR#\"*}
 		DL_DIR=${DL_DIR%\"*}
 
-		echo "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
+		info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
 		if [ -z ${dryrun} ]
 			then
 			files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
