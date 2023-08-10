@@ -77,7 +77,7 @@ main () {
 			shift
 			;;
 		-*|--*=) # unsupported flags
-			echo "Error: Unsupported flag $1" >&2
+			error_out "Error: Unsupported flag $1"
 			exit 1
 			;;
 		*) # preserve positional arguments
@@ -215,7 +215,7 @@ main () {
 
 			for machine in ${machines}; do
 				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${distro}_${stamp}
-				echo "archiving ${machine} ..."
+				info "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}/${MACHINE}, clean them before recreate
 				rm -f ${artifactsdir}/${machine}/*.info
 				rm -f ${artifactsdir}/${machine}/*.md5sum
