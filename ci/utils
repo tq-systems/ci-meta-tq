@@ -28,7 +28,10 @@ __print () {
 			echo "${SCRIPT} [ERROR]: ${msg}" >&2
 			;;
 		dbg)
-			[ "${DEBUG}" = "on" ] && echo "${SCRIPT} [DEBUG]: ${msg}"
+			if [ "${DEBUG}" = "on" ]
+			then
+				echo "${SCRIPT} [DEBUG]: ${msg}"
+			fi
 			;;
 	esac
 }

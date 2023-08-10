@@ -8,6 +8,29 @@
 # Description: build all machines in a layer with a given config
 #
 ###############################################################################
+set -e
+set -C # noclobber
+
+# TRAP SIGNALS
+trap 'cleanup' QUIT EXIT
+
+trap 'error_abort $LINENO' ERR
+
+# For security reasons, explicitly set the internal field separator
+# to newline, space, tab
+OLD_IFS=$IFS
+IFS='
+ 	'
+
+function cleanup () {
+	IFS="${OLD_IFS}"
+	return 0
+}
+
+function error_abort () {
+	echo "error at $1"
+	cleanup
+}
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
@@ -91,8 +114,10 @@ main () {
 		# uses these variable mainly to set default in local.conf
 		# afterwards they can be set again to iterate over all buildable
 		# machines
-		. ./setup-environment ${build_dir}_${distro} ${config}
-		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
+		if ! . ./setup-environment ${build_dir}_${distro} ${config}
+		then
+			error_out "sourcing setup-environment failed"
+		fi
 
 		echo "build mirror"
 		do_link_auto_conf "mirror"
@@ -109,19 +134,25 @@ main () {
 		info "clean git2 tarballs from ${DL_DIR} ..."
 		rm -f ${DL_DIR}/git2_*.tar.gz
 		rm -f ${DL_DIR}/git2_*.tar.gz.done
-		ls -1 ${DL_DIR}/git2_*
+		if ls -1 ${DL_DIR}/git2_* 2>/dev/null
+		then
+			error_out "${DL_DIR} not clean, stop"
+		fi
 
 		for img in ${images}
 		do
 			# now force bitbake to do a --runall fetch for the image to generate
 			for machine in ${machines}
 			do
+				# overwrite MACHINE
 				export MACHINE=${machine}
 				info "baking: ${machine} ${distro} ${img} with --runall=fetch"
 				if [ -z ${dryrun} ]
 				then
-					bitbake ${img} --runall=fetch -k
-					[ "$?" -ne "0" ] && error_out "fetching (${img} for ${machine}) failed"
+					if ! bitbake ${img} --runall=fetch -k
+					then
+						error_out "fetching (${img} for ${machine}) failed"
+					fi
 				fi
 			done
 		done
