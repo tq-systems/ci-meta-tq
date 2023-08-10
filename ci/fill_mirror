@@ -42,8 +42,12 @@ usage() {
 	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug] \n \
 	<build-dir>: specifies the build directory location (required) \n \
 	[template]: template bblayers.conf to use \n \
+	[-h|--help]: print this message \n \
 	[--dryrun]: don't call bitbake \n \
-	[--debug]: print additional informations \n"
+	[--debug]: print additional informations \n
+	If the variable \"LOCAL\" is defined in environment of ${SCRIPT}, the
+	variables \"DISTRO_LIST\", \"MACHINE_LIST\" and \"IMAGE_LIST\" can be used
+	to define what is fetched. Otherwise the lists are calculated."
 }
 
 main () {
@@ -52,6 +56,10 @@ main () {
 
 	while (( "$#" )); do
 		case "$1" in
+		-h|--help )
+			usage
+			return 0
+			;;
 		--debug )
 			DEBUG="on"
 			shift
