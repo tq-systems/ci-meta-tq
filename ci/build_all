@@ -8,10 +8,36 @@
 # Description: build all machines in a layer with a given config
 #
 ###############################################################################
+set -e
+set -C # noclobber
+
+# TRAP SIGNALS
+trap 'cleanup' QUIT EXIT
+
+trap 'error_abort $LINENO' ERR
+
+# For security reasons, explicitly set the internal field separator
+# to newline, space, tab
+OLD_IFS=$IFS
+IFS='
+ 	'
+
+function cleanup () {
+	IFS="${OLD_IFS}"
+	return 0
+}
+
+function error_abort () {
+	echo "error at $1"
+	cleanup
+}
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
 readonly SCRIPT="$(basename "${0}")"
+
+# depends on bitbake / poky version
+readonly BITBAKE_GIT_MIRROR_PKG_EXTENSION="tar.gz"
 
 . ${SCRIPTPATH}/utils
 
@@ -19,8 +45,13 @@ usage() {
 	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug] \n \
 	<build-dir>: specifies the build directory location (required) \n \
 	[template]: template bblayers.conf to use \n \
+	[-h|--help]: print this message \n \
 	[--dryrun]: don't call bitbake \n \
-	[--debug]: print additional informations \n"
+	[--develmode]: allow development mode (use different auto.conf to disable CI features) \n \
+	[--debug]: print additional informations \n
+	If the variable \"LOCAL\" is defined in environment of ${SCRIPT}, the
+	variables \"DISTRO_LIST\", \"MACHINE_LIST\" and \"IMAGE_LIST\" can be used
+	to define what is built. Otherwise the lists are calculated."
 }
 
 main () {
@@ -29,6 +60,10 @@ main () {
 
 	while (( "$#" )); do
 		case "$1" in
+		-h|--help )
+			usage
+			return 0
+			;;
 		--debug )
 			DEBUG="on"
 			shift
@@ -37,8 +72,12 @@ main () {
 			dryrun="on"
 			shift
 			;;
+		--devel )
+			develmode="on"
+			shift
+			;;
 		-*|--*=) # unsupported flags
-			echo "Error: Unsupported flag $1" >&2
+			error_out "Error: Unsupported flag $1"
 			exit 1
 			;;
 		*) # preserve positional arguments
@@ -55,6 +94,13 @@ main () {
 	then
 		usage
 		exit 1
+	fi
+
+	# TODO: can we split this?
+	local disable_archive="no"
+	if ! [ -z ${LOCAL} ]
+	then
+		disable_archive="yes"
 	fi
 
 	local build_dir=${1}
@@ -92,24 +138,23 @@ main () {
 		# uses these variable mainly to set default in local.conf
 		# afterwards they can be set again to iterate over all buildable
 		# machines
-		. ./setup-environment ${build_dir}_${distro} ${config}
-		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
+		if ! . ./setup-environment ${build_dir}_${distro} ${config}
+		then
+			error_out "sourcing setup-environment failed"
+		fi
 
 		info "build images"
 		local deploydir=$(readlink -f ./deployment)
 
 		#
 		# clean deploydir for CI builds
+		# config bitbake from autoconf template
 		#
-		if [ -z ${LOCAL} ]
+		if [ -z ${develmode} ]
 		then
 			if [ -d "${deploydir}" ]; then
 				rm -rf "${deploydir}"
 			fi
-		fi
-
-		if [ -z ${LOCAL} ]
-		then
 			do_link_auto_conf "ci"
 		else
 			do_link_auto_conf "normal"
@@ -152,13 +197,16 @@ main () {
 
 				if [ -z ${dryrun} ]
 				then
-					bitbake ${img}
-					[ "$?" -ne "0" ] && error_out "bitbake ${img} for ${MACHINE} failed"
+					if ! bitbake ${img}
+					then
+						error_out "bitbake ${img} for ${MACHINE} failed"
+					fi
 				fi
 			done
 		done
-		if [ -z ${LOCAL} ]
+		if [ "${disable_archive}" = "no" ]
 		then
+			# TODO: use bitbake variables
 			local artifactsdir=$(pwd)/tmp/deploy/images
 			local git_stamp_file="${deploydir}/${config}-stamp"
 
@@ -167,7 +215,7 @@ main () {
 
 			for machine in ${machines}; do
 				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${distro}_${stamp}
-				echo "archiving ${machine} ..."
+				info "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}/${MACHINE}, clean them before recreate
 				rm -f ${artifactsdir}/${machine}/*.info
 				rm -f ${artifactsdir}/${machine}/*.md5sum
@@ -181,14 +229,16 @@ main () {
 				printf "\ngit submodule info:\n\n" >> ${artifactsdir}/${machine}/${machine_archive}.info
 				git submodule >> ${artifactsdir}/${machine}/${machine_archive}.info
 				# create image archive for $MACHINE
-				tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${artifactsdir} ${machine} --use-compress-program=pigz
-				[ "$?" -ne "0" ] && error_out "archiving for ${machine} failed"
+				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${artifactsdir} ${machine} --use-compress-program=pigz
+				then
+					error_out "archiving for ${machine} failed"
+				fi
 			done
 		fi
 
 		cd ${top_dir}
 	done
-	if [ -z ${LOCAL} ]
+	if [ "${disable_archive}" = "no" ]
 	then
 		# create licenses and mirror archive
 		local archive_basename=${config}_${stamp}
@@ -226,8 +276,8 @@ main () {
 		# we assume here that bitbake is configured to use shallow cloning
 		# and that packages are tar.gz''
 		#
-		local archive_git=$(ls -1 ${DL_DIR}/gitshallow_*.tar.gz)
-		local archive_gitsm=$(ls -1 ${DL_DIR}/gitsmshallow_*.tar.gz)
+		local archive_git=$(ls -1 ${DL_DIR}/gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION})
+		local archive_gitsm=$(ls -1 ${DL_DIR}/gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION})
 		for f in ${archive_git}; do
 			cp "${f}" ${archive_basename}.MIRROR.SRC;
 		done

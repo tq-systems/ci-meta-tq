@@ -28,7 +28,10 @@ __print () {
 			echo "${SCRIPT} [ERROR]: ${msg}" >&2
 			;;
 		dbg)
-			[ "${DEBUG}" = "on" ] && echo "${SCRIPT} [DEBUG]: ${msg}"
+			if [ "${DEBUG}" = "on" ]
+			then
+				echo "${SCRIPT} [DEBUG]: ${msg}"
+			fi
 			;;
 	esac
 }
@@ -91,8 +94,7 @@ get_md5sum () {
 		local files=$(find . -maxdepth 1 -type f)
 
 		for file in ${files}; do
-			md5sum ${file}
-			if [ "$?" -ne "0" ]; then
+			if ! md5sum ${file}; then
 				err "md5sum for ${file}"
 			fi
 		done
@@ -113,7 +115,9 @@ do_link_auto_conf () {
 
 	rm -rf ${PWD}/conf/auto.conf
 	ln -s ${PWD}/conf/auto.conf.${templ} ${PWD}/conf/auto.conf
-	! [ -e ${PWD}/conf/auto.conf ] && error_out "missing auto.conf"
+	if ! [ -e ${PWD}/conf/auto.conf ]; then
+		error_out "missing auto.conf"
+	fi
 }
 
 ####
