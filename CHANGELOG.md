@@ -12,6 +12,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* poky: update to 4.0.12
+* meta-arm: update to 4.0.2
+* meta-openembedded / meta-freescale: update to integrate fixes and
+  stay in sync with upstream
+* ci: improve scripts used for development and ci
+
 ## kirkstone.TQ.ARM.BSP.0009
 
 ### Module BSP Revisions
