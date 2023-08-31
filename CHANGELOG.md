@@ -12,6 +12,21 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Fixed
+
+* meta-tq:
+  * TQMa93: fix console handling for busybox init
+  * TQMa8MPxL: fix reserved memory in DTB for linux-imx-tq
+  * TQMa8: restore U-Boot environment tool in rootfs
+  * SOM with i.NX CPU: fix building UBI images depending on `MACHINE_FEATURE`
+    "ubi" when using together with meta-freescale
+
+### Added
+
+* meta-tq:
+  * TQMa93: update TF-A to v2.8 based version
+  * TQMa7 / TQMa6 / TQMa6UL[L]x[L]: Linux 6.1 stable support
+
 ### Changed
 
 * poky: update to 4.0.12
