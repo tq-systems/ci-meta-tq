@@ -259,7 +259,7 @@ main () {
 
 		mkdir -p ${archive_basename}.LIC
 		# copy the file from licenses
-		local licenses_src_path=$(ls -d ${build_dir}_*/tmp/deploy/licenses/*)
+		local licenses_src_path=$(ls -d ${build_dir}_*/tmp*/deploy/licenses/*)
 		for f in ${licenses_src_path}; do
 			cp -r "${f}" ${archive_basename}.LIC;
 		done
@@ -271,7 +271,7 @@ main () {
 		mkdir -p ${archive_basename}.MIRROR.SRC
 		DL_DIR=$(bitbake-getvar -q --value DL_DIR)
 		# query all archived sources, needs archiver class in config
-		local archived_src_path=$(ls -1 ${build_dir}_*/tmp/deploy/sources/*/*/*)
+		local archived_src_path=$(ls -1 ${build_dir}_*/tmp*/deploy/sources/*/*/*)
 
 		# copy the file from archived sources if it exists in DL_DIR
 		for f in ${archived_src_path}; do
