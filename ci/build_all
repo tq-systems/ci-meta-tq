@@ -176,14 +176,8 @@ main () {
 		fi
 
 		# note: this depends on a selected distro
-		local version=$(bitbake -e | grep ^"DISTRO_VERSION=")
-		export ${version}
-		DISTRO_VERSION=${DISTRO_VERSION#\"*}
-		DISTRO_VERSION=${DISTRO_VERSION%\"*}
-		local codename=$(bitbake -e | grep ^"DISTRO_CODENAME=")
-		export ${codename}
-		DISTRO_CODENAME=${DISTRO_CODENAME#\"*}
-		DISTRO_CODENAME=${DISTRO_CODENAME%\"*}
+		DISTRO_VERSION=$(bitbake-getvar -q --value DISTRO_VERSION)
+		DISTRO_CODENAME=$(bitbake-getvar -q --value DISTRO_CODENAME)
 
 		for img in ${images}
 		do
@@ -206,30 +200,32 @@ main () {
 		done
 		if [ "${disable_archive}" = "no" ]
 		then
-			# TODO: use bitbake variables
-			local artifactsdir=$(pwd)/tmp/deploy/images
 			local git_stamp_file="${deploydir}/${config}-stamp"
 
 			mkdir -p ${deploydir}
 			git log -1 > ${git_stamp_file}
 
 			for machine in ${machines}; do
+				# export $MACHINE before query bitbake
+				export MACHINE=${machine}
+				local artifactsdir=$(bitbake-getvar -q --value DEPLOY_DIR_IMAGE)
+				local yocto_deploydir=$(bitbake-getvar -q --value DEPLOY_DIR)
 				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${distro}_${stamp}
 				info "archiving ${machine} ..."
-				# we create some files in ${ARTIFACTSDIR}/${MACHINE}, clean them before recreate
-				rm -f ${artifactsdir}/${machine}/*.info
-				rm -f ${artifactsdir}/${machine}/*.md5sum
+				# we create some files in ${ARTIFACTSDIR}, clean them before recreate
+				rm -f ${artifactsdir}/*.info
+				rm -f ${artifactsdir}/*.md5sum
 				# create a file containing md5sum of files
-				get_md5sum ${artifactsdir}/${machine} > ${deploydir}/${machine_archive}.md5sum
-				cp ${deploydir}/${machine_archive}.md5sum ${artifactsdir}/${machine}
+				get_md5sum ${artifactsdir} > ${deploydir}/${machine_archive}.md5sum
+				cp ${deploydir}/${machine_archive}.md5sum ${artifactsdir}
 				# create a file containing the version we are build from
-				cp ${git_stamp_file} ${artifactsdir}/${machine}/${machine_archive}.info
-				printf "\ngit submodule url:\n\n" >> ${artifactsdir}/${machine}/${machine_archive}.info
-				git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${artifactsdir}/${machine}/${machine_archive}.info
-				printf "\ngit submodule info:\n\n" >> ${artifactsdir}/${machine}/${machine_archive}.info
-				git submodule >> ${artifactsdir}/${machine}/${machine_archive}.info
-				# create image archive for $MACHINE
-				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${artifactsdir} ${machine} --use-compress-program=pigz
+				cp ${git_stamp_file} ${artifactsdir}/${machine_archive}.info
+				printf "\ngit submodule url:\n\n" >> ${artifactsdir}/${machine_archive}.info
+				git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${artifactsdir}/${machine_archive}.info
+				printf "\ngit submodule info:\n\n" >> ${artifactsdir}/${machine_archive}.info
+				git submodule >> ${artifactsdir}/${machine_archive}.info
+				# create image archive for $MACHINE, assume DEPLOY_DIR_IMAGE=$DEPLOY_DIR/images/${MACHINE}
+				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${yocto_deploydir}/images ${machine} --use-compress-program=pigz
 				then
 					error_out "archiving for ${machine} failed"
 				fi
@@ -255,11 +251,7 @@ main () {
 		rm -rf ${archive_basename}.LIC
 
 		mkdir -p ${archive_basename}.MIRROR.SRC
-		setter=$(bitbake -e | grep ^"DL_DIR=")
-		export ${setter}
-		# remove the '"' from the var, otherwise usage will fail
-		DL_DIR=${DL_DIR#\"*}
-		DL_DIR=${DL_DIR%\"*}
+		DL_DIR=$(bitbake-getvar -q --value DL_DIR)
 		# query all archived sources, needs archiver class in config
 		local archived_src_path=$(ls -1 ${build_dir}_*/tmp/deploy/sources/*/*/*)
 
