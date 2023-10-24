@@ -132,9 +132,7 @@ main () {
 		rm -rf ./cache ./tmp* ./sstate-cache
 
 		# get DL_DIR to cleanup packages generated from git ...
-		setter=$(bitbake -e | grep ^"DL_DIR=")
-		echo "$setter"
-		export ${setter}
+		DL_DIR=$(bitbake-getvar -q --value DL_DIR)
 
 		# if there is a .done file and / or a git2_*.tar.gz it seems the
 		# fetcher does not rerun git to update the repo
@@ -164,14 +162,8 @@ main () {
 			done
 		done
 
-		url=$(bitbake -e | grep ^"SOURCE_MIRROR_URL=")
-		export ${url}
-		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#\"*}
-		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL%\"*}
+		SOURCE_MIRROR_URL=$(bitbake-getvar -q --value SOURCE_MIRROR_URL)
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
-
-		DL_DIR=${DL_DIR#\"*}
-		DL_DIR=${DL_DIR%\"*}
 
 		info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
 		if [ -z ${dryrun} ]
