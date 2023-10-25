@@ -12,28 +12,41 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0010
++
+### Module BSP Revisions
+
+* kirkstone.TQMa64xxL.BSP.SW.0005
+
 ### Fixed
 
 * meta-tq:
-  * TQMa93: fix console handling for busybox init
-  * TQMa8MPxL: fix reserved memory in DTB for linux-imx-tq
-  * TQMa8: restore U-Boot environment tool in rootfs
-  * SOM with i.NX CPU: fix building UBI images depending on `MACHINE_FEATURE`
+  * TQMa8Mx / TQMa8MxML / TQMa8MxNL / TQMa8MPxL: fixed compatibility for TF-A >= 2.6
+    for Cortex-M demos. Older versions do not boot with new TF-A.
+  * TQMa93: fixed console handling for busybox init
+  * TQMa8MPxL: fixed reserved memory in DTB for linux-imx-tq
+  * TQMa8: restored U-Boot environment tool in rootfs
+  * SOM with i.MX CPU: fixed building UBI images depending on `MACHINE_FEATURE`
     "ubi" when using together with meta-freescale
 
 ### Added
 
 * meta-tq:
-  * TQMa93: update TF-A to v2.8 based version
+  * TQMa8MPxL / TQMa8MxML / TQMa8MxNL / TQMa8Mx:
+   * backported GPU 6.4.11.p1.2 from meta-freescale master
+   * Linux 6.1 FDLC support (new default when compiling with NXP kernel)
+  * TQMa6411L: initial support for CPU variant
+  * TQMa93: updated TF-A to v2.8 based version
   * TQMa7 / TQMa6 / TQMa6UL[L]x[L]: Linux 6.1 stable support
 
 ### Changed
 
-* poky: update to 4.0.12
-* meta-arm: update to 4.0.2
-* meta-openembedded / meta-freescale: update to integrate fixes and
+* poky: updated to 4.0.13
+* poky: updated to 4.0.12
+* meta-arm: updated to 4.0.2
+* meta-openembedded / meta-freescale: updated to integrate fixes and
   stay in sync with upstream
-* ci: improve scripts used for development and ci
+* ci: improved scripts used for development and CI
 
 ## kirkstone.TQ.ARM.BSP.0009
 
