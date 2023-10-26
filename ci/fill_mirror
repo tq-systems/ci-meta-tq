@@ -8,6 +8,29 @@
 # Description: build all machines in a layer with a given config
 #
 ###############################################################################
+set -e
+set -C # noclobber
+
+# TRAP SIGNALS
+trap 'cleanup' QUIT EXIT
+
+trap 'error_abort $LINENO' ERR
+
+# For security reasons, explicitly set the internal field separator
+# to newline, space, tab
+OLD_IFS=$IFS
+IFS='
+ 	'
+
+function cleanup () {
+	IFS="${OLD_IFS}"
+	return 0
+}
+
+function error_abort () {
+	echo "error at $1"
+	cleanup
+}
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
@@ -19,8 +42,12 @@ usage() {
 	echo -e "\nUsage: ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug] \n \
 	<build-dir>: specifies the build directory location (required) \n \
 	[template]: template bblayers.conf to use \n \
+	[-h|--help]: print this message \n \
 	[--dryrun]: don't call bitbake \n \
-	[--debug]: print additional informations \n"
+	[--debug]: print additional informations \n
+	If the variable \"LOCAL\" is defined in environment of ${SCRIPT}, the
+	variables \"DISTRO_LIST\", \"MACHINE_LIST\" and \"IMAGE_LIST\" can be used
+	to define what is fetched. Otherwise the lists are calculated."
 }
 
 main () {
@@ -29,6 +56,10 @@ main () {
 
 	while (( "$#" )); do
 		case "$1" in
+		-h|--help )
+			usage
+			return 0
+			;;
 		--debug )
 			DEBUG="on"
 			shift
@@ -38,8 +69,7 @@ main () {
 			shift
 			;;
 		-*|--*=) # unsupported flags
-			echo "Error: Unsupported flag $1" >&2
-			exit 1
+			error_out "Error: Unsupported flag $1"
 			;;
 		*) # preserve positional arguments
 			pos_params="$pos_params $1"
@@ -91,12 +121,14 @@ main () {
 		# uses these variable mainly to set default in local.conf
 		# afterwards they can be set again to iterate over all buildable
 		# machines
-		. ./setup-environment ${build_dir}_${distro} ${config}
-		[ "$?" -ne "0" ] && error_out "sourcing setup-environment failed"
+		if ! . ./setup-environment ${build_dir}_${distro} ${config}
+		then
+			error_out "sourcing setup-environment failed"
+		fi
 
-		echo "build mirror"
+		info "build mirror"
 		do_link_auto_conf "mirror"
-		echo "clean local dirs in $(pwd) ..."
+		info "clean local dirs in $(pwd) ..."
 		rm -rf ./cache ./tmp* ./sstate-cache
 
 		# get DL_DIR to cleanup packages generated from git ...
@@ -109,19 +141,25 @@ main () {
 		info "clean git2 tarballs from ${DL_DIR} ..."
 		rm -f ${DL_DIR}/git2_*.tar.gz
 		rm -f ${DL_DIR}/git2_*.tar.gz.done
-		ls -1 ${DL_DIR}/git2_*
+		if ls -1 ${DL_DIR}/git2_* 2>/dev/null
+		then
+			error_out "${DL_DIR} not clean, stop"
+		fi
 
 		for img in ${images}
 		do
 			# now force bitbake to do a --runall fetch for the image to generate
 			for machine in ${machines}
 			do
+				# overwrite MACHINE
 				export MACHINE=${machine}
 				info "baking: ${machine} ${distro} ${img} with --runall=fetch"
 				if [ -z ${dryrun} ]
 				then
-					bitbake ${img} --runall=fetch -k
-					[ "$?" -ne "0" ] && error_out "fetching (${img} for ${machine}) failed"
+					if ! bitbake ${img} --runall=fetch -k
+					then
+						error_out "fetching (${img} for ${machine}) failed"
+					fi
 				fi
 			done
 		done
@@ -135,7 +173,7 @@ main () {
 		DL_DIR=${DL_DIR#\"*}
 		DL_DIR=${DL_DIR%\"*}
 
-		echo "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
+		info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
 		if [ -z ${dryrun} ]
 			then
 			files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
