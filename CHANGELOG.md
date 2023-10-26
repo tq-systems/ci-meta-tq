@@ -12,8 +12,13 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* meta-tq:
+  * Added machines for new TQMLS10xxA memory variants
+
 ## kirkstone.TQ.ARM.BSP.0010
-+
+
 ### Module BSP Revisions
 
 * kirkstone.TQMa64xxL.BSP.SW.0005
