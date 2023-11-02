@@ -1,0 +1,1 @@
+../ci/test-settings.inc
