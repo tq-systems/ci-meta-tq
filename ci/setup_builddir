@@ -130,24 +130,22 @@ handle_licenses() {
 # setup conf dir
 # copy / link files from TEMPLATECONF dir
 # $1        - TEMPLATECONF dir
-# $2        - BBLAYERS_TEMPLATE file
 ##############
 setup_confdir() {
 	local TEMPLATECONF="${1}"
-	local BBLAYERS_TEMPLATE="${2}"
 
 	mv conf/local.conf conf/local.conf.sample
 
 	# Generate the local.conf based on the defaults
 	grep -v '^#\|^$' "conf/local.conf.sample" > "conf/local.conf"
 
-	echo "link additional includes from ${TEMPLATES} to ./conf/ ..."
-	FILES=$(find "${TEMPLATECONF}" -maxdepth 1 -type f -name "*.inc")
+	echo "link additional includes from ${TEMPLATECONF} to ./conf/ ..."
+	FILES=$(find "${TEMPLATECONF}" -maxdepth 1 -type f,l -name "*.inc")
 	for f in ${FILES}; do
 		ln -s "${f}" "conf/$(basename ${f})"
 	done
-	echo "link auto.conf templates from ${TEMPLATES} to ./conf/ ..."
-	FILES=$(find "${TEMPLATECONF}" -maxdepth 1 -type f -name "auto.conf*")
+	echo "link auto.conf templates from ${TEMPLATECONF} to ./conf/ ..."
+	FILES=$(find "${TEMPLATECONF}" -maxdepth 1 -type f,l -name "auto.conf*")
 	for f in ${FILES}; do
 		ln -s "${f}" "conf/$(basename ${f})"
 	done
@@ -155,12 +153,6 @@ setup_confdir() {
 	if ! [ -e ./conf/auto.conf ]; then
 		echo "${SCRIPT}: Error: missing auto.conf" >&2
 		return 1
-	fi
-
-	# copy bblayers.conf template
-	if [ -e "${TEMPLATECONF}/${BBLAYERS_TEMPLATE}" ]; then
-		ln -s "${TEMPLATECONF}/${BBLAYERS_TEMPLATE}" conf/bblayers.conf.tmpl
-		cp "${TEMPLATECONF}/${BBLAYERS_TEMPLATE}" conf/bblayers.conf
 	fi
 
 	# check for site.conf and create link if available
