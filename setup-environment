@@ -16,7 +16,7 @@
 CWD=$(pwd)
 PROGNAME="setup-environment"
 SCRIPTDIR="${CWD}/ci"
-CONFIG_TEMPLATE=ml
+CONFIG_TEMPLATE=mainline
 # conf templates
 TEMPLATECONF=${CWD}/sources/template/conf/templates/ci
 
