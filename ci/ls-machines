@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
 # File:        ls-machines
@@ -10,6 +10,16 @@
 # Description: list all machines in a layer
 #
 ###############################################################################
+
+set -e
+set -C # noclobber
+
+# TRAP SIGNALS
+trap 'error_abort $LINENO' ERR
+
+function error_abort () {
+	echo "error at $1"
+}
 
 readonly DEFAULT_LAYER="meta-tq/meta-tq"
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
 # Copyright (C) 2022-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
@@ -8,6 +8,16 @@
 # Description: list all configs in buildspace
 #
 ###############################################################################
+
+set -e
+set -C # noclobber
+
+
+trap 'error_abort $LINENO' ERR
+
+function error_abort () {
+	echo "error at $1"
+}
 
 readonly DEFAULT_TEMPLATEDIR="template"
 readonly DEFAULT_TEMPLATE="ci"
