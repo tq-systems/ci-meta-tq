@@ -12,6 +12,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0011
+
+### Module BSP Revisions
+
+* kirkstone.TQMLS10xxA.BSP.SW.0106
+
 ### Added
 
 * meta-tq:
