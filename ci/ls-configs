@@ -21,13 +21,17 @@ function error_abort () {
 
 readonly DEFAULT_TEMPLATEDIR="template"
 readonly DEFAULT_TEMPLATE="ci"
+readonly SCRIPT="$(basename "${0}")"
 
 usage() {
-	echo "$1 usage:"
-	echo "\nlist available configs from template dir under sources"
-	echo "$1 - use default template dir ${DEFAULT_TEMPLATEDIR} and template ${DEFAULT_TEMPLATE}"
-	echo "$1 <templatedir> <template>- use templatedir aand template given as parameter"
-	echo "templates must reside in a layer under conf/templates/<template>"
+	cat <<END
+$1 usage:
+
+list available configs from template dir under sources
+$1 - use default template dir ${DEFAULT_TEMPLATEDIR}  and template ${DEFAULT_TEMPLATE}
+$1 <templatedir> <template>- use templatedir aand template given as parameter
+templates must reside in a layer under conf/templates/<template>.
+END
 }
 
 main() {
@@ -35,22 +39,16 @@ main() {
 	local TEMPLATE="${DEFAULT_TEMPLATE}"
 
 	if [ "${#}" -gt "2" ] ; then
-		usage "$0"
+		usage "${SCRIPT}"
 		return 1
 	fi
 
-	if [ "${#}" -gt "1" ]; then
-		TEMPLATE="${2}"
-	fi
-
-	if [ "${#}" -gt "0" ]; then
-		TEMPLATEDIR="${1}"
-	fi
-
+	local TEMPLATEDIR=${1:-${DEFAULT_TEMPLATEDIR}}
+	local TEMPLATE=${2:-${DEFAULT_TEMPLATE}}
 	local TEMPLATEPATH="${TEMPLATEDIR}/conf/templates/${TEMPLATE}"
 
 	if ! [ -d "./sources/${TEMPLATEPATH}" ]; then
-		usage "$0"
+		usage "${SCRIPT}"
 		return 1
 	fi
 

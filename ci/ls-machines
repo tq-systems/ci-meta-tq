@@ -22,28 +22,28 @@ function error_abort () {
 }
 
 readonly DEFAULT_LAYER="meta-tq/meta-tq"
+readonly SCRIPT="$(basename "${0}")"
 
 usage() {
-	echo "$1 usage:"
-	echo "\nlist available machines from layer under sources"
-	echo "$1 - use default layer ${DEFAULT_LAYER}"
-	echo "$1 <layer name>- use layer given as parameter"
+	cat <<END
+${1} usage:
+
+list available machines from layer under sources
+${1} - use default layer ${DEFAULT_LAYER}
+${1} <layer name>- use layer given as parameter
+END
 }
 
 main() {
-	local LAYER=${DEFAULT_LAYER}
-
 	if [ "${#}" -gt "1" ]; then
-		usage "$0"
+		usage "${SCRIPT}"
 		return 1
 	fi
 
-	if [ "${#}" -eq "1" ]; then
-		LAYER="${1}"
-	fi
+	local LAYER=${1:-${DEFAULT_LAYER}}
 
 	if ! [ -d "./sources/${LAYER}/conf/machine" ]; then
-		usage "$0"
+		usage "${SCRIPT}"
 		return 1
 	fi
 
