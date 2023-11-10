@@ -12,6 +12,29 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0012
+
+### Module BSP Revisions
+
+* kirkstone.TQMa64xxL.BSP.SW.0006
+
+### Added
+
+* TQMT10xx
+  * Added support for new rcw configurations
+
+### Fixed
+
+* TQMa64xxL
+  * u-boot: Do not set ethXaddr variables in environment for MAC addresses that
+    are not actually assigned to the module
+
+    This affects the TQMa6411L variant, which does not support PRU Ethernet, so
+    only a total of 2 instead of 5 MAC addresses are assigned per module.
+* TQMLX2160A
+  * Fixed wrong UART Clock in U-Boot. The Linux UART driver relies on firmware
+    initialisation of UART clock. So this fixes Linux UART clock as well.
+
 ## kirkstone.TQ.ARM.BSP.0011
 
 ### Module BSP Revisions
