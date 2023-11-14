@@ -12,6 +12,23 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0013
+
+### Module BSP Revisions
+
+* kirkstone.TQMa6x.BSP.SW.0122
+
+### Added
+
+* meta-tq:
+  * TQMa6DL with 2 GiB
+  * U-Boot v2023.04 (for TQMa6x machines)
+
+### Changed
+
+* TQMa335x
+  * kernel configuration clean-up and limited support for newer meta-ti
+
 ## kirkstone.TQ.ARM.BSP.0012
 
 ### Module BSP Revisions
