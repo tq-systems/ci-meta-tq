@@ -48,14 +48,15 @@ usage() {
 	[-h|--help]: print this message \n \
 	[--dryrun]: don't call bitbake \n \
 	[--develmode]: allow development mode (use different auto.conf to disable CI features) \n \
-	[--debug]: print additional informations \n
+	[--debug]: print additional informations \n \
+	[--archive=<yes|no>]: en/disable tarball generation, default no \n \
 	If the variable \"LOCAL\" is defined in environment of ${SCRIPT}, the
 	variables \"DISTRO_LIST\", \"MACHINE_LIST\" and \"IMAGE_LIST\" can be used
 	to define what is built. Otherwise the lists are calculated."
 }
 
 main () {
-
+	local archive="no"
 	pos_params=""
 
 	while (( "$#" )); do
@@ -63,6 +64,10 @@ main () {
 		-h|--help )
 			usage
 			return 0
+			;;
+		--archive=* )
+			archive=${1#*=}
+			shift
 			;;
 		--debug )
 			DEBUG="on"
@@ -94,13 +99,6 @@ main () {
 	then
 		usage
 		exit 1
-	fi
-
-	# TODO: can we split this?
-	local disable_archive="no"
-	if ! [ -z ${LOCAL} ]
-	then
-		disable_archive="yes"
 	fi
 
 	local build_dir=${1}
@@ -198,7 +196,7 @@ main () {
 				fi
 			done
 		done
-		if [ "${disable_archive}" = "no" ]
+		if [ "${archive}" = "yes" ]
 		then
 			local git_stamp_file="${deploydir}/${config}-stamp"
 
@@ -235,7 +233,7 @@ main () {
 
 		cd ${top_dir}
 	done
-	if [ "${disable_archive}" = "no" ]
+	if [ "${archive}" = "yes" ]
 	then
 		# create licenses and mirror archive
 		local archive_basename=${config}_${stamp}
