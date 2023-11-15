@@ -209,7 +209,6 @@ main () {
 				# export $MACHINE before query bitbake
 				export MACHINE=${machine}
 				local artifactsdir=$(bitbake-getvar -q --value DEPLOY_DIR_IMAGE)
-				local yocto_deploydir=$(bitbake-getvar -q --value DEPLOY_DIR)
 				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${distro}_${stamp}
 				info "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}, clean them before recreate
@@ -224,8 +223,10 @@ main () {
 				git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${artifactsdir}/${machine_archive}.info
 				printf "\ngit submodule info:\n\n" >> ${artifactsdir}/${machine_archive}.info
 				git submodule >> ${artifactsdir}/${machine_archive}.info
-				# create image archive for $MACHINE, assume DEPLOY_DIR_IMAGE=$DEPLOY_DIR/images/${MACHINE}
-				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz -C ${yocto_deploydir}/images ${machine} --use-compress-program=pigz
+				# create image archive for $MACHINE, assume DEPLOY_DIR_IMAGE has ${MACHINE} as final part
+				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz \
+					-C "$(dirname "${artifactsdir}")" \
+					"$(basename "${artifactsdir}")" --use-compress-program=pigz
 				then
 					error_out "archiving for ${machine} failed"
 				fi
