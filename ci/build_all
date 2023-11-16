@@ -233,6 +233,20 @@ main () {
 				then
 					error_out "archiving for ${machine} failed"
 				fi
+
+				# add some artifact unpacked for automated testing
+				# TODO: should we use bitbake variables here?
+				mkdir -p ${deploydir}/${machine}
+				find ${artifactsdir} -name *-${machine}.wic -exec cp "{}" ${deploydir}/${machine}/ \;
+				find ${artifactsdir} -name *-${machine}.tar.gz -exec cp "{}" ${deploydir}/${machine}/ \;
+				local kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_DEVICETREE)
+				for dtb in ${kernel_dtb}; do
+					cp "${artifactsdir}/$(basename ${dtb})" "${deploydir}/${machine}/"
+				done
+				local kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_IMAGETYPE)
+				cp ${artifactsdir}/${kimage} ${deploydir}/${machine}/
+				# TODO: discuss if we need modules for multiple kernel test
+				find ${artifactsdir} -type f -name modules*.tgz -exec cp "{}" ${deploydir}/${machine}/ \;
 			done
 		fi
 
