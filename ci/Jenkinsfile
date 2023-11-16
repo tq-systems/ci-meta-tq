@@ -117,10 +117,6 @@ def cleanupBuild() {
             println "This job was caused by user, remove build directory ... (RELEASE)"
             sh "find . -maxdepth 3 -type d -name '${env.BUILD_DIR}_*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
             sh "find . -maxdepth 3 -type d -name '${env.BUILD_DIR}_*' -delete"
-        } else if (reason.contains("GitLabWebHookCause")) {
-            println "This job was caused by GitLab remove tmp ..."
-            sh "find . -maxdepth 4 -type d -name 'tmp' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
-            sh "find . -maxdepth 4 -type d -name 'tmp' -delete"
         } else {
             println "build cause : " + reason
         }
@@ -156,17 +152,11 @@ def cleanupBuild() {
 
 /******************************************************************/
 /* Send a Mail to responsible user in case of errors              */
-/* - responsible user is gitlabUser in case of an MR              */
-/* - responsible user is git author of the last commit if no  MR  */
+/* - responsible user is git author of the last commit  */
 /******************************************************************/
 def sendMail() {
-    if ("MERGE".equals(env.gitlabActionType)) {
-        gitCommitAuthorEmailAddr = env.gitlabUserEmail
-        echo "GitLab Usermail is ${gitCommitAuthorEmailAddr}"
-    } else {
-        gitCommitAuthorEmailAddr = sh returnStdout: true, script: 'git log -n1 --pretty=format:%ae ${GIT_COMMIT}'
-        echo "GitLab Usermail is ${gitCommitAuthorEmailAddr}"
-    }
+    gitCommitAuthorEmailAddr = sh returnStdout: true, script: 'git log -n1 --pretty=format:%ae ${GIT_COMMIT}'
+    echo "Usermail is ${gitCommitAuthorEmailAddr}"
     emailext (
     to: "${gitCommitAuthorEmailAddr}",
     subject: "[JENKINS] Build Notification: ${env.JOB_BASE_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}!",
@@ -198,7 +188,6 @@ pipeline {
                        numToKeepStr: '10')
         )
         timestamps()
-        gitLabConnection('tq-gitlab-server')
     }
 
     environment {
@@ -218,7 +207,6 @@ pipeline {
         }
         stage ('Checkout') {
             steps {
-                updateGitlabCommitStatus name: 'build', state: 'running'
                 checkoutMetaLayers("${env.WORKSPACE}")
             }
         }
@@ -253,10 +241,8 @@ pipeline {
                 post {
                     success {
                         script {
-                            if ("${env.gitlabActionType}" != "MERGE") {
-                                archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.LIC.tar.gz"
-                                archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.MIRROR.SRC.tar.gz"
-                            }
+                            archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.LIC.tar.gz"
+                            archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.MIRROR.SRC.tar.gz"
                             archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
                         }
                     }
@@ -268,23 +254,18 @@ pipeline {
     post {
         success {
             script {
-                if ("${env.gitlabActionType}" != "MERGE") {
-                    sshagent(['jenkins-master-key']) {
-                        sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
-                    }
-                    archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
+                sshagent(['jenkins-master-key']) {
+                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
                 }
+                archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
                 cleanupBuild()
-                updateGitlabCommitStatus name: 'build', state: 'success'
             }
         }
         unstable {
             sendMail()
-            updateGitlabCommitStatus name: 'build', state: 'failed'
         }
         failure {
             sendMail()
-            updateGitlabCommitStatus name: 'build', state: 'failed'
         }
     }
 }
