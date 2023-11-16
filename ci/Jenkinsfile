@@ -87,7 +87,7 @@ def mirrorConfiguration(directoryName) {
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
-        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build_all ${env.BUILD_DIR} \$(basename \$(pwd))"
+        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build_all --archive=yes --deploydir=${env.DEPLOY_DIR} ${env.BUILD_DIR} \$(basename \$(pwd))"
     }
 }
 
@@ -136,10 +136,11 @@ def cleanupBuild() {
     sh "find . -maxdepth 3 -type l -wholename '*CONFIGS*' -delete"
 
     echo "Remove all deploy directorys ..."
+    /* TODO: use bitbake names ... */
     sh "find . -type d -name 'deploy' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
     sh "find . -type d -name 'deploy' -delete"
-    sh "find . -type d -name 'deployment' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
-    sh "find . -type d -name 'deployment' -delete"
+    sh "find . -type d -name '${env.DEPLOY_DIR}' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
+    sh "find . -type d -name '${env.DEPLOY_DIR}' -delete"
 
     echo "Remove @script ..."
     sh "find . -type d -name '*@script' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
