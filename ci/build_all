@@ -50,6 +50,7 @@ usage() {
 	[--develmode]: allow development mode (use different auto.conf to disable CI features) \n \
 	[--debug]: print additional informations \n \
 	[--archive=<yes|no>]: en/disable tarball generation, default no \n \
+	[--deploydir=<directory>]: deploy to this directory (only if --archive=yes) \n
 	If the variable \"LOCAL\" is defined in environment of ${SCRIPT}, the
 	variables \"DISTRO_LIST\", \"MACHINE_LIST\" and \"IMAGE_LIST\" can be used
 	to define what is built. Otherwise the lists are calculated."
@@ -57,6 +58,8 @@ usage() {
 
 main () {
 	local archive="no"
+	# default
+	local deploydir=$(readlink -f ./deployment)
 	pos_params=""
 
 	while (( "$#" )); do
@@ -75,6 +78,10 @@ main () {
 			;;
 		--dryrun )
 			dryrun="on"
+			shift
+			;;
+		--deploydir=* )
+			deploydir=${1#*=}
 			shift
 			;;
 		--devel )
@@ -142,8 +149,6 @@ main () {
 		fi
 
 		info "build images"
-		local deploydir=$(readlink -f ./deployment)
-
 		#
 		# clean deploydir for CI builds
 		# config bitbake from autoconf template
