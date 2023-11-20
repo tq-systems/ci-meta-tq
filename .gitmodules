@@ -26,3 +26,7 @@
 	path = sources/meta-qt5
 	url = https://github.com/meta-qt5/meta-qt5.git
 	branch = kirkstone
+[submodule "sources/meta-freescale-ml"]
+	path = sources/meta-freescale-ml
+	url = https://github.com/Freescale/meta-freescale-ml.git
+	branch = kirkstone
