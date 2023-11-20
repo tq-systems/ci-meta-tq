@@ -13,6 +13,7 @@ BBLAYERS = "\
     ${BSPDIR}/sources/meta-openembedded/meta-multimedia \
     \
     ${BSPDIR}/sources/meta-freescale \
+    ${BSPDIR}/sources/meta-freescale-ml \
     \
     ${BSPDIR}/sources/meta-qt5 \
     \
