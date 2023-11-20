@@ -12,6 +12,21 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* meta-tq:
+  * linux-imx-tq 6.1: Support for TQMa8x / TQMa8Xx / TQMa8XxS
+    SoM support ported to FSLC based fork of NXP vendor kernel linux-imx
+
+### Changed
+
+* poky: updated to latest kirkstone head to include fixes for bitbake-getvar
+  and more CVE fixes
+* poky: updated to 4.0.14
+* meta-arm: updated to yocto-4.0.3
+* meta-openembedded / meta-qt5: update to latest kirkstone head
+  to integrate fixes and stay in sync with upstream
+
 ## kirkstone.TQ.ARM.BSP.0013
 
 ### Module BSP Revisions
