@@ -20,6 +20,13 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* ci:
+  * Drop gitlab support in Jenkinsfile.
+  * Prepare configurable artifacts destination.
+  * Use bitbake variables to get build artifacts. This enables setups where
+    `DEPLOY_DIR_IMAGE` uses a non default value.
+  * Use `bitbake-getvar` instead of `bitbake -e` plus shell based filtering to
+    query bitbake variables. This depends on `poky` > v4.0.14.
 * poky: updated to latest kirkstone head to include fixes for bitbake-getvar
   and more CVE fixes
 * poky: updated to 4.0.14
