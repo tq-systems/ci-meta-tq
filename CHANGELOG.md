@@ -15,11 +15,18 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 ### Added
 
 * meta-tq:
+  * TQMa62xx: New module
+  * linux-ti-tq 6.1: New kernel for TQMa62xx/TQMa64xxL
+  * u-boot-ti-tq 2023.04: New U-Boot for TQMa62xx/TQMa64xxL
   * linux-imx-tq 6.1: Support for TQMa8x / TQMa8Xx / TQMa8XxS
     SoM support ported to FSLC based fork of NXP vendor kernel linux-imx
 
 ### Changed
 
+* meta-ti: Updated to 09.01.00.005
+
+  This update introduces some incompatible changes for TI-based modules. See
+  the meta-tq changelog for details.
 * ci:
   * Drop gitlab support in Jenkinsfile.
   * Prepare configurable artifacts destination.
@@ -33,6 +40,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-arm: updated to yocto-4.0.3
 * meta-openembedded / meta-qt5: update to latest kirkstone head
   to integrate fixes and stay in sync with upstream
+
+### Removed
+
+* meta-tq:
+  * Support for the TQMa65xx module has been removed. kirkstone.TQ.ARM.BSP.0013
+    or older must be used for this hardware.
+  * u-boot-ti-tq 2021.01: Removed recipe due to incompatibility with current
+    meta-ti. u-boot-tq 2023.04 is used for the TQMa64xxL now.
 
 ## kirkstone.TQ.ARM.BSP.0013
 
