@@ -16,24 +16,10 @@
 set -e
 set -C # noclobber
 
-# For security reasons, explicitly set the internal field separator
-# to newline, space, tab
-OLD_IFS="$IFS"
-IFS='
- 	'
-
 # TRAP SIGNALS
-trap 'cleanup' QUIT EXIT
-
 trap 'error_abort $LINENO' ERR
 
-function cleanup () {
-	IFS="${OLD_IFS}"
-	return 0
-}
-
 function error_abort () {
-	cleanup
 	echo "error at $1"
 }
 
