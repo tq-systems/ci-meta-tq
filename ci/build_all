@@ -116,9 +116,33 @@ main () {
 	fi
 
 	local top_dir=$(pwd)
+	local build_info_file="${deploydir}/${config}-build_info"
 	local distros=$(get_distros_for_config "${config}")
 	local machines=$(get_machines "${config}")
 	local stamp=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
+
+	#
+	# clean deploydir for CI builds
+	# config bitbake from autoconf template
+	#
+	if [ -z ${develmode} ]
+	then
+		if [ -d "${deploydir}" ]; then
+			rm -rf "${deploydir}"
+		fi
+	fi;
+	mkdir -p ${deploydir}
+
+
+	# create a file containing the version we are build from
+	if [ "${archive}" = "yes" ]
+	then
+		git log -1 > "${build_info_file}"
+		printf "\ngit submodule url:\n\n" >> ${build_info_file}
+		git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${build_info_file}
+		printf "\ngit submodule info:\n\n" >> ${build_info_file}
+		git submodule >> ${build_info_file}
+	fi
 
 	debug "Machines to build: ${machines}"
 	debug "Distros to build: ${distros}"
@@ -150,14 +174,10 @@ main () {
 
 		info "build images"
 		#
-		# clean deploydir for CI builds
 		# config bitbake from autoconf template
 		#
 		if [ -z ${develmode} ]
 		then
-			if [ -d "${deploydir}" ]; then
-				rm -rf "${deploydir}"
-			fi
 			do_link_auto_conf "ci"
 		else
 			do_link_auto_conf "normal"
@@ -203,11 +223,6 @@ main () {
 		done
 		if [ "${archive}" = "yes" ]
 		then
-			local git_stamp_file="${deploydir}/${config}-stamp"
-
-			mkdir -p ${deploydir}
-			git log -1 > ${git_stamp_file}
-
 			for machine in ${machines}; do
 				# export $MACHINE before query bitbake
 				export MACHINE=${machine}
@@ -220,12 +235,7 @@ main () {
 				# create a file containing md5sum of files
 				get_md5sum ${artifactsdir} > ${deploydir}/${machine_archive}.md5sum
 				cp ${deploydir}/${machine_archive}.md5sum ${artifactsdir}
-				# create a file containing the version we are build from
-				cp ${git_stamp_file} ${artifactsdir}/${machine_archive}.info
-				printf "\ngit submodule url:\n\n" >> ${artifactsdir}/${machine_archive}.info
-				git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${artifactsdir}/${machine_archive}.info
-				printf "\ngit submodule info:\n\n" >> ${artifactsdir}/${machine_archive}.info
-				git submodule >> ${artifactsdir}/${machine_archive}.info
+				cp "${build_info_file}" "${artifactsdir}/${machine_archive}.info"
 				# create image archive for $MACHINE, assume DEPLOY_DIR_IMAGE has ${MACHINE} as final part
 				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz \
 					-C "$(dirname "${artifactsdir}")" \
