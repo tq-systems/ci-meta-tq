@@ -136,8 +136,7 @@ else
     build_dir_setup_enabled="false"
 fi
 
-if [ "${build_dir_setup_enabled}" = "true" ]; then 
-
+if [ "${build_dir_setup_enabled}" = "true" ]; then
     if [ -z "${MACHINE}" ]; then
         THE_MACHINE=$(${SCRIPTDIR}/setup_builddir default_machine ${CONFIG_TEMPLATE})
     else
