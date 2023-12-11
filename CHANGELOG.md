@@ -12,6 +12,18 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* meta-tq:
+  * TQMa62xx: Switched to HS-FS (High Security - Field Securable) firmware
+    variant for default tiboot3.bin
+
+### Fixed
+
+* meta-tq:
+  * TQMa62xx: Disabled unreliable SoC-internal RTC
+  * TQMa62xx: Fixed cpufreq on Linux
+
 ## kirkstone.TQ.ARM.BSP.0014
 
 ### Module BSP Revisions
