@@ -126,6 +126,172 @@ do_create_auto_conf () {
 	fi
 }
 
+readonly DEFAULT_BUILD_CONFIG="build-config.json"
+
+####
+# func:   lookup_values_for_key
+# brief:  return list of values extrcated from json file
+# param:  $1 - file
+# param:  $2 - filter
+# param:  $3 - key name
+# param:  $4 - key value
+# return list of items
+####
+lookup_values_for_key () {
+	local fname=${1}
+	local fexpr=${2}
+	local key=${3}
+	local val=${4}
+	local aname=${5}
+
+	local query="${fexpr} | select(.${key}==\"${val}\") | .${aname} | length"
+	#debug "lookup_values_for_key: constructed $query"
+	local count=$(jq "${query}" "${fname}")
+	#debug "lookup_values_for_key count=$count"
+	local list
+	
+	for n in $(seq 0 $(expr ${count} - 1)); do
+		query="${fexpr} | select(.${key}==\"${val}\") | .${aname}[$n]"
+		# debug "lookup_values_for_key: constructed ${query}"
+		list="${list} $(jq -r "${query}" "${fname}")"
+	done
+
+	echo ${list}
+}
+
+lookup_single_value_for_key () {
+	local fname=${1}
+	local fexpr=${2}
+	local key=${3}
+	local val=${4}
+	local aname=${5}
+
+	query="${fexpr} | select(.${key}==\"${val}\").${aname}"
+	value="$(jq -r "${query}" "${fname}")"
+
+	echo ${value}
+}
+
+####
+# func:   get_images_for_distro
+# brief:  return list of images buildable by given distro
+# param:  $1 - file
+# param:  $2 - distro
+# return list of images
+####
+get_images_for_distro () {
+	local fname=${1}
+	local distro=${2}
+
+	lookup_values_for_key "${fname}" ".distros[]" "name" "${distro}" "images"
+}
+
+####
+# func:   get_distros_for_config
+# brief:  return list of distros buildable by given config
+# param:  $1 - file
+# param:  $2 - config
+# return list of distros
+####
+get_distros_for_config () {
+	local fname=${1}
+	local config=${2}
+
+	lookup_values_for_key "${fname}" ".configs[]" "name" "${config}" "distros"
+}
+
+####
+# func:   get_groups_for_config
+# brief:  return list of machine groups for given config
+# param:  $1 - file
+# param:  $2 - config
+# return list of machine groups
+####
+get_groups_for_config () {
+	local fname=${1}
+	local config=${2}
+	local mgroups=$(lookup_values_for_key "${fname}" ".configs[]" "name" "${config}" "groups")
+
+	echo ${mgroups}
+}
+
+####
+# func:   get_machine_pattern_for_group
+# brief:  return list of machine patterns for given machine group
+# param:  $1 - file
+# param:  $2 - group
+# return list of machine groups
+####
+get_machine_pattern_for_group () {
+	local fname=${1}
+	local group=${2}
+
+	lookup_single_value_for_key "${fname}" ".machine_groups[]" "name" "${group}" "pattern"
+}
+
+get_machine_pattern_for_config () {
+	local fname=${1}
+	local config=${2}
+	local mgroups="$(get_groups_for_config "${fname}" ${config})"
+	local mpattern=""
+
+	for mg in ${mgroups}; do
+		mpattern="${mpattern} $(get_machine_pattern_for_group ${fname} ${mg})"
+	done
+
+	echo ${mpattern}
+}
+
+get_machines_in_workspace () {
+	local fname=${1}
+	local folder=$(jq -r ".[\"yocto-machine-folder\"]" "${fname}")
+	local machines="$(ls -1 $(pwd)/${folder}/*.conf | sed s/\.conf//g | xargs -n1 basename)"
+
+	# one per line
+	for m in ${machines}; do
+		echo ${m}
+	done
+}
+
+get_machines_for_pattern () {
+	local fname=${1}
+	local pattern=${2}
+	local allmachines=$(get_machines_in_workspace "${fname}")
+	local machines=""
+	local count="0";
+
+	machines=$(echo "${allmachines}" | grep "${pattern}" )
+	
+	echo ${machines}
+}
+
+get_machines_for_config () {
+	local fname=${1}
+	local config=${2}
+	local mpattern=$(get_machine_pattern_for_config ${fname} ${config})
+	local machines=""
+
+	for mp in ${mpattern}; do
+		machines="${machines} $(get_machines_for_pattern ${fname} ${mp})"
+	done
+
+	echo ${machines}
+}
+
+
+####
+# func:   get_configs_in_workspace
+# brief:  return list of configs from json file for workspace
+# param:  $1 - file
+# return list configurations in workspace
+####
+get_configs_in_workspace () {
+	local fname=${1}
+	local configs=$(jq -r ".configs[].name" ${fname})
+
+	echo ${configs}
+}
+
 ####
 # func:   get_images
 # brief:  return image based on distro
@@ -171,7 +337,7 @@ get_images () {
 ####
 valid_config() {
 	local config=${1}
-	local supported_configs="$(${SCRIPTPATH}/ls-configs)"
+	local supported_configs="$(${SCRIPTPATH}/ls-configs) --file"
 
 	echo ${supported_configs} | grep -wq "${config}"
 }
