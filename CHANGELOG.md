@@ -12,6 +12,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* meta-tq:
+  * TQMa8: Switched to 6.1 as preferred version for linux-imx-tq.
+
 ## kirkstone.TQ.ARM.BSP.0015
 
 ### Module BSP Revisions
