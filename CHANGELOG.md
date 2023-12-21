@@ -12,8 +12,16 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Fixed
+
+* ci: fix using relative artifact directories
+
 ### Changed
 
+* poky: updated to 4.0.15
+* meta-freescale: updated to 47e0b467d8555e38a996b731977d9eed9ab02051
+* meta-openembedded: updated to 402affcc073db39f782c1ebfd718edd5f11eed4c
+* meta-qt5: updated to f5dfcd1417fa01dc59b3fc1f28bbe7c986de0e9d (kirkstone-next)
 * meta-tq:
   * TQMa8: Switched to 6.1 as preferred version for linux-imx-tq.
 
