@@ -81,7 +81,7 @@ main () {
 			shift
 			;;
 		--deploydir=* )
-			deploydir=${1#*=}
+			deploydir=$(readlink -f ${1#*=})
 			shift
 			;;
 		--devel )

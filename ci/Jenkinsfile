@@ -87,7 +87,7 @@ def mirrorConfiguration(directoryName) {
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
-        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build_all --archive=yes --deploydir=${env.DEPLOY_DIR} ${env.BUILD_DIR} \$(basename \$(pwd))"
+        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build_all --archive=yes --deploydir=${directoryName}/${env.DEPLOY_DIR} ${env.BUILD_DIR} \$(basename \$(pwd))"
     }
 }
 
@@ -243,7 +243,7 @@ pipeline {
                         script {
                             archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.LIC.tar.gz"
                             archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.MIRROR.SRC.tar.gz"
-                            archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/${env.BUILD_DIR}_*/${env.DEPLOY_DIR}/*"
+                            archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/${env.DEPLOY_DIR}/*"
                         }
                     }
                 }
