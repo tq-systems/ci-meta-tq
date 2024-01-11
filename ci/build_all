@@ -230,11 +230,11 @@ main () {
 				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${distro}_${stamp}
 				info "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}, clean them before recreate
-				rm -f ${artifactsdir}/*.info
-				rm -f ${artifactsdir}/*.md5sum
+				rm -f "${artifactsdir}/*.info"
+				rm -f "${artifactsdir}/*.md5sum"
 				# create a file containing md5sum of files
-				get_md5sum ${artifactsdir} > ${deploydir}/${machine_archive}.md5sum
-				cp ${deploydir}/${machine_archive}.md5sum ${artifactsdir}
+				get_md5sum "${artifactsdir}" > "${deploydir}/${machine_archive}.md5sum"
+				cp "${deploydir}/${machine_archive}.md5sum" "${artifactsdir}"
 				cp "${build_info_file}" "${artifactsdir}/${machine_archive}.info"
 				# create image archive for $MACHINE, assume DEPLOY_DIR_IMAGE has ${MACHINE} as final part
 				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz \
