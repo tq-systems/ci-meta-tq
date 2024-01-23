@@ -12,12 +12,23 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0016
+
+### Module BSP Revisions
+
+* kirkstone.TQMa93xx.BSP.SW.0001
+
 ### Fixed
 
-* ci: fix using relative artifact directories
+* ci:
+  * fixed error handling for ci/setup_builddir
+  * fixed using relative artifact directories
 
 ### Changed
 
+* ci: do not create `build_info` file multiple times
+* meta-ti: updated to 461eee98bde6112562fb24c43729856f937bb091
+  Fixed recipes for AM335x / AM57xx GPU support
 * poky: updated to 4.0.15
 * meta-freescale: updated to 47e0b467d8555e38a996b731977d9eed9ab02051
 * meta-openembedded: updated to 402affcc073db39f782c1ebfd718edd5f11eed4c
