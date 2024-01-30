@@ -56,6 +56,36 @@ usage() {
 	to define what is built. Otherwise the lists are calculated."
 }
 
+#
+# generate version and source info for a virtual package
+#
+# Query SRCREV and SRC_URI if there is a provider for the virtual package.
+# output the information to the given file. Used for machine specific build
+# information. The source must be under version control, e.g. git, to query SRCREV.
+#
+# $1 output file (file to append)
+# $2 target - virtual target to query (e.g. kernel for virtual/kernel)
+#
+print_virtual_provider_info () {
+	local recipe=$(bitbake-getvar --quiet --value PREFERRED_PROVIDER_virtual/${2} 2>/dev/null)
+	if ! [ -z ${recipe} ] && ! [ ${recipe} = "None" ]; then
+		local srcrev=$(bitbake-getvar --quiet --value --recipe ${recipe} SRCREV 2>/dev/null)
+		local srcuri=$(bitbake-getvar --quiet --value --recipe ${recipe} SRC_URI 2>/dev/null)
+		cat >>${1} <<END
+
+virtual/${2}:
+URI:     $(for uri in ${srcuri}; do echo ${uri}; done)
+COMMIT:  ${srcrev}
+END
+	else
+		cat >>${1} <<END
+
+virtual/${2}:
+no source info
+END
+	fi
+}
+
 main () {
 	local archive="no"
 	# default
@@ -228,7 +258,17 @@ main () {
 				# create a file containing md5sum of files
 				get_md5sum "${artifactsdir}" > "${deploydir}/${machine_archive}.md5sum"
 				cp "${deploydir}/${machine_archive}.md5sum" "${artifactsdir}"
+				# use pregenerated build info
 				cp "${build_info_file}" "${artifactsdir}/${machine_archive}.info"
+				# enrich with machine specific information for some virtual packages
+				print_virtual_provider_info "${artifactsdir}/${machine_archive}.info" kernel
+				print_virtual_provider_info "${artifactsdir}/${machine_archive}.info" bootloader
+				# TODO:
+				# 1) add more packages if needed
+				# 2) we have different recipes and use different sources for TF-A / trusted-firmware-a
+				# Should atf-imx / qoriq-atf etc. labeled as PREFERRED_PROVIDER? If yes, this should go upstream.
+				# print_virtual_provider_info "${artifactsdir}/${machine_archive}.info" "trusted-firmware-a"
+
 				# create image archive for $MACHINE, assume DEPLOY_DIR_IMAGE has ${MACHINE} as final part
 				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz \
 					-C "$(dirname "${artifactsdir}")" \
