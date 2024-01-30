@@ -12,51 +12,105 @@
 set -e
 set -C # noclobber
 
+readonly SCRIPTNAME="${0}"
+readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
+readonly SCRIPT="$(basename "${0}")"
 
+# TRAP SIGNALS
 trap 'error_abort $LINENO' ERR
 
 function error_abort () {
 	echo "error at $1"
 }
 
-readonly DEFAULT_TEMPLATEDIR="template"
-readonly SCRIPT="$(basename "${0}")"
+. ${SCRIPTPATH}/utils
+
+readonly DEFAULT_TEMPLATEDIR="./sources/template"
 
 usage() {
 	cat <<END
-$1 usage:
 
-list available configs from template dir under sources
-$1 - use default template dir ${DEFAULT_TEMPLATEDIR}
-template needs to have the structure of a layer and templates are
-needs to be under <template dir>/conf/templates/.
+${SCRIPTNAME} usage:
+
+List available configs either from config file or from template directory
+$1 --dir[=directory] use default template dir ${DEFAULT_TEMPLATEDIR} or directory
+Note: directory needs to have the structure of a layer and templates are
+under <template dir>/conf/templates/.
+$1 [--file=filename] use default config file ${DEFAULT_BUILD_CONFIG} or file given
+
+Note: config file needs to to be a json file and must be in sync with workspace
+structure and settings
 END
 }
 
+function parse_configs_from_file () {
+	local configfile="$(readlink --canonicalize-existing "${1}")"
+
+	if [ -f "${configfile}" ]; then
+		local configurations="$(get_configs_in_workspace "${configfile}")"
+		for conf in ${configurations}; do
+			echo "${conf}"
+		done
+	else
+		error_out "config file ${1} not existing"
+	fi
+}
+
+function parse_configs_from_dir () {
+	local templatepath="$(readlink --canonicalize-existing ${1}/conf/templates)"
+
+	if [ -d "${templatepath}" ]; then
+		# filter out ci folder from the template dir
+		local exclude="ci"
+		local configurations="$(find ${templatepath}/* \
+			-maxdepth 1 -type d -exec basename {} \;)"
+		configurations=$(echo "${configurations}" | grep -vxF "${exclude}")
+
+		for c in ${configurations}; do
+			echo "${c##*.}"
+		done
+	fi
+}
+
 main() {
-	if [ "${#}" -gt "1" ] ; then
-		usage "${SCRIPT}"
+	if [ "${#}" -gt "1" ]; then
+		usage
 		return 1
 	fi
 
-	local TEMPLATEDIR="${1:-${DEFAULT_TEMPLATEDIR}}"
-	local TEMPLATEPATH="${TEMPLATEDIR}/conf/templates"
-
-	if ! [ -d "./sources/${TEMPLATEPATH}" ]; then
-		usage "${SCRIPT}"
-		return 1
+	if [ "${#}" -eq "0" ] ; then
+		parse_configs_from_file "${DEFAULT_BUILD_CONFIG}"
+		return 0
 	fi
 
-	# filter out ci folder from the template dir
-	local EXCLUDE="ci"
-	local CONFIGURATIONS="$(find ./sources/${TEMPLATEPATH}/* \
-		-maxdepth 1 -type d -exec basename {} \;)"
-	CONFIGURATIONS=$(echo "${CONFIGURATIONS}" | grep -vxF "${EXCLUDE}")
-	for c in ${CONFIGURATIONS}; do
-		echo "${c##*.}"
-	done
+	case ${1} in
+	-h|--help )
+		usage
+		return 0
+		;;
+	--file=* )
+		local tfile=${1#*=}
+		parse_configs_from_file "${tfile}"
+		return 0
+		;;
+	--file )
+		parse_configs_from_file "${DEFAULT_BUILD_CONFIG}"
+		return 0
+		;;
+	--dir=* )
+		local tdir=${1#*=}
+		parse_configs_from_dir "${tdir}"
+		return 0
+		;;
+	--dir )
+		parse_configs_from_dir "${DEFAULT_TEMPLATEDIR}"
+		return 0
+		;;
+	esac
 
-	return 0
+	usage
+
+	return 1
 }
 
 main "$@"

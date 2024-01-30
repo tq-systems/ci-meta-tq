@@ -6,7 +6,7 @@
 # Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
 # Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
 #
-# Copyright (C) 2017-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# Copyright (C) 2017-2024 TQ-Systems GmbH <oss@ew.tq-group.com>,
 # D-82229 Seefeld, Germany.
 # Author: Markus Niebel
 #
@@ -49,7 +49,7 @@ directory <build-dir>. The build directory configuration is unchanged.
     if [ $? -eq 0 ]; then
         echo "
 Supported configs:
-$(${SCRIPTDIR}/ls-configs)
+$(${SCRIPTDIR}/ls-configs --file)
 
 Supported machines:
 $("${SCRIPTDIR}/ls-machines" meta-tq/meta-tq)
