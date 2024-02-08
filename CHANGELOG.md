@@ -12,6 +12,20 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* TQMa8MPxL: NPU support
+  * Installs tensorflow-lite when meta-freescale-ml is added
+  * meta-freescale-ml layer is added using git submodules
+
+### Changed
+
+* linux-imx-tq_6.1:
+  * Enable CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS for better support for
+    PIE post-mortem debugging
+
+### Fixed
+
 ## kirkstone.TQ.ARM.BSP.0016
 
 ### Module BSP Revisions
