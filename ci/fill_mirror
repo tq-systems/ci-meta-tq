@@ -1,7 +1,7 @@
 #!/bin/bash
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
-# Copyright (C) 2021-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# Copyright (C) 2021-2024 TQ-Systems GmbH <oss@ew.tq-group.com>,
 # D-82229 Seefeld, Germany.
 # Author: Markus Niebel, Paul Gerber
 #
@@ -12,24 +12,10 @@ set -e
 set -C # noclobber
 
 # TRAP SIGNALS
-trap 'cleanup' QUIT EXIT
-
 trap 'error_abort $LINENO' ERR
-
-# For security reasons, explicitly set the internal field separator
-# to newline, space, tab
-OLD_IFS=$IFS
-IFS='
- 	'
-
-function cleanup () {
-	IFS="${OLD_IFS}"
-	return 0
-}
 
 function error_abort () {
 	echo "error at $1"
-	cleanup
 }
 
 readonly SCRIPTNAME="${0}"
@@ -70,6 +56,7 @@ main () {
 			;;
 		-*|--*=) # unsupported flags
 			error_out "Error: Unsupported flag $1"
+			exit 1
 			;;
 		*) # preserve positional arguments
 			pos_params="$pos_params $1"
