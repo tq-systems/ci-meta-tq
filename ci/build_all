@@ -238,8 +238,8 @@ main () {
 
 	local top_dir=$(pwd)
 	local build_info_file="${deploydir}/${config}-build_info.md"
-	local distros=$(get_distros "${config}")
-	local machines=$(get_machines "${config}")
+	local distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
+	local machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
 	local stamp=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
 
 	if [ "${archive}" = "yes" ]
@@ -260,7 +260,7 @@ main () {
 	do
 		# GENERAL
 
-		local images=$(get_images ${distro})
+		local images=$(get_images "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${distro})
 		debug "Images to build: ${images}"
 
 		# source the real setup workhorse

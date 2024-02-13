@@ -109,8 +109,8 @@ main () {
 	fi
 
 	local top_dir=$(pwd)
-	local distros=$(get_distros "${config}")
-	local machines=$(get_machines "${config}")
+	local distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
+	local machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
 
 	debug "Machines to build: ${machines}"
 	debug "Distros to build: ${distros}"
@@ -118,8 +118,7 @@ main () {
 	for distro in ${distros}
 	do
 		# GENERAL
-
-		local images=$(get_images ${distro})
+		local images=$(get_images "${top_dir}/build-config.json" ${distro})
 		debug "Images to build: ${images}"
 
 		# source the real setup workhorse

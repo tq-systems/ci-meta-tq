@@ -182,7 +182,7 @@ patch_localconf() {
 
 default_machine () {
 	local CONFIG=${1}
-	local CONFIG_MACHINES=$(get_machines ${CONFIG})
+	local CONFIG_MACHINES=$(get_machines ${DEFAULT_BUILD_CONFIG} ${CONFIG})
 	local DEFAULT_MACHINE=$(echo ${CONFIG_MACHINES} | awk '{ print $1 }')
 
 	echo ${DEFAULT_MACHINE}
