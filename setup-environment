@@ -177,7 +177,7 @@ BB_ENV_PASSTHROUGH_ADDITIONS="${BB_ENV_PASSTHROUGH_ADDITIONS} TQ_GIT_BASEURL TQ_
 # as setting own bblayers.conf and display some licenses
 # the output will not be read from most of the users.
 # We therefore show the content of conf-notes.txt rigth before finishing.
-. "${OEROOT}/oe-init-build-env" ${CWD}/${1} > /dev/null
+. "${OEROOT}/oe-init-build-env" "${1}" > /dev/null
 
 # if conf/local.conf not generated, no need to go further
 if [ ! -e "conf/local.conf" ]; then
