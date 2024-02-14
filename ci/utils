@@ -149,7 +149,12 @@ lookup_values_for_key () {
 	local count=$(jq "${query}" "${fname}")
 	#debug "lookup_values_for_key count=$count"
 	local list
-	
+
+	if [ -z ${count} ] || [ ${count} -le "0" ]; then
+		error "no entries for ${aname} in ${fname}"
+		return -5
+	fi
+
 	for n in $(seq 0 $(expr ${count} - 1)); do
 		query="${fexpr} | select(.${key}==\"${val}\") | .${aname}[$n]"
 		# debug "lookup_values_for_key: constructed ${query}"
