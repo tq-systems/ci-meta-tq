@@ -1,1 +1,0 @@
-../ci/image-features.inc

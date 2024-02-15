@@ -1,1 +1,36 @@
-require common.inc
+# control usage of premirrors
+# PREMIRRORS should be setup in site.conf
+# if we se SOURCE_MIRROR_URL here, inherit own-mirrors to allow mirroring
+INHERIT += "${@ 'own-mirrors' if d.getVar('SOURCE_MIRROR_URL') else ''}"
+# use git shallow clones to save space
+BB_GIT_SHALLOW = "1"
+BB_GIT_SHALLOW_DEPTH = "1"
+
+# Usage of uninative - only for poky-based DISTRO
+# or if DISTRO includes uninative config data - otherwise build fails with missing
+# UNINATIVE_CHECKSUM[arch]
+INHERIT += "uninative"
+
+# if we use SOURCE_MIRROR_URL allow mirroring the uninative package, too
+UNINATIVE_SUBDIR = "uninative/${@d.getVarFlag('UNINATIVE_CHECKSUM', d.getVar('BUILD_ARCH', True), True)}"
+UNINATIVE_MIRRORDIR = "${SOURCE_MIRROR_URL}/${UNINATIVE_SUBDIR}"
+UNINATIVE_PREMIRROR = "${UNINATIVE_URL}${UNINATIVE_TARBALL} ${UNINATIVE_MIRRORDIR}/${UNINATIVE_TARBALL}\n"
+
+PREMIRRORS:prepend = "${@ d.getVar('UNINATIVE_PREMIRROR') if d.getVar('SOURCE_MIRROR_URL') else '' }"
+
+# Hard removal of image types to save space
+# remove non used packed tar formats
+IMAGE_FSTYPES:remove = "tar.xz tar.bz2"
+# removed packed wic images
+IMAGE_FSTYPES:remove = "wic.gz wic.bz2 wic.xz"
+# remove fsl sdcard images
+IMAGE_FSTYPES:remove = "sdcard sdcard.bz2"
+# remove packed ext images
+IMAGE_FSTYPES:remove = "ext2.gz ext4.gz"
+# remove cpio.gz (poky-tiny)
+IMAGE_FSTYPES:remove = "cpio.gz"
+
+# we will have tar.gz for NFS, wic for SD / e-MMC
+IMAGE_FSTYPES:append = " tar.gz wic"
+
+PACKAGE_CLASSES ?= "package_rpm"
