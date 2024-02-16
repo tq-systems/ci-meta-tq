@@ -1,13 +1,22 @@
 #!/bin/bash
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
-# Copyright (C) 2017-2023 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# Copyright (C) 2017-2024 TQ-Systems GmbH <oss@ew.tq-group.com>,
 # D-82229 Seefeld, Germany.
 # Author: Markus Niebel
 #
 # Description: additional builddir setup
 #
 ###############################################################################
+set -e
+set -C # noclobber
+
+# TRAP SIGNALS
+trap 'error_abort $LINENO' ERR
+
+function error_abort () {
+	echo "error at $1"
+}
 
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
 readonly SCRIPT="$(basename "${0}")"
