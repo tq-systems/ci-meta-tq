@@ -20,15 +20,22 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: updated to 4.0.16
+* meta-freescale: updated to 710e55d529c86d15a93c4421365ef62eb601a49b
+* meta-openembedded: updated to 8609de00952d65bb813a48c535c937324efeb18a
+* ci/buildall: improve per machine info output
+* ci: script style fixes
 * linux-imx-tq_6.1:
-  * Enable CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS for better support for
+  * Enable `CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS` for better support for
     PIE post-mortem debugging
 
 ### Fixed
 
+* meta-tq: compatibility fix for linux-firmware from poky v4.0.16
 * ci: do not longer depend on bitbake require/include logic in template config files
   and setup scripts.
   This fixes https://github.com/tq-systems/ci-meta-tq/issues/7
+* ci/buildall: file and directory cleanup for special use cases
 
 ## kirkstone.TQ.ARM.BSP.0016
 
