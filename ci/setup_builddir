@@ -153,15 +153,12 @@ setup_confdir() {
 	for f in ${FILES}; do
 		ln -s "${f}" "conf/$(basename ${f})"
 	done
-	ln -s "${TEMPLATECONF}/auto.conf.normal" ./conf/auto.conf
-	if ! [ -e ./conf/auto.conf ]; then
-		echo "${SCRIPT}: Error: missing auto.conf" >&2
-		return 1
-	fi
+	# optionally generate an auto.conf file
+	do_create_auto_conf
 
 	# check for site.conf and create link if available
 	if [ -e ${HOME}/.oe/site.conf ]; then
-		ln -s ${HOME}/.oe//site.conf conf
+		ln -s ${HOME}/.oe/site.conf conf
 	elif [ -e ${HOME}/.yocto/site.conf ]; then
 		ln -s ${HOME}/.yocto/site.conf conf
 	fi

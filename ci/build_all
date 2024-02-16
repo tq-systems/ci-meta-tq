@@ -192,9 +192,9 @@ main () {
 		#
 		if [ -z ${develmode} ]
 		then
-			do_link_auto_conf "ci"
+			do_create_auto_conf "ci"
 		else
-			do_link_auto_conf "normal"
+			do_create_auto_conf
 		fi
 
 		if ! [ -z ${SSTATE_DIR} ]; then

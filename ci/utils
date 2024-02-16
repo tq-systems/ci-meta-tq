@@ -103,20 +103,26 @@ get_md5sum () {
 }
 
 ####
-# func:   do_link_auto_conf
-# brief:  update the auto.conflink based on template
-#         link conf/auto.conf to conf/auto.conf.tmpl
-# param:  $1 - template (ci/mirror/normal)
+# func:   do_create_auto_conf
+# brief:  recreate the auto.conf based on template files
+#         copy conf/auto.conf.sample to to conf/auto.conf and
+#         optionally append conf/auto.conf.${1} to conf/auto.conf
+# param:  $1 - [optional] template (ci/mirror)
 # return: ---
 ####
-do_link_auto_conf () {
+do_create_auto_conf () {
 	local PWD=$(pwd)
 	local templ=${1}
 
-	rm -rf ${PWD}/conf/auto.conf
-	ln -s ${PWD}/conf/auto.conf.${templ} ${PWD}/conf/auto.conf
+	rm -f ${PWD}/conf/auto.conf
+	cp ${PWD}/conf/auto.conf.sample ${PWD}/conf/auto.conf
 	if ! [ -e ${PWD}/conf/auto.conf ]; then
 		error_out "missing auto.conf"
+	fi
+	if ! [ -z ${templ} ]; then
+		if [ -e ${PWD}/conf/auto.conf.${templ} ]; then
+			cat ${PWD}/conf/auto.conf.${templ} >> ${PWD}/conf/auto.conf
+		fi
 	fi
 }
 

@@ -1,4 +1,8 @@
-require auto.conf.normal
+##
+## Extensions for CI (fill_mirror / fetching only)
+## - enforce local DL_DIR
+## - enforce local SSTATE_DIR
+##
 
 # control usage of mirrors
 BB_GENERATE_SHALLOW_TARBALLS = "1"

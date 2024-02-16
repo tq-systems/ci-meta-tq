@@ -18,19 +18,4 @@ UNINATIVE_PREMIRROR = "${UNINATIVE_URL}${UNINATIVE_TARBALL} ${UNINATIVE_MIRRORDI
 
 PREMIRRORS:prepend = "${@ d.getVar('UNINATIVE_PREMIRROR') if d.getVar('SOURCE_MIRROR_URL') else '' }"
 
-# Hard removal of image types to save space
-# remove non used packed tar formats
-IMAGE_FSTYPES:remove = "tar.xz tar.bz2"
-# removed packed wic images
-IMAGE_FSTYPES:remove = "wic.gz wic.bz2 wic.xz"
-# remove fsl sdcard images
-IMAGE_FSTYPES:remove = "sdcard sdcard.bz2"
-# remove packed ext images
-IMAGE_FSTYPES:remove = "ext2.gz ext4.gz"
-# remove cpio.gz (poky-tiny)
-IMAGE_FSTYPES:remove = "cpio.gz"
-
-# we will have tar.gz for NFS, wic for SD / e-MMC
-IMAGE_FSTYPES:append = " tar.gz wic"
-
 PACKAGE_CLASSES ?= "package_rpm"

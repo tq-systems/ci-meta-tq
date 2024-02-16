@@ -120,7 +120,7 @@ main () {
 		fi
 
 		info "build mirror"
-		do_link_auto_conf "mirror"
+		do_create_auto_conf "mirror"
 		info "clean local dirs in $(pwd) ..."
 		rm -rf ./cache ./tmp* ./sstate-cache
 

@@ -1,4 +1,6 @@
-require auto.conf.normal
+##
+## Extensions for CI (build_all / build without network access)
+##
 
 # allow automatic building with meta-freescale
 ACCEPT_FSL_EULA = "y"
@@ -30,3 +32,18 @@ BB_FETCH_PREMIRRORONLY = "1"
 INHERIT += "archiver"
 COPYLEFT_LICENSE_EXCLUDE ?= "CLOSED Proprietary"
 ARCHIVER_MODE[src] ?= "original"
+
+# Hard removal of image types to save space
+# remove non used packed tar formats
+IMAGE_FSTYPES:remove = "tar.xz tar.bz2"
+# removed packed wic images
+IMAGE_FSTYPES:remove = "wic.gz wic.bz2 wic.xz"
+# remove fsl sdcard images
+IMAGE_FSTYPES:remove = "sdcard sdcard.bz2"
+# remove packed ext images
+IMAGE_FSTYPES:remove = "ext2.gz ext4.gz"
+# remove cpio.gz (poky-tiny)
+IMAGE_FSTYPES:remove = "cpio.gz"
+
+# we will have tar.gz for NFS, wic for SD / e-MMC
+IMAGE_FSTYPES:append = " tar.gz wic"
