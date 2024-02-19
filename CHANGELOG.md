@@ -26,6 +26,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Fixed
 
+* ci: do not longer depend on bitbake require/include logic in template config files
+  and setup scripts.
+  This fixes https://github.com/tq-systems/ci-meta-tq/issues/7
+
 ## kirkstone.TQ.ARM.BSP.0016
 
 ### Module BSP Revisions
