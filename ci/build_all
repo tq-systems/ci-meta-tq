@@ -230,8 +230,8 @@ main () {
 				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${distro}_${stamp}
 				info "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}, clean them before recreate
-				rm -f "${artifactsdir}/*.info"
-				rm -f "${artifactsdir}/*.md5sum"
+				rm -f "${artifactsdir}"/*.info
+				rm -f "${artifactsdir}"/*.md5sum
 				# create a file containing md5sum of files
 				get_md5sum "${artifactsdir}" > "${deploydir}/${machine_archive}.md5sum"
 				cp "${deploydir}/${machine_archive}.md5sum" "${artifactsdir}"
