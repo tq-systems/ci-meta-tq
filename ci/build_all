@@ -160,11 +160,10 @@ main () {
 		mkdir -p ${deploydir}
 
 		# create a file containing information about sources we built from
-		git log -1 > "${build_info_file}"
-		printf "\ngit submodule url:\n\n" >> ${build_info_file}
-		git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${build_info_file}
-		printf "\ngit submodule info:\n\n" >> ${build_info_file}
-		git submodule >> ${build_info_file}
+		printf "git commit info:\n" > ${build_info_file}
+		git log -1 >> "${build_info_file}"
+		printf "\ngit submodule info:\n" >> ${build_info_file}
+		git submodule foreach --quiet 'echo "$name:\n\tURL: $(git remote get-url origin)\n\tREV: $(git log --format="%H" -1) $(git describe --all $(git log --format="%H" -1))"' >>  "${build_info_file}"
 	fi
 
 	debug "Machines to build: ${machines}"
