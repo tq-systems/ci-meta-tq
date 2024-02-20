@@ -148,7 +148,6 @@ DISTRO ?= "poky"
 # enable extra features. Some available options which can be included in this variable
 # are:
 #   - 'buildstats' collect build statistics
-USER_CLASSES ?= "buildstats"
 
 #
 # Runtime testing of images
