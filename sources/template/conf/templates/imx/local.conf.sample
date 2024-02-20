@@ -176,8 +176,6 @@ USER_CLASSES ?= "buildstats"
 # Note: currently, Konsole support only works for KDE 3.x due to the way
 # newer Konsole versions behave
 #OE_TERMINAL = "auto"
-# By default disable interactive patch resolution (tasks will just fail instead):
-PATCHRESOLVE = "noop"
 
 #
 # Disk Space Monitoring during the build
