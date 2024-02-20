@@ -8,7 +8,6 @@ ACCEPT_NXP_EULA = "y"
 ACCEPT_TI_EULA = "y"
 ACCEPT_QT6_EULA = "y"
 
-INHERIT += "buildstats"
 # restrict network access
 BB_NO_NETWORK = "1"
 BB_FETCH_PREMIRRORONLY = "1"
