@@ -121,22 +121,15 @@ main () {
 	local machines=$(get_machines "${config}")
 	local stamp=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
 
-	#
-	# clean deploydir for CI builds
-	# config bitbake from autoconf template
-	#
-	if [ -z ${develmode} ]
+	if [ "${archive}" = "yes" ]
 	then
+		# cleanup any old deployment
 		if [ -d "${deploydir}" ]; then
 			rm -rf "${deploydir}"
 		fi
-	fi;
-	mkdir -p ${deploydir}
+		mkdir -p ${deploydir}
 
-
-	# create a file containing the version we are build from
-	if [ "${archive}" = "yes" ]
-	then
+		# create a file containing information about sources we built from
 		git log -1 > "${build_info_file}"
 		printf "\ngit submodule url:\n\n" >> ${build_info_file}
 		git submodule foreach --quiet 'echo "$name " `git remote get-url origin` ' >> ${build_info_file}
