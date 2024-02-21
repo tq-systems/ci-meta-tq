@@ -41,6 +41,7 @@ ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug]
 [--debug]: print additional informations
 [--archive=<yes|no>]: en/disable tarball generation, default no
 [--deploydir=<directory>]: deploy to this directory (only if --archive=yes)
+[--skipbitbake]: don't call bitbake
 
 If the variable "LOCAL" is defined in environment of ${SCRIPT}, the
 variables "DISTRO_LIST", "MACHINE_LIST" and "IMAGE_LIST" can be used
@@ -100,6 +101,7 @@ main () {
 			;;
 		--dryrun )
 			dryrun="on"
+			skipbitbake="on"
 			shift
 			;;
 		--deploydir=* )
@@ -108,6 +110,10 @@ main () {
 			;;
 		--devel )
 			develmode="on"
+			shift
+			;;
+		--skipbitbake )
+			skipbitbake="on"
 			shift
 			;;
 		-*|--*=) # unsupported flags
@@ -226,7 +232,7 @@ main () {
 				# create image for $MACHINE
 				info "baking: ${machine} ${distro} ${img} ..."
 
-				if [ -z ${dryrun} ]
+				if [ -z ${skipbitbake} ]
 				then
 					if ! bitbake ${img}
 					then
