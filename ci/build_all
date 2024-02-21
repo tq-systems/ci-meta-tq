@@ -130,6 +130,13 @@ main () {
 		bitbake_args="--dry-run"
 	fi
 
+	if [ "${archive}" = "yes" ]; then
+		if [ ! -z ${dryrun} ] || [ ! -z ${skipbitbake} ]; then
+			info "Disabling archive in dry-run / skip-bitbake mode"
+			archive="no"
+		fi
+	fi
+
 	# set positional arguments in their proper place
 	eval set -- "$pos_params"
 
