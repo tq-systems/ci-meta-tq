@@ -36,7 +36,7 @@ ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug]
 <build-dir>: specifies the build directory location (required)
 [template]: template bblayers.conf to use
 [-h|--help]: print this message
-[--dryrun]: don't call bitbake
+[--dryrun]: call bitbake in dry-run mode
 [--devel]: allow development mode (use different auto.conf to disable CI features)
 [--debug]: print additional informations
 [--archive=<yes|no>]: en/disable tarball generation, default no
@@ -101,7 +101,6 @@ main () {
 			;;
 		--dryrun )
 			dryrun="on"
-			skipbitbake="on"
 			shift
 			;;
 		--deploydir=* )
@@ -126,6 +125,10 @@ main () {
 			;;
 		esac
 	done
+
+	if [ ! -z ${dryrun} ]; then
+		bitbake_args="--dry-run"
+	fi
 
 	# set positional arguments in their proper place
 	eval set -- "$pos_params"
@@ -234,9 +237,9 @@ main () {
 
 				if [ -z ${skipbitbake} ]
 				then
-					if ! bitbake ${img}
+					if ! bitbake ${bitbake_args} ${img}
 					then
-						error_out "bitbake ${img} for ${MACHINE} failed"
+						error_out "bitbake ${bitbake_args} ${img} for ${MACHINE} failed"
 					fi
 				fi
 			done
