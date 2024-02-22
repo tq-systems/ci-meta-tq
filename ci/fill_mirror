@@ -171,12 +171,12 @@ main () {
 			done
 		done
 
-		SOURCE_MIRROR_URL=$(bitbake-getvar -q --value SOURCE_MIRROR_URL)
-		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
-
-		info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
 		if [ ${copy_mirror} = "yes" ]
 		then
+			SOURCE_MIRROR_URL=$(bitbake-getvar -q --value SOURCE_MIRROR_URL)
+			SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
+
+			info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
 			files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
 			info "copy ${files}"
 			for f in ${files}; do
