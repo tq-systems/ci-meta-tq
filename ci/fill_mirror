@@ -35,6 +35,7 @@ ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug]
 [-h|--help]: print this message
 [--dryrun]: don't call bitbake
 [--debug]: print additional informations
+[--skipbitbake]: don't call bitbake
 
 If the variable "LOCAL" is defined in environment of ${SCRIPT}, the
 variables "DISTRO_LIST", "MACHINE_LIST" and "IMAGE_LIST" can be used
@@ -58,6 +59,11 @@ main () {
 			;;
 		--dryrun )
 			dryrun="on"
+			skipbitbake="on"
+			shift
+			;;
+		--skipbitbake )
+			skipbitbake="on"
 			shift
 			;;
 		-*|--*=) # unsupported flags
@@ -145,7 +151,7 @@ main () {
 				# overwrite MACHINE
 				export MACHINE=${machine}
 				info "baking: ${machine} ${distro} ${img} with --runall=fetch"
-				if [ -z ${dryrun} ]
+				if [ -z ${skipbitbake} ]
 				then
 					if ! bitbake ${img} --runall=fetch -k
 					then
@@ -159,8 +165,8 @@ main () {
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
 
 		info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
-		if [ -z ${dryrun} ]
-			then
+		if [ -z ${skipbitbake} ]
+		then
 			files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
 			info "copy ${files}"
 			for f in ${files}; do
