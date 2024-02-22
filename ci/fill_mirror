@@ -33,7 +33,7 @@ ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug]
 <build-dir>: specifies the build directory location (required)
 [template]: template bblayers.conf to use
 [-h|--help]: print this message
-[--dryrun]: don't call bitbake
+[--dryrun]: call bitbake in dry-run mode
 [--debug]: print additional informations
 [--skipbitbake]: don't call bitbake
 
@@ -44,7 +44,7 @@ END
 }
 
 main () {
-
+	local copy_mirror="yes"
 	pos_params=""
 
 	while (( "$#" )); do
@@ -59,7 +59,6 @@ main () {
 			;;
 		--dryrun )
 			dryrun="on"
-			skipbitbake="on"
 			shift
 			;;
 		--skipbitbake )
@@ -76,6 +75,17 @@ main () {
 			;;
 		esac
 	done
+
+	if [ ! -z ${dryrun} ]; then
+		bitbake_args="--dry-run"
+	fi
+
+	if [ "${copy_mirror}" = "yes" ]; then
+		if [ ! -z ${dryrun} ] || [ ! -z ${skipbitbake} ]; then
+			info "Disabling copy to mirror in dry-run / skip-bitbake mode"
+			copy_mirror="no"
+		fi
+	fi
 
 	# set positional arguments in their proper place
 	eval set -- "$pos_params"
@@ -153,7 +163,7 @@ main () {
 				info "baking: ${machine} ${distro} ${img} with --runall=fetch"
 				if [ -z ${skipbitbake} ]
 				then
-					if ! bitbake ${img} --runall=fetch -k
+					if ! bitbake ${bitbake_args} ${img} --runall=fetch -k
 					then
 						error_out "fetching (${img} for ${machine}) failed"
 					fi
@@ -165,7 +175,7 @@ main () {
 		SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
 
 		info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
-		if [ -z ${skipbitbake} ]
+		if [ ${copy_mirror} = "yes" ]
 		then
 			files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
 			info "copy ${files}"
