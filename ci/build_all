@@ -28,7 +28,7 @@ readonly BITBAKE_GIT_MIRROR_PKG_EXTENSION="tar.gz"
 . ${SCRIPTPATH}/utils
 
 usage() {
- 	cat <<END
+	cat <<END
 Usage:
 
 ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug]
