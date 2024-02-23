@@ -61,7 +61,7 @@ END
 #
 print_virtual_provider_info () {
 	local recipe=$(bitbake-getvar --quiet --value PREFERRED_PROVIDER_virtual/${2} 2>/dev/null)
-	if ! [ -z ${recipe} ] && ! [ ${recipe} = "None" ]; then
+	if [ -n "${recipe}" ] && ! [ ${recipe} = "None" ]; then
 		local srcrev=$(bitbake-getvar --quiet --value --recipe ${recipe} SRCREV 2>/dev/null)
 		local srcuri=$(bitbake-getvar --quiet --value --recipe ${recipe} SRC_URI 2>/dev/null)
 		cat >>${1} <<END
@@ -126,12 +126,12 @@ main () {
 		esac
 	done
 
-	if [ ! -z ${dryrun} ]; then
+	if [ -n "${dryrun}" ]; then
 		bitbake_args="--dry-run"
 	fi
 
 	if [ "${archive}" = "yes" ]; then
-		if [ ! -z ${dryrun} ] || [ ! -z ${skipbitbake} ]; then
+		if [ -n "${dryrun}" ] || [ -n "${skipbitbake}" ]; then
 			info "Disabling archive in dry-run / skip-bitbake mode"
 			archive="no"
 		fi
@@ -148,7 +148,7 @@ main () {
 
 	local build_dir=${1}
 	local config="mainline"
-	if ! [ -z "${2}" ]
+	if [ -n "${2}" ]
 	then
 		config=${2}
 	fi
@@ -213,14 +213,14 @@ main () {
 			do_create_auto_conf
 		fi
 
-		if ! [ -z ${SSTATE_DIR} ]; then
+		if [ -n "${SSTATE_DIR}" ]; then
 			# add SSTATE dir outside of builddir, optimize global builds
 			assign_or_replace SSTATE_DIR ${SSTATE_DIR} "=" conf/local.conf
 		else
 			info "env SSTATE_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 
-		if ! [ -z ${DL_DIR} ]; then
+		if [ -n "${DL_DIR}" ]; then
 			# add DL_DIR dir outside of builddir, optimize global builds
 			assign_or_replace DL_DIR ${DL_DIR} "=" conf/local.conf
 
