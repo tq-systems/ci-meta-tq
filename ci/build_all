@@ -372,6 +372,8 @@ main () {
 		if [ "${deploy}" = "yes" ]
 		then
 			local distro_codename
+			# machine specific packages to deploy
+			readonly extra_machine_pkg_for_deploy="kernel-dev kernel-dbg kernel-vmlinux"
 
 			# note: this depends on a selected distro
 			distro_codename=$(bitbake-getvar -q --value DISTRO_CODENAME)
@@ -384,9 +386,18 @@ main () {
 				local kernel_dtb
 				local kimage
 				local machine_archive
+				local pkg_deploy_dir
+				local pkg_type
+				local yocto_machine_dir
 
 				artifactsdir=$(bitbake-getvar -q --value DEPLOY_DIR_IMAGE)
 				machine_archive=${machine}_${config}_${distro_codename}_${distro}_${stamp}
+				# DEPLOY_DIR_<pkg> depends on PACKAGE_CLASSES, images are built from first type
+				# package class names have naming convention 'package_<type>'
+				pkg_type=$(bitbake-getvar --quiet --value PACKAGE_CLASSES | awk -F '_' '{ print toupper($2) }')
+				pkg_deploy_dir=$(bitbake-getvar --quiet --value DEPLOY_DIR_${pkg_type})
+				# replace dash with underscore for yocto (default) machine directory name
+				yocto_machine_dir=${machine//-/_}
 				info "archiving ${machine} ..."
 				# we create some files in ${artifactsdir}, clean them before recreate
 				rm -f "${artifactsdir}"/*.md
@@ -448,6 +459,12 @@ main () {
 				kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_IMAGETYPE)
 				find "${artifactsdir}"  -maxdepth 1 -name "${kimage}" ${artifact_link_find_opt} \
 					-exec cp "{}" "${deploydir}/${machine}/" \;
+
+				# device tree and dev package, exact pattern for version depends on $pkg_type
+				for pkg in ${extra_machine_pkg_for_deploy}; do
+					find "${pkg_deploy_dir}/${yocto_machine_dir}" -maxdepth 1 -name "${pkg}-*" -readable \
+						-exec cp "{}" "${deploydir}/${machine}/" \;
+				done
 
 				# copy rest of artifact files but do not override existing files which could be
 				# needed for test
