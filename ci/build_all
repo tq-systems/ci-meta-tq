@@ -50,6 +50,83 @@ END
 }
 
 #
+# write common part of build information
+#
+# (re)create the file, write generic header in Markdown
+#
+# $1 output file (file to create)
+#
+create_build_info () {
+	local file="${1}"
+
+	# create a file containing information about sources we built from
+	cat >${file} <<END
+# Build information
+
+## Version info for BSP project
+
+### Main project commit
+
+\`\`\`
+$(git log -1)
+\`\`\`
+
+### Submodules
+
+\`\`\`
+$(git submodule foreach --quiet 'echo "$name:\n\tURL: $(git remote get-url origin)\n\tREV: $(git log --format="%H" -1) $(git describe --all $(git log --format="%H" -1))"')
+\`\`\`
+
+END
+}
+
+#
+# generate build info
+#
+# $1 output file (file to append)
+# $2 bitbake distro
+#
+print_bitbake_build_info () {
+	local file="${1}"
+	local distro="${2}"
+
+	cat >>${file} <<END
+
+## Configuration info for BSP project
+
+__DISTRO__: ${distro}
+
+### Layer configuration
+
+The following \`bblayers.conf\` template was used in this build:
+
+\`\`\`
+$(cat  $(cat conf/templateconf.cfg)/bblayers.conf.sample)
+\`\`\`
+
+END
+}
+
+#
+# generate machine info
+#
+# $1 output file (file to append)
+# $1 machine name
+#
+print_bitbake_machine_info () {
+	local file="${1}"
+	local machine="${2}"
+
+	cat >>${file} <<END
+
+## Build target
+
+__MACHINE__: ${machine}
+
+END
+}
+
+#
 # generate version and source info for a virtual package
 #
 # Query SRCREV and SRC_URI if there is a provider for the virtual package.
@@ -66,15 +143,21 @@ print_virtual_provider_info () {
 		local srcuri=$(bitbake-getvar --quiet --value --recipe ${recipe} SRC_URI 2>/dev/null)
 		cat >>${1} <<END
 
-virtual/${2}:
-URI:     $(for uri in ${srcuri}; do echo ${uri}; done)
-COMMIT:  ${srcrev}
+### virtual/${2}
+
+__URI__:
+\`\`\`
+$(for uri in ${srcuri}; do echo ${uri}; done)
+\`\`\`
+__COMMIT__:  ${srcrev}
 END
 	else
 		cat >>${1} <<END
 
-virtual/${2}:
-no source info
+### virtual/${2}:
+
+No source info available.
+
 END
 	fi
 }
@@ -154,7 +237,7 @@ main () {
 	fi
 
 	local top_dir=$(pwd)
-	local build_info_file="${deploydir}/${config}-build_info"
+	local build_info_file="${deploydir}/${config}-build_info.md"
 	local distros=$(get_distros_for_config "${config}")
 	local machines=$(get_machines "${config}")
 	local stamp=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
@@ -167,11 +250,7 @@ main () {
 		fi
 		mkdir -p ${deploydir}
 
-		# create a file containing information about sources we built from
-		printf "git commit info:\n" > ${build_info_file}
-		git log -1 >> "${build_info_file}"
-		printf "\ngit submodule info:\n" >> ${build_info_file}
-		git submodule foreach --quiet 'echo "$name:\n\tURL: $(git remote get-url origin)\n\tREV: $(git log --format="%H" -1) $(git describe --all $(git log --format="%H" -1))"' >>  "${build_info_file}"
+		create_build_info "${build_info_file}"
 	fi
 
 	debug "Machines to build: ${machines}"
@@ -259,16 +338,18 @@ main () {
 				local machine_archive=${machine}_${config}_${distro_codename}_${distro}_${stamp}
 				info "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}, clean them before recreate
-				rm -f "${artifactsdir}"/*.info
+				rm -f "${artifactsdir}"/*.md
 				rm -f "${artifactsdir}"/*.md5sum
 				# create a file containing md5sum of files
 				get_md5sum "${artifactsdir}" > "${deploydir}/${machine_archive}.md5sum"
 				cp "${deploydir}/${machine_archive}.md5sum" "${artifactsdir}"
 				# use pregenerated build info
-				cp "${build_info_file}" "${artifactsdir}/${machine_archive}.info"
+				cp "${build_info_file}" "${artifactsdir}/${machine_archive}.md"
 				# enrich with machine specific information for some virtual packages
-				print_virtual_provider_info "${artifactsdir}/${machine_archive}.info" kernel
-				print_virtual_provider_info "${artifactsdir}/${machine_archive}.info" bootloader
+				print_bitbake_build_info "${artifactsdir}/${machine_archive}.md" ${distro}
+				print_bitbake_machine_info "${artifactsdir}/${machine_archive}.md" ${machine}
+				print_virtual_provider_info "${artifactsdir}/${machine_archive}.md" kernel
+				print_virtual_provider_info "${artifactsdir}/${machine_archive}.md" bootloader
 				# TODO:
 				# 1) add more packages if needed
 				# 2) we have different recipes and use different sources for TF-A / trusted-firmware-a
