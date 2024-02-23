@@ -229,7 +229,6 @@ main () {
 		fi
 
 		# note: this depends on a selected distro
-		DISTRO_VERSION=$(bitbake-getvar -q --value DISTRO_VERSION)
 		DISTRO_CODENAME=$(bitbake-getvar -q --value DISTRO_CODENAME)
 
 		for img in ${images}
