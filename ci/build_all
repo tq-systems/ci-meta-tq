@@ -115,7 +115,7 @@ main () {
 			skipbitbake="on"
 			shift
 			;;
-		-*|--*=) # unsupported flags
+		--*=|-*) # unsupported flags
 			error_out "Error: Unsupported flag $1"
 			exit 1
 			;;
