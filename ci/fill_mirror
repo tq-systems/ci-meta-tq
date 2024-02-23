@@ -81,12 +81,12 @@ main () {
 		esac
 	done
 
-	if [ ! -z ${dryrun} ]; then
+	if [ -n "${dryrun}" ]; then
 		bitbake_args="--dry-run"
 	fi
 
 	if [ "${copy_mirror}" = "yes" ]; then
-		if [ ! -z ${dryrun} ] || [ ! -z ${skipbitbake} ]; then
+		if [ -n "${dryrun}" ] || [ -n "${skipbitbake}" ]; then
 			info "Disabling copy to mirror in dry-run / skip-bitbake mode"
 			copy_mirror="no"
 		fi
@@ -103,7 +103,7 @@ main () {
 
 	local build_dir=${1}
 	local config="mainline"
-	if ! [ -z "${2}" ]
+	if [ -n "${2}" ]
 	then
 		config=${2}
 	fi
