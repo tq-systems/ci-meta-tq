@@ -228,9 +228,6 @@ main () {
 			info "env DL_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 
-		# note: this depends on a selected distro
-		DISTRO_CODENAME=$(bitbake-getvar -q --value DISTRO_CODENAME)
-
 		for img in ${images}
 		do
 			# now force bitbake to generate images for all targets ...
@@ -252,11 +249,14 @@ main () {
 		done
 		if [ "${archive}" = "yes" ]
 		then
+			# note: this depends on a selected distro
+			local distro_codename=$(bitbake-getvar -q --value DISTRO_CODENAME)
+
 			for machine in ${machines}; do
 				# export $MACHINE before query bitbake
 				export MACHINE=${machine}
 				local artifactsdir=$(bitbake-getvar -q --value DEPLOY_DIR_IMAGE)
-				local machine_archive=${machine}_${config}_${DISTRO_CODENAME}_${distro}_${stamp}
+				local machine_archive=${machine}_${config}_${distro_codename}_${distro}_${stamp}
 				info "archiving ${machine} ..."
 				# we create some files in ${ARTIFACTSDIR}, clean them before recreate
 				rm -f "${artifactsdir}"/*.info
