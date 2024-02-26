@@ -371,6 +371,7 @@ main () {
 			for machine in ${machines}; do
 				# export $MACHINE before query bitbake
 				export MACHINE=${machine}
+				local artifact_link_find_opt
 				local artifactsdir
 				local kernel_dtb
 				local kimage
@@ -410,16 +411,26 @@ main () {
 					fi
 				fi
 
-				# add some artifacts unpacked for automated testing
-				# TODO: should we use bitbake variables here?
-				mkdir -p ${deploydir}/${machine}
-				find ${artifactsdir} -name *-${machine}.tar.gz -exec cp "{}" ${deploydir}/${machine}/ \;
+				# add some artifacts for automated testing, needed by name / pattern without
+				# bitbake timestamp annotation etc. Copy the named link as file. Real files
+				# will be copied after this.
+				mkdir -p "${deploydir}/${machine}"
+				# options to find and copy links as artifacts for CI testing
+				artifact_link_find_opt="-type l -readable"
+				# deploy rootfs tar.gz image if existing
+				find "${artifactsdir}"  -maxdepth 1 -name *-${machine}.tar.gz ${artifact_link_find_opt} \
+					-exec cp "{}" "${deploydir}/${machine}/" \;
+				# deploy kernel device tree if existing
 				kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_DEVICETREE)
 				for dtb in ${kernel_dtb}; do
-					cp "${artifactsdir}/$(basename ${dtb})" "${deploydir}/${machine}/"
+					find "${artifactsdir}"  -maxdepth 1 -name "$(basename ${dtb})" ${artifact_link_find_opt} \
+						-exec cp "{}" "${deploydir}/${machine}/" \;
 				done
+				# deploy the kernel image if existing
 				kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_IMAGETYPE)
-				cp ${artifactsdir}/${kimage} ${deploydir}/${machine}/
+				find "${artifactsdir}"  -maxdepth 1 -name "${kimage}" ${artifact_link_find_opt} \
+					-exec cp "{}" "${deploydir}/${machine}/" \;
+
 				# copy rest of artifact files but do not override existing files which could be
 				# needed for test
 				find ${artifactsdir} -type f -exec cp --no-clobber "{}" ${deploydir}/${machine}/ \;
