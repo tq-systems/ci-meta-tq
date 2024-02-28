@@ -95,7 +95,7 @@ LONGOPTS="help"
 ARGS=$(getopt --options ${SHORTOPTS}  \
   --longoptions ${LONGOPTS} --name ${PROGNAME} -- "$@" )
 # Print the usage menu if invalid options are specified
-if [ $? != 0 -o $# -lt 1 ]; then
+if [ $? != 0 ] || [ $# -lt 1 ]; then
    usage && clean_up
    return 1
 fi
