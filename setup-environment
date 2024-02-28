@@ -52,7 +52,7 @@ Supported configs:
 $(${SCRIPTDIR}/ls-configs --file)
 
 Supported machines:
-$("${SCRIPTDIR}/ls-machines" meta-tq/meta-tq)
+$("${SCRIPTDIR}/ls-machines" --dir=sources/meta-tq/meta-tq)
 
 Supported TQ-Systems distros:
 $("${SCRIPTDIR}/ls-distros" --dir=sources/meta-tq/meta-dumpling)
