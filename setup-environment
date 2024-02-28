@@ -19,11 +19,6 @@ SCRIPTDIR="${CWD}/ci"
 CONFIG_TEMPLATE=mainline
 TEMPLATEDIR=${CWD}/sources/template/conf/templates
 
-DEFAULT_DISTRO_ml="spaetzle"
-DEFAULT_DISTRO_imx="dumpling-wayland-nxp"
-DEFAULT_DISTRO_ls="dumpling"
-DEFAULT_DISTRO_ti="dumpling-wayland-ti"
-
 usage()
 {
     echo "
@@ -138,7 +133,7 @@ fi
 
 if [ "${build_dir_setup_enabled}" = "true" ]; then
     if [ -z "${MACHINE}" ]; then
-        THE_MACHINE=$(${SCRIPTDIR}/setup_builddir default_machine ${CONFIG_TEMPLATE})
+        THE_MACHINE="$(${SCRIPTDIR}/ls-machines --file --config=${CONFIG_TEMPLATE} | awk 'NR==1 {print; exit}')"
     else
         THE_MACHINE=${MACHINE}
     fi
@@ -151,10 +146,10 @@ if [ "${build_dir_setup_enabled}" = "true" ]; then
     fi
 
     if [ -z "${DISTRO}" ]; then
-        DISTRO_VAR=DEFAULT_DISTRO_${CONFIG_TEMPLATE}
-        eval THE_DISTRO=\$$DISTRO_VAR
+        THE_DISTRO="$(${SCRIPTDIR}/ls-distros --file --config=${CONFIG_TEMPLATE} | awk 'NR==1 {print; exit}')"
+
     else
-        eval THE_DISTRO=${DISTRO}
+        THE_DISTRO=${DISTRO}
     fi
 
     if [ -z "${THE_DISTRO}" ]; then
