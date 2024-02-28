@@ -12,6 +12,10 @@
 set -e
 set -C # noclobber
 
+readonly SCRIPTNAME="${0}"
+readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
+readonly SCRIPT="$(basename "${0}")"
+
 # TRAP SIGNALS
 trap 'error_abort $LINENO' ERR
 
@@ -19,41 +23,138 @@ function error_abort () {
 	echo "error at $1"
 }
 
-readonly DEFAULT_LAYER="meta-tq/meta-dumpling"
-readonly SCRIPT="$(basename "${0}")"
+. ${SCRIPTPATH}/utils
+
+readonly DEFAULT_LAYER_DIR="./sources/meta-tq/meta-dumpling"
 
 usage() {
 	cat <<END
-${1} usage:
 
-list available distros from layer under sources
-${1} - use default layer ${DEFAULT_LAYER}
-${1} <layer name>- use layer given as parameter
+${SCRIPTNAME} usage:
+
+List available distros either from config file or from template directory
+$1 --dir[=<directory>]
+use default template dir ${DEFAULT_TEMPLATEDIR} or directory
+Note: directory needs to have the structure of a layer and distros are
+under <layer dir>/conf/distro/.
+$1 --file[=<filename>] --config=<name>
+use default config file ${DEFAULT_BUILD_CONFIG} or given file to parse for supported
+distros for given config name
+
+Note: config file needs to to be a json file and must be in sync with workspace
+structure and settings
 END
 }
 
+function parse_distros_from_file () {
+	local configfile="$(readlink --canonicalize-existing "${1}")"
+	local config="${2}"
+
+	if [ -f "${configfile}" ]; then
+		distros="$(get_distros_for_config "${configfile}" "${config}")"
+
+		for d in ${distros}; do
+			echo "${d}"
+		done
+	else
+		error_out "config file ${1} not existing"
+	fi
+}
+
+function parse_distros_from_dir () {
+	local distropath="$(readlink --canonicalize-existing ${1}/conf/distro)"
+
+	if [ -d "${distropath}" ]; then
+		# filter out distros from the layer
+		local distros=$(ls ${distropath}/*.conf | \
+			sed s/\.conf//g | xargs -n1 basename)
+
+		for d in ${distros}; do
+			echo "${d}"
+		done
+	fi
+}
+
 main() {
-	if [ "${#}" -gt "1" ]; then
-		usage "${SCRIPT}"
+	local distro_dir=""
+	local config_file=""
+	local config_name=""
+	local pos_params=""
+
+	if [ "${#}" -gt "2" ]; then
+		usage
 		return 1
 	fi
 
-	local LAYER=${1:-${DEFAULT_LAYER}}
-
-	if ! [ -d "./sources/${LAYER}/conf/distro" ]; then
-		usage "${SCRIPT}"
-		return 1
-	fi
-
-	# filter out distros from the layer
-	TARGETS=$(ls sources/${LAYER}/conf/distro/*.conf | \
-		sed s/\.conf//g | xargs -n1 basename)
-
-	for t in ${TARGETS}; do
-		echo "${t}"
+	while (( "$#" )); do
+		case ${1} in
+		-h|--help )
+			usage
+			return 0
+			;;
+		--config=* )
+			config_name=${1#*=}
+			shift
+			;;
+		--file=* )
+			config_file=${1#*=}
+			shift
+			;;
+		--file )
+			config_file="${DEFAULT_BUILD_CONFIG}"
+			shift
+			;;
+		--dir=* )
+			distro_dir=${1#*=}
+			shift
+			;;
+		--dir )
+			distro_dir="${DEFAULT_LAYER_DIR}"
+			shift
+			;;
+		--*=|-*) # unsupported flags
+			error_out "Error: Unsupported flag $1"
+			exit 1
+			;;
+		*) # preserve positional arguments
+			pos_params="$pos_params $1"
+			shift
+			;;
+		esac
 	done
 
-	return 0
+	if [ -n "${pos_params}" ]; then
+		error_out "unhandled parameters $pos_params"
+	fi
+
+	if [ -n "${config_file}" ] && [ -n "${distro_dir}" ]; then
+		usage
+		exit 1
+	fi
+
+	if [ -z ${config_file} ] && [ -z ${distro_dir} ]; then
+		usage
+		exit 1
+	fi
+
+	if [ -n "${config_file}" ] && [ -z ${config_name} ]; then
+		usage
+		exit 1
+	fi
+
+	if [ -n "${config_file}" ]; then
+		parse_distros_from_file "${config_file}" ${config_name}
+		return 0
+	fi
+
+	if [ -n "${distro_dir}" ]; then
+		parse_distros_from_dir "${distro_dir}"
+		return 0
+	fi
+
+	usage
+
+	return 1
 }
 
 main "$@"

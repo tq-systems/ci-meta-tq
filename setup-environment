@@ -55,10 +55,10 @@ Supported machines:
 $("${SCRIPTDIR}/ls-machines" meta-tq/meta-tq)
 
 Supported TQ-Systems distros:
-$("${SCRIPTDIR}/ls-distros" meta-tq/meta-dumpling)
+$("${SCRIPTDIR}/ls-distros" --dir=sources/meta-tq/meta-dumpling)
 
 Available poky distros:
-$("${SCRIPTDIR}/ls-distros" poky/meta-poky)
+$("${SCRIPTDIR}/ls-distros" --dir=sources/poky/meta-poky)
 
 Examples:
 
