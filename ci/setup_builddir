@@ -21,7 +21,7 @@ function error_abort () {
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
 readonly SCRIPT="$(basename "${0}")"
 
-. ${SCRIPTPATH}/utils
+. "${SCRIPTPATH}/utils"
 
 ##############
 # handle different type of licenses and cope with CI build setup
@@ -93,7 +93,7 @@ EOF
 		REPLY=
 		while [ -z "${REPLY}" ]; do
 			echo -n "Do you accept the EULA you just read? (y/n)"
-			read REPLY
+			read -r REPLY
 			case "${REPLY}" in
 			y|Y)
 				echo "EULA has been accepted."
@@ -151,16 +151,16 @@ setup_confdir() {
 	echo "link auto.conf templates from ${TEMPLATECONF} to ./conf/ ..."
 	FILES=$(find "${TEMPLATECONF}" -maxdepth 1 -type f,l -name "auto.conf*")
 	for f in ${FILES}; do
-		ln -s "${f}" "conf/$(basename ${f})"
+		ln -s "${f}" "conf/$(basename "${f}")"
 	done
 	# optionally generate an auto.conf file
 	do_create_auto_conf
 
 	# check for site.conf and create link if available
-	if [ -e ${HOME}/.oe/site.conf ]; then
-		ln -s ${HOME}/.oe/site.conf conf
-	elif [ -e ${HOME}/.yocto/site.conf ]; then
-		ln -s ${HOME}/.yocto/site.conf conf
+	if [ -e "${HOME}/.oe/site.conf" ]; then
+		ln -s "${HOME}/.oe/site.conf" conf
+	elif [ -e "${HOME}/.yocto/site.conf" ]; then
+		ln -s "${HOME}/.yocto/site.conf" conf
 	fi
 
 	return 0
@@ -182,10 +182,12 @@ patch_localconf() {
 
 default_machine () {
 	local CONFIG=${1}
-	local CONFIG_MACHINES=$(get_machines ${DEFAULT_BUILD_CONFIG} ${CONFIG})
-	local DEFAULT_MACHINE=$(echo ${CONFIG_MACHINES} | awk '{ print $1 }')
+	local CONFIG_MACHINES
+	local DEFAULT_MACHINE
+	CONFIG_MACHINES=$(get_machines ${DEFAULT_BUILD_CONFIG} ${CONFIG})
+	DEFAULT_MACHINE=$(echo ${CONFIG_MACHINES} | awk '{ print $1 }')
 
-	echo ${DEFAULT_MACHINE}
+	echo "${DEFAULT_MACHINE}"
 }
 
 main() {
