@@ -22,7 +22,7 @@ readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
 readonly SCRIPT="$(basename "${0}")"
 
-. ${SCRIPTPATH}/utils
+. "${SCRIPTPATH}/utils"
 
 usage() {
 	cat <<END
@@ -45,8 +45,13 @@ END
 }
 
 main () {
+	local build_dir=""
+	local config="mainline"
 	local copy_mirror="yes"
-	pos_params=""
+	local distros=""
+	local machines=""
+	local pos_params=""
+	local top_dir=""
 
 	while (( "$#" )); do
 		case "$1" in
@@ -101,16 +106,15 @@ main () {
 		exit 1
 	fi
 
-	local build_dir=${1}
-	local config="mainline"
+	build_dir=${1}
 	if [ -n "${2}" ]
 	then
 		config=${2}
 	fi
 
-	local top_dir=$(pwd)
-	local distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
-	local machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
+	top_dir="$(pwd)"
+	distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
+	machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
 
 	debug "Machines to build: ${machines}"
 	debug "Distros to build: ${distros}"
@@ -124,17 +128,18 @@ main () {
 		# source the real setup workhorse
 		export EULA="y"
 		export DISTRO=${distro}
-		export MACHINE=$(echo ${machines} | awk '{ print $1 }')
+		export MACHINE
+		MACHINE=$(echo ${machines} | awk '{ print $1 }')
 
 		# clean conf, to enforce a really clean configuration and to enable
 		# incremental changes in the config using our template dir
-		rm -rf ${build_dir}_${distro}/conf
+		rm -rf "${build_dir}_${distro}/conf"
 
 		# although DISTRO and MACHINE are exported, setup-environment
 		# uses these variable mainly to set default in local.conf
 		# afterwards they can be set again to iterate over all buildable
 		# machines
-		if ! . ./setup-environment ${build_dir}_${distro} ${config}
+		if ! . ./setup-environment "${build_dir}_${distro}" "${config}"
 		then
 			error_out "sourcing setup-environment failed"
 		fi
@@ -150,9 +155,9 @@ main () {
 		# if there is a .done file and / or a git2_*.tar.gz it seems the
 		# fetcher does not rerun git to update the repo
 		info "clean git2 tarballs from ${DL_DIR} ..."
-		rm -f ${DL_DIR}/git2_*.tar.gz
-		rm -f ${DL_DIR}/git2_*.tar.gz.done
-		if ls -1 ${DL_DIR}/git2_* 2>/dev/null
+		rm -f "${DL_DIR}/git2_*.tar.gz"
+		rm -f "${DL_DIR}/git2_*.tar.gz.done"
+		if ls -1 "${DL_DIR}/git2_*" 2>/dev/null
 		then
 			error_out "${DL_DIR} not clean, stop"
 		fi
@@ -177,29 +182,30 @@ main () {
 
 		if [ ${copy_mirror} = "yes" ]
 		then
+			local SOURCE_MIRROR_URL
 			SOURCE_MIRROR_URL=$(bitbake-getvar -q --value SOURCE_MIRROR_URL)
 			SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
 
 			info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
-			files=$(find ${DL_DIR} -maxdepth 1 -type f -not -name "*.done")
+			files="$(find "${DL_DIR}" -maxdepth 1 -type f -not -name "*.done")"
 			info "copy ${files}"
 			for f in ${files}; do
-				cp ${f} ${SOURCE_MIRROR_URL}
+				cp "${f}" "${SOURCE_MIRROR_URL}"
 			done
 
-			cwd=$(pwd)
-			cd ${DL_DIR}
+			cwd="$(pwd)"
+			cd "${DL_DIR}"
 			files=$(find uninative -maxdepth 2 -type f -not -name "*.done")
 			for f in ${files}; do
-				dir=$(dirname ${f})
-				mkdir -p ${SOURCE_MIRROR_URL}/${dir}
-				cp ${f} ${SOURCE_MIRROR_URL}/${dir}
+				dir=$(dirname "${f}")
+				mkdir -p "${SOURCE_MIRROR_URL}/${dir}"
+				cp "${f}" "${SOURCE_MIRROR_URL}/${dir}"
 			done
 		fi
 
-		cd ${top_dir}
+		cd "${top_dir}"
 	done
-	cd ${cwd}
+	cd "${cwd}"
 }
 
 main "${@}"
