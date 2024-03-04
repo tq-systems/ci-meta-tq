@@ -12,6 +12,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0017
+
+### Module BSP Revisions
+
+* kirkstone.TQMa57xx.BSP.SW.0015
+
 ### Added
 
 * TQMa8MPxL: NPU support
@@ -33,7 +39,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 * meta-tq: compatibility fix for linux-firmware from poky v4.0.16
 * ci: do not longer depend on bitbake require/include logic in template config files
-  and setup scripts.
+  and setup scripts
+
+  Related to this change, some variables like `IMAGE_FSTYPES` are now set in
+  `meta-tq` machine configs instead of ci-meta-tq's `auto.conf`. Updating to
+  this version of (ci-)meta-tq may require configuring these variables in custom
+  machine, distro or `local.conf` configurations if image types other than the
+  default WIC image and `.tar.gz` archive need to be built.
+
   This fixes https://github.com/tq-systems/ci-meta-tq/issues/7
 * ci/buildall: file and directory cleanup for special use cases
 
