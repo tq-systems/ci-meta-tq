@@ -14,7 +14,6 @@ set -C # noclobber
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
-readonly SCRIPT="$(basename "${0}")"
 
 # TRAP SIGNALS
 trap 'error_abort $LINENO' ERR
@@ -23,20 +22,20 @@ function error_abort () {
 	echo "error at $1"
 }
 
-. ${SCRIPTPATH}/utils
+. "${SCRIPTPATH}/utils"
 
 readonly DEFAULT_TEMPLATEDIR="./sources/template"
 
-usage() {
+function usage() {
 	cat <<END
 
 ${SCRIPTNAME} usage:
 
 List available configs either from config file or from template directory
-$1 --dir[=directory] use default template dir ${DEFAULT_TEMPLATEDIR} or directory
+${SCRIPTNAME} --dir[=directory] use default template dir ${DEFAULT_TEMPLATEDIR} or directory
 Note: directory needs to have the structure of a layer and templates are
 under <template dir>/conf/templates/.
-$1 [--file=filename] use default config file ${DEFAULT_BUILD_CONFIG} or file given
+${SCRIPTNAME} [--file=filename] use default config file ${DEFAULT_BUILD_CONFIG} or file given
 
 Note: config file needs to to be a json file and must be in sync with workspace
 structure and settings
@@ -44,10 +43,12 @@ END
 }
 
 function parse_configs_from_file () {
-	local configfile="$(readlink --canonicalize-existing "${1}")"
+	local configfile
+	configfile="$(readlink --canonicalize-existing "${1}")"
 
 	if [ -f "${configfile}" ]; then
-		local configurations="$(get_configs_in_workspace "${configfile}")"
+		local configurations
+		configurations="$(get_configs_in_workspace "${configfile}")"
 		for conf in ${configurations}; do
 			echo "${conf}"
 		done
@@ -57,12 +58,14 @@ function parse_configs_from_file () {
 }
 
 function parse_configs_from_dir () {
-	local templatepath="$(readlink --canonicalize-existing ${1}/conf/templates)"
+	local templatepath
+	templatepath="$(readlink --canonicalize-existing ${1}/conf/templates)"
 
 	if [ -d "${templatepath}" ]; then
 		# filter out ci folder from the template dir
 		local exclude="ci"
-		local configurations="$(find ${templatepath} \
+		local configurations
+		configurations="$(find ${templatepath} \
 			-mindepth 1 -maxdepth 1 -type d -exec basename {} \;)"
 		configurations=$(echo "${configurations}" | grep -vxF "${exclude}")
 
