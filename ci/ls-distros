@@ -14,7 +14,6 @@ set -C # noclobber
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
-readonly SCRIPT="$(basename "${0}")"
 
 # TRAP SIGNALS
 trap 'error_abort $LINENO' ERR
@@ -23,21 +22,20 @@ function error_abort () {
 	echo "error at $1"
 }
 
-. ${SCRIPTPATH}/utils
+. "${SCRIPTPATH}/utils"
 
 readonly DEFAULT_LAYER_DIR="./sources/meta-tq/meta-dumpling"
 
 usage() {
 	cat <<END
 
-${SCRIPTNAME} usage:
+ usage:
 
 List available distros either from config file or from template directory
-$1 --dir[=<directory>]
+${SCRIPTNAME} --dir[=<directory>]
 use default template dir ${DEFAULT_TEMPLATEDIR} or directory
 Note: directory needs to have the structure of a layer and distros are
-under <layer dir>/conf/distro/.
-$1 --file[=<filename>] --config=<name>
+${SCRIPTNAME} --file[=<filename>] --config=<name>
 use default config file ${DEFAULT_BUILD_CONFIG} or given file to parse for supported
 distros for given config name
 
@@ -47,7 +45,8 @@ END
 }
 
 function parse_distros_from_file () {
-	local configfile="$(readlink --canonicalize-existing "${1}")"
+	local configfile
+	configfile="$(readlink --canonicalize-existing "${1}")"
 	local config="${2}"
 
 	if [ -f "${configfile}" ]; then
@@ -62,11 +61,13 @@ function parse_distros_from_file () {
 }
 
 function parse_distros_from_dir () {
-	local distropath="$(readlink --canonicalize-existing ${1}/conf/distro)"
+	local distropath
+	distropath="$(readlink --canonicalize-existing ${1}/conf/distro)"
 
 	if [ -d "${distropath}" ]; then
 		# filter out distros from the layer
-		local distros=$(ls ${distropath}/*.conf | \
+		local distros
+		distros=$(find "${distropath}" -name "*.conf" | \
 			sed s/\.conf//g | xargs -n1 basename)
 
 		for d in ${distros}; do
