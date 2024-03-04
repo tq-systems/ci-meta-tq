@@ -14,7 +14,6 @@ set -C # noclobber
 
 readonly SCRIPTNAME="${0}"
 readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
-readonly SCRIPT="$(basename "${0}")"
 
 # TRAP SIGNALS
 trap 'error_abort $LINENO' ERR
@@ -23,7 +22,7 @@ function error_abort () {
 	echo "error at $1"
 }
 
-. ${SCRIPTPATH}/utils
+. "${SCRIPTPATH}/utils"
 
 readonly DEFAULT_LAYER_DIR="./sources/meta-tq/meta-tq"
 
@@ -33,11 +32,11 @@ ${SCRIPTNAME} usage:
 
 List available machines either from config file or from template directory
 
-$1 --dir[=<directory>]
+${SCRIPTNAME} --dir[=<directory>]
 use default template dir ${DEFAULT_TEMPLATEDIR} or directory
 Note: directory needs to have the structure of a layer and distros are
 under <layer dir>/conf/distro/.
-$1 --file[=<filename>] --config=<name>
+${SCRIPTNAME} --file[=<filename>] --config=<name>
 use default config file ${DEFAULT_BUILD_CONFIG} or given file to parse for supported
 distros for given config name
 
@@ -47,11 +46,13 @@ END
 }
 
 function parse_machines_from_file () {
-	local configfile="$(readlink --canonicalize-existing "${1}")"
+	local configfile
+	configfile="$(readlink --canonicalize-existing "${1}")"
 	local config="${2}"
 
 	if [ -f "${configfile}" ]; then
-		local machines=$(get_machines_for_config "${configfile}" "${config}")
+		local machines
+		machines=$(get_machines_for_config "${configfile}" "${config}")
 
 		for m in ${machines}; do
 			echo "${m}"
@@ -62,11 +63,13 @@ function parse_machines_from_file () {
 }
 
 function parse_machines_from_dir () {
-	local machinepath="$(readlink --canonicalize-existing ${1}/conf/machine)"
+	local machinepath
+	machinepath="$(readlink --canonicalize-existing ${1}/conf/machine)"
 
 	if [ -d "${machinepath}" ]; then
 		# filter out distros from the layer
-		local machines=$(ls ${machinepath}/*.conf | \
+		local machines
+		machines=$(find "${machinepath}" -name "*.conf" | \
 			sed s/\.conf//g | xargs -n1 basename)
 
 		for m in ${machines}; do
