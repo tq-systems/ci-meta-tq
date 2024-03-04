@@ -25,7 +25,7 @@ readonly SCRIPT="$(basename "${0}")"
 # depends on bitbake / poky version
 readonly BITBAKE_GIT_MIRROR_PKG_EXTENSION="tar.gz"
 
-. ${SCRIPTPATH}/utils
+. "${SCRIPTPATH}/utils"
 
 usage() {
 	cat <<END
@@ -62,7 +62,7 @@ create_build_info () {
 	local file="${1}"
 
 	# create a file containing information about sources we built from
-	cat >${file} <<END
+	cat > "${file}" <<END
 # Build information
 
 ## Version info for BSP project
@@ -92,7 +92,7 @@ print_bitbake_build_info () {
 	local file="${1}"
 	local distro="${2}"
 
-	cat >>${file} <<END
+	cat >> "${file}" <<END
 
 ## Configuration info for BSP project
 
@@ -103,7 +103,7 @@ __DISTRO__: ${distro}
 The following \`bblayers.conf\` template was used in this build:
 
 \`\`\`
-$(cat  $(cat conf/templateconf.cfg)/bblayers.conf.sample)
+$(cat  "$(cat conf/templateconf.cfg)/bblayers.conf.sample")
 \`\`\`
 
 END
@@ -119,7 +119,7 @@ print_bitbake_machine_info () {
 	local file="${1}"
 	local machine="${2}"
 
-	cat >>${file} <<END
+	cat >> "${file}" <<END
 
 ## Build target
 
@@ -139,22 +139,25 @@ END
 # $2 target - virtual target to query (e.g. kernel for virtual/kernel)
 #
 print_virtual_provider_info () {
-	local recipe=$(bitbake-getvar --quiet --value PREFERRED_PROVIDER_virtual/${2} 2>/dev/null)
-	if [ -n "${recipe}" ] && ! [ ${recipe} = "None" ]; then
-		local srcrev=$(bitbake-getvar --quiet --value --recipe ${recipe} SRCREV 2>/dev/null)
-		local srcuri=$(bitbake-getvar --quiet --value --recipe ${recipe} SRC_URI 2>/dev/null)
-		cat >>${1} <<END
+	local recipe
+	recipe=$(bitbake-getvar --quiet --value PREFERRED_PROVIDER_virtual/${2} 2>/dev/null)
+	if [ -n "${recipe}" ] && ! [ "${recipe}" = "None" ]; then
+		local srcrev
+		local srcuri
+		srcrev=$(bitbake-getvar --quiet --value --recipe "${recipe}" SRCREV 2>/dev/null)
+		srcuri=$(bitbake-getvar --quiet --value --recipe "${recipe}" SRC_URI 2>/dev/null)
+		cat >> "${1}" <<END
 
 ### virtual/${2}
 
 __URI__:
 \`\`\`
-$(for uri in ${srcuri}; do echo ${uri}; done)
+$(for uri in ${srcuri}; do echo "${uri}"; done)
 \`\`\`
 __COMMIT__:  ${srcrev}
 END
 	else
-		cat >>${1} <<END
+		cat >> "${1}" <<END
 
 ### virtual/${2}:
 
@@ -167,9 +170,18 @@ END
 main () {
 	local deploy="no"
 	local release="no"
+	local build_dir=""
+	local build_info_file=""
+	local config="mainline"
+	local deploydir=""
+	local distros=""
+	local machines=""
+	local pos_params=""
+	local stamp=""
+	local top_dir=""
+
 	# default
-	local deploydir=$(readlink -f ./deployment)
-	pos_params=""
+	deploydir="$(readlink -f ./deployment)"
 
 	while (( "$#" )); do
 		case "$1" in
@@ -182,6 +194,7 @@ main () {
 			shift
 			;;
 		--debug )
+			# set variable in utils lib
 			DEBUG="on"
 			shift
 			;;
@@ -194,7 +207,7 @@ main () {
 			shift
 			;;
 		--deploydir=* )
-			deploydir=$(readlink -f ${1#*=})
+			deploydir="$(readlink -f ${1#*=})"
 			shift
 			;;
 		--devel )
@@ -250,18 +263,17 @@ main () {
 		exit 1
 	fi
 
-	local build_dir=${1}
-	local config="mainline"
+	build_dir="${1}"
 	if [ -n "${2}" ]
 	then
 		config=${2}
 	fi
 
-	local top_dir=$(pwd)
-	local build_info_file="${deploydir}/${config}-build_info.md"
-	local distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
-	local machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
-	local stamp=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
+	build_info_file="${deploydir}/${config}-build_info.md"
+	top_dir="$(pwd)"
+	distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${config}")"
+	machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${config}")"
+	stamp="$("${SCRIPTPATH}/git-revision-name.sh" "${YOCTO_VERSION}")"
 
 	if [ "${deploy}" = "yes" ]
 	then
@@ -269,7 +281,7 @@ main () {
 		if [ -d "${deploydir}" ]; then
 			rm -rf "${deploydir}"
 		fi
-		mkdir -p ${deploydir}
+		mkdir -p "${deploydir}"
 
 		create_build_info "${build_info_file}"
 	fi
@@ -279,25 +291,27 @@ main () {
 
 	for distro in ${distros}
 	do
-		# GENERAL
+		local images
 
-		local images=$(get_images "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${distro})
+		# GENERAL
+		images=$(get_images "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${distro}")
 		debug "Images to build: ${images}"
 
 		# source the real setup workhorse
 		export EULA="y"
 		export DISTRO=${distro}
-		export MACHINE=$(echo ${machines} | awk '{ print $1 }')
+		export MACHINE
+		MACHINE=$(echo ${machines} | awk '{ print $1 }')
 
 		# clean conf, to enforce a really clean configuration and to enable
 		# incremental changes in the config using our template dir
-		rm -rf ${build_dir}_${distro}/conf
+		rm -rf "${build_dir}_${distro}/conf"
 
 		# although DISTRO and MACHINE are exported, setup-environment
 		# uses these variable mainly to set default in local.conf
 		# afterwards they can be set again to iterate over all buildable
 		# machines
-		if ! . ./setup-environment ${build_dir}_${distro} ${config}
+		if ! . ./setup-environment "${build_dir}_${distro}" "${config}"
 		then
 			error_out "sourcing setup-environment failed"
 		fi
@@ -315,14 +329,14 @@ main () {
 
 		if [ -n "${SSTATE_DIR}" ]; then
 			# add SSTATE dir outside of builddir, optimize global builds
-			assign_or_replace SSTATE_DIR ${SSTATE_DIR} "=" conf/local.conf
+			assign_or_replace SSTATE_DIR "${SSTATE_DIR}" "=" conf/local.conf
 		else
 			info "env SSTATE_DIR empty, using local dir or add it to your site.conf / auto.conf"
 		fi
 
 		if [ -n "${DL_DIR}" ]; then
 			# add DL_DIR dir outside of builddir, optimize global builds
-			assign_or_replace DL_DIR ${DL_DIR} "=" conf/local.conf
+			assign_or_replace DL_DIR "${DL_DIR}" "=" conf/local.conf
 
 		else
 			info "env DL_DIR empty, using local dir or add it to your site.conf / auto.conf"
@@ -340,7 +354,7 @@ main () {
 
 				if [ -z ${skipbitbake} ]
 				then
-					if ! bitbake ${bitbake_args} ${img}
+					if ! bitbake ${bitbake_args} "${img}"
 					then
 						error_out "bitbake ${bitbake_args} ${img} for ${MACHINE} failed"
 					fi
@@ -349,26 +363,31 @@ main () {
 		done
 		if [ "${deploy}" = "yes" ]
 		then
+			local distro_codename
+
 			# note: this depends on a selected distro
-			local distro_codename=$(bitbake-getvar -q --value DISTRO_CODENAME)
+			distro_codename=$(bitbake-getvar -q --value DISTRO_CODENAME)
 
 			for machine in ${machines}; do
 				# export $MACHINE before query bitbake
 				export MACHINE=${machine}
-				local artifactsdir=$(bitbake-getvar -q --value DEPLOY_DIR_IMAGE)
-				local machine_archive=${machine}_${config}_${distro_codename}_${distro}_${stamp}
+				local artifactsdir
+				local machine_archive
+
+				artifactsdir=$(bitbake-getvar -q --value DEPLOY_DIR_IMAGE)
+				machine_archive=${machine}_${config}_${distro_codename}_${distro}_${stamp}
 				info "archiving ${machine} ..."
-				# we create some files in ${ARTIFACTSDIR}, clean them before recreate
+				# we create some files in ${artifactsdir}, clean them before recreate
 				rm -f "${artifactsdir}"/*.md
 				rm -f "${artifactsdir}"/*.md5sum
 				# create a file containing md5sum of files
 				get_md5sum "${artifactsdir}" > "${deploydir}/${machine_archive}.md5sum"
-				cp "${deploydir}/${machine_archive}.md5sum" "${artifactsdir}"
+				cp "${deploydir}/${machine_archive}.md5sum" "${artifactsdir}/${machine_archive}.md5sum"
 				# use pregenerated build info
 				cp "${build_info_file}" "${artifactsdir}/${machine_archive}.md"
 				# enrich with machine specific information for some virtual packages
-				print_bitbake_build_info "${artifactsdir}/${machine_archive}.md" ${distro}
-				print_bitbake_machine_info "${artifactsdir}/${machine_archive}.md" ${machine}
+				print_bitbake_build_info "${artifactsdir}/${machine_archive}.md" "${distro}"
+				print_bitbake_machine_info "${artifactsdir}/${machine_archive}.md" "${machine}"
 				print_virtual_provider_info "${artifactsdir}/${machine_archive}.md" kernel
 				print_virtual_provider_info "${artifactsdir}/${machine_archive}.md" bootloader
 				# TODO:
@@ -404,34 +423,40 @@ main () {
 			done
 		fi
 
-		cd ${top_dir}
+		cd "${top_dir}"
 	done
 	if [ "${release}" = "yes" ]
 	then
+		local licenses_src_path
+		local archived_src_path
+		local archive_git
+		local archive_gitsm
+
 		# create licenses and mirror archive
 		local archive_basename=${config}_${stamp}
 
-		mkdir -p ${archive_basename}.LIC
+		mkdir -p "${archive_basename}.LIC"
 		# copy the file from licenses
-		local licenses_src_path=$(ls -d ${build_dir}_*/tmp*/deploy/licenses/*)
+		licenses_src_path=$(ls -d ${build_dir}_*/tmp*/deploy/licenses/*)
 		for f in ${licenses_src_path}; do
-			cp -r "${f}" ${archive_basename}.LIC;
+			cp -r "${f}" "${archive_basename}.LIC";
 		done
 
-		tar -cvf ${archive_basename}.LIC.tar.gz ${archive_basename}.LIC --use-compress-program=pigz
+		tar -cvf "${archive_basename}.LIC.tar.gz" "${archive_basename}.LIC" --use-compress-program=pigz
 		# do some cleanup
-		rm -rf ${archive_basename}.LIC
+		rm -rf "${archive_basename}.LIC"
 
-		mkdir -p ${archive_basename}.MIRROR.SRC
+		mkdir -p "${archive_basename}.MIRROR.SRC"
 		DL_DIR=$(bitbake-getvar -q --value DL_DIR)
 		# query all archived sources, needs archiver class in config
-		local archived_src_path=$(ls -1 ${build_dir}_*/tmp*/deploy/sources/*/*/*)
+		archived_src_path=$(ls -1 "${build_dir}_*/tmp*/deploy/sources/*/*/*")
 
 		# copy the file from archived sources if it exists in DL_DIR
 		for f in ${archived_src_path}; do
-			local filename="${DL_DIR}/$(basename ${f})"
-			if [ -e ${filename} ]; then
-				cp "${filename}" ${archive_basename}.MIRROR.SRC;
+			local filename
+			filename="${DL_DIR}/$(basename ${f})"
+			if [ -e "${filename}" ]; then
+				cp "${filename}" "${archive_basename}.MIRROR.SRC";
 			else
 				debug "$f has no counterpart ${filename}"
 			fi
@@ -440,18 +465,18 @@ main () {
 		# we assume here that bitbake is configured to use shallow cloning
 		# and that packages are tar.gz''
 		#
-		local archive_git=$(ls -1 ${DL_DIR}/gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION})
-		local archive_gitsm=$(ls -1 ${DL_DIR}/gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION})
+		archive_git=$(ls -1 ${DL_DIR}/gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION})
+		archive_gitsm=$(ls -1 ${DL_DIR}/gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION})
 		for f in ${archive_git}; do
-			cp "${f}" ${archive_basename}.MIRROR.SRC;
+			cp "${f}" "${archive_basename}.MIRROR.SRC";
 		done
 		for f in ${archive_gitsm}; do
-			cp "${f}" ${archive_basename}.MIRROR.SRC;
+			cp "${f}" "${archive_basename}.MIRROR.SRC"
 		done
 
-		tar -cvf ${archive_basename}.MIRROR.SRC.tar.gz ${archive_basename}.MIRROR.SRC --use-compress-program=pigz
+		tar -cvf "${archive_basename}.MIRROR.SRC.tar.gz" "${archive_basename}.MIRROR.SRC" --use-compress-program=pigz
 		# do some cleanup
-		rm -rf ${archive_basename}.MIRROR.SRC
+		rm -rf "${archive_basename}.MIRROR.SRC"
 	fi
 }
 
