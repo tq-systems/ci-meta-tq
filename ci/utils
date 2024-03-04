@@ -16,7 +16,7 @@
 #         $2 - message
 # return: ---
 ####
-__print () {
+function __print () {
 	local type="${1}"
 	local msg="${2}"
 
@@ -36,19 +36,19 @@ __print () {
 	esac
 }
 
-debug () {
+function debug () {
 	__print dbg "$@"
 }
 
-info () {
+function info () {
 	__print info "$@"
 }
 
-error () {
+function error () {
 	__print err "$@"
 }
 
-error_out () {
+function error_out () {
 	echo "FATAL: $1" >&2
 	exit 1
 }
@@ -70,13 +70,13 @@ error_out () {
 # '${var} ${op} ${val}' (first expression) or add such a line if no line starting
 # with '${var} ' could be found in the file
 ##############
-assign_or_replace() {
+function assign_or_replace() {
 	local var=${1////\\/}
 	local val=${2////\\/}
 	local op=${3////\\/}
 	local infile=${4}
 
-	sed --in-place "/^${var} /{h;s/.*/${var} ${op} \"${val}\"/};\${x;/^$/{s//${var} ${op} \"${val}\"/;H};x}" ${infile}
+	sed --in-place "/^${var} /{h;s/.*/${var} ${op} \"${val}\"/};\${x;/^$/{s//${var} ${op} \"${val}\"/;H};x}" "${infile}"
 }
 
 ####
@@ -85,21 +85,24 @@ assign_or_replace() {
 # param:  $1 - directory
 # return: file containing md5sum of files
 ####
-get_md5sum () {
-	local mypwd=$(pwd)
+function get_md5sum () {
+	local mypwd
 	local directory=${1}
+	mypwd="$(pwd)"
 
-	if [ -d ${directory} ]; then
-		cd ${directory}
-		local files=$(find . -maxdepth 1 -type f)
+	if [ -d "${directory}" ]; then
+		cd "${directory}" || return
+		local files
+		files=$(find . -maxdepth 1 -type f)
 
 		for file in ${files}; do
-			if ! md5sum ${file}; then
+			if ! md5sum "${file}"; then
 				err "md5sum for ${file}"
 			fi
 		done
 	fi
-	cd ${mypwd}
+	
+	cd "${mypwd}" || return
 }
 
 ####
@@ -110,22 +113,24 @@ get_md5sum () {
 # param:  $1 - [optional] template (ci/mirror)
 # return: ---
 ####
-do_create_auto_conf () {
-	local PWD=$(pwd)
+function do_create_auto_conf () {
+	local cwd
+	cwd="$(pwd)"
 	local templ=${1}
 
-	rm -f ${PWD}/conf/auto.conf
-	cp ${PWD}/conf/auto.conf.sample ${PWD}/conf/auto.conf
-	if ! [ -e ${PWD}/conf/auto.conf ]; then
+	rm -f "${cwd}/conf/auto.conf"
+	cp "${cwd}/conf/auto.conf.sample" "${cwd}/conf/auto.conf"
+	if ! [ -e "${cwd}/conf/auto.conf" ]; then
 		error_out "missing auto.conf"
 	fi
-	if ! [ -z ${templ} ]; then
-		if [ -e ${PWD}/conf/auto.conf.${templ} ]; then
-			cat ${PWD}/conf/auto.conf.${templ} >> ${PWD}/conf/auto.conf
+	if [ -n "${templ}" ]; then
+		if [ -e "${cwd}/conf/auto.conf.${templ}" ]; then
+			cat "${cwd}/conf/auto.conf.${templ}" >> "${cwd}/conf/auto.conf"
 		fi
 	fi
 }
 
+# to be used by scripts including this file
 readonly DEFAULT_BUILD_CONFIG="build-config.json"
 
 ####
@@ -137,34 +142,35 @@ readonly DEFAULT_BUILD_CONFIG="build-config.json"
 # param:  $4 - key value
 # return list of items
 ####
-lookup_values_for_key () {
+function lookup_values_for_key () {
 	local fname=${1}
 	local fexpr=${2}
 	local key=${3}
 	local val=${4}
 	local aname=${5}
-
-	local query="${fexpr} | select(.${key}==\"${val}\") | .${aname} | length"
-	#debug "lookup_values_for_key: constructed $query"
-	local count=$(jq "${query}" "${fname}")
-	#debug "lookup_values_for_key count=$count"
+	local count
 	local list
+	local query="${fexpr} | select(.${key}==\"${val}\") | .${aname} | length"
 
-	if [ -z ${count} ] || [ ${count} -le "0" ]; then
+	#debug "lookup_values_for_key: constructed $query"
+	count=$(jq "${query}" "${fname}")
+	#debug "lookup_values_for_key count=$count"
+
+	if [ -z ${count} ] || [ "${count}" -le "0" ]; then
 		error "no entries for ${aname} in ${fname}"
-		return -5
+		return 5
 	fi
 
-	for n in $(seq 0 $(expr ${count} - 1)); do
+	for n in $(seq 0 $((${count} - 1))); do
 		query="${fexpr} | select(.${key}==\"${val}\") | .${aname}[$n]"
 		# debug "lookup_values_for_key: constructed ${query}"
 		list="${list} $(jq -r "${query}" "${fname}")"
 	done
 
-	echo ${list}
+	echo "${list}"
 }
 
-lookup_single_value_for_key () {
+function lookup_single_value_for_key () {
 	local fname=${1}
 	local fexpr=${2}
 	local key=${3}
@@ -174,7 +180,7 @@ lookup_single_value_for_key () {
 	query="${fexpr} | select(.${key}==\"${val}\").${aname}"
 	value="$(jq -r "${query}" "${fname}")"
 
-	echo ${value}
+	echo "${value}"
 }
 
 ####
@@ -184,7 +190,7 @@ lookup_single_value_for_key () {
 # param:  $2 - distro
 # return list of images
 ####
-get_images_for_distro () {
+function get_images_for_distro () {
 	local fname=${1}
 	local distro=${2}
 
@@ -198,7 +204,7 @@ get_images_for_distro () {
 # param:  $2 - config
 # return list of distros
 ####
-get_distros_for_config () {
+function get_distros_for_config () {
 	local fname=${1}
 	local config=${2}
 
@@ -212,12 +218,13 @@ get_distros_for_config () {
 # param:  $2 - config
 # return list of machine groups
 ####
-get_groups_for_config () {
+function get_groups_for_config () {
 	local fname=${1}
 	local config=${2}
-	local mgroups=$(lookup_values_for_key "${fname}" ".configs[]" "name" "${config}" "groups")
+	local mgroups
 
-	echo ${mgroups}
+	mgroups="$(lookup_values_for_key "${fname}" ".configs[]" "name" "${config}" "groups")"
+	echo "${mgroups}"
 }
 
 ####
@@ -227,19 +234,20 @@ get_groups_for_config () {
 # param:  $2 - group
 # return list of machine groups
 ####
-get_machine_pattern_for_group () {
+function get_machine_pattern_for_group () {
 	local fname=${1}
 	local group=${2}
 
 	lookup_single_value_for_key "${fname}" ".machine_groups[]" "name" "${group}" "pattern"
 }
 
-get_machine_pattern_for_config () {
+function get_machine_pattern_for_config () {
 	local fname=${1}
 	local config=${2}
-	local mgroups="$(get_groups_for_config "${fname}" ${config})"
+	local mgroups
 	local mpattern=""
 
+	mgroups="$(get_groups_for_config "${fname}" ${config})"
 	for mg in ${mgroups}; do
 		mpattern="${mpattern} $(get_machine_pattern_for_group ${fname} ${mg})"
 	done
@@ -247,37 +255,41 @@ get_machine_pattern_for_config () {
 	echo ${mpattern}
 }
 
-get_machines_in_workspace () {
+function get_machines_in_workspace () {
 	local fname=${1}
-	local folder=$(jq -r ".[\"yocto-machine-folder\"]" "${fname}")
-	local machines="$(ls -1 $(pwd)/${folder}/*.conf | sed s/\.conf//g | xargs -n1 basename)"
+	local folder
+	local machines
 
+	folder=$(jq -r ".[\"yocto-machine-folder\"]" "${fname}")
+	machines="$(ls -1 $(pwd)/${folder}/*.conf | sed s/\.conf//g | xargs -n1 basename)"
 	# one per line
 	for m in ${machines}; do
 		echo ${m}
 	done
 }
 
-get_machines_for_pattern () {
+function get_machines_for_pattern () {
 	local fname=${1}
 	local pattern=${2}
-	local allmachines=$(get_machines_in_workspace "${fname}")
+	local allmachines
 	local machines=""
 	local count="0";
 
+	allmachines=$(get_machines_in_workspace "${fname}")
 	machines=$(echo "${allmachines}" | grep "${pattern}" )
 	
 	echo ${machines}
 }
 
-get_machines_for_config () {
+function get_machines_for_config () {
 	local fname=${1}
 	local config=${2}
-	local mpattern=$(get_machine_pattern_for_config ${fname} ${config})
+	local mpattern
 	local machines=""
 
+	mpattern=$(get_machine_pattern_for_config ${fname} ${config})
 	for mp in ${mpattern}; do
-		machines="${machines} $(get_machines_for_pattern ${fname} ${mp})"
+		machines="${machines} $(get_machines_for_pattern "${fname}" "${mp}")"
 	done
 
 	echo ${machines}
@@ -292,8 +304,9 @@ get_machines_for_config () {
 ####
 get_configs_in_workspace () {
 	local fname=${1}
-	local configs=$(jq -r ".configs[].name" ${fname})
+	local configs
 
+	configs=$(jq -r ".configs[].name" "${fname}")
 	echo ${configs}
 }
 
@@ -303,11 +316,12 @@ get_configs_in_workspace () {
 # param:  $1 - config file
 # param:  $2 - config
 ####
-valid_config() {
+function valid_config() {
 	local fname=${1}
 	local config=${2}
-	local supported_configs=$(get_configs_in_workspace ${fname})
+	local supported_configs
 
+	supported_configs=$(get_configs_in_workspace "${fname}")
 	echo ${supported_configs} | grep -wq "${config}"
 }
 
@@ -318,13 +332,15 @@ valid_config() {
 # param:  $2 - distro
 # return: image
 ####
-get_images () {
+function get_images () {
 	local fname=${1}
 	local distro=${2}
 
 	if [ -z "${LOCAL}" ] || [ -z "${IMAGE_LIST}" ]
 	then
-		local choosen_images=$(get_images_for_distro ${fname} ${distro})
+		local choosen_images
+
+		choosen_images=$(get_images_for_distro "${fname}" "${distro}")
 		echo "${choosen_images}"
 	else
 		echo "${IMAGE_LIST}"
@@ -338,22 +354,25 @@ get_images () {
 # param:  $2 - config (imx/ls/ti/mainline)
 # return: list of machines for given configuration
 ####
-get_machines () {
+function get_machines () {
 	local fname=${1}
 	local config=${2}
 
-	if ! valid_config ${fname} ${config}; then
+	if ! valid_config "${fname}" "${config}"; then
 		error "invalid config: ${config}"
-		return -1
+		return 1
 	fi
 
 	if [ -z "${LOCAL}" ] || [ -z "${MACHINE_LIST}" ]
 	then
-		local choosen_machines=$(get_machines_for_config "${fname}" ${config})
+		local choosen_machines
+		choosen_machines=$(get_machines_for_config "${fname}" "${config}")
 		echo "${choosen_machines}"
 	else
 		echo "${MACHINE_LIST}"
 	fi
+
+	return 0
 }
 
 ####
@@ -363,20 +382,23 @@ get_machines () {
 # param:  $2 - config (imx/ls/ti/mainline)
 # return: list of machines
 ####
-get_distros () {
+function get_distros () {
 	local fname=${1}
 	local config=${2}
 
-	if ! valid_config ${fname} ${config}; then
+	if ! valid_config "${fname}" "${config}"; then
 		error "invalid config: ${config}"
-		return -1
+		return 1
 	fi
 
 	if [ -z "${LOCAL}" ] || [ -z "${DISTRO_LIST}" ]
 	then
-		local choosen_distros=$(get_distros_for_config "${fname}" ${config})
+		local choosen_distros
+		choosen_distros=$(get_distros_for_config "${fname}" "${config}")
 		echo "${choosen_distros}"
 	else
 		echo "${DISTRO_LIST}"
 	fi
+
+	return 0
 }
