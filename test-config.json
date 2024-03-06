@@ -3,13 +3,13 @@
 		{
 			"lava-device": "tqma8md-1gb-mba8mx",
 			"devicetree": "imx8mq-tqma8mq-mba8mx.dtb",
-			"yocto-machine": "tqma8mx-1gb-mba8mx",
+			"yocto-machine": "tqma8mx-multi-mba8mx",
 			"linux-image": "Image"
 		},
 		{
 			"lava-device": "tqma8mq-4gb-mba8mx",
 			"devicetree": "imx8mq-tqma8mq-mba8mx.dtb",
-			"yocto-machine": "tqma8mx-4gb-mba8mx",
+			"yocto-machine": "tqma8mx-multi-mba8mx",
 			"linux-image": "Image"
 		},
 		{
@@ -21,13 +21,13 @@
 		{
 			"lava-device": "tqma8mdml-2gb-mba8mx",
 			"devicetree": "imx8mm-tqma8mqml-mba8mx.dtb",
-			"yocto-machine": "tqma8mxml-2gb-mba8mx",
+			"yocto-machine": "tqma8mxml-multi-mba8mx",
 			"linux-image": "Image"
 		},
 		{
 			"lava-device": "tqma8mqml-2gb-mba8mx",
 			"devicetree": "imx8mm-tqma8mqml-mba8mx.dtb",
-			"yocto-machine": "tqma8mxml-2gb-mba8mx",
+			"yocto-machine": "tqma8mxml-multi-mba8mx",
 			"linux-image": "Image"
 		},
 		{
