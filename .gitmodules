@@ -1,32 +1,28 @@
 [submodule "sources/poky"]
 	path = sources/poky
 	url = https://git.yoctoproject.org/git/poky
-	branch = kirkstone
+	branch = scarthgap
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
-	branch = kirkstone
+	branch = scarthgap
 [submodule "sources/meta-openembedded"]
 	path = sources/meta-openembedded
 	url = https://github.com/openembedded/meta-openembedded.git
-	branch = kirkstone
+	branch = scarthgap
 [submodule "sources/meta-freescale"]
 	path = sources/meta-freescale
 	url = https://git.yoctoproject.org/git/meta-freescale
-	branch = kirkstone
+	branch = scarthgap
 [submodule "sources/meta-ti"]
 	path = sources/meta-ti
 	url = https://git.yoctoproject.org/git/meta-ti
-	branch = kirkstone
+	branch = scarthgap
 [submodule "sources/meta-arm"]
 	path = sources/meta-arm
 	url = https://git.yoctoproject.org/git/meta-arm
-	branch = kirkstone
-[submodule "sources/meta-qt5"]
-	path = sources/meta-qt5
-	url = https://github.com/meta-qt5/meta-qt5.git
-	branch = master
-[submodule "sources/meta-freescale-ml"]
-	path = sources/meta-freescale-ml
-	url = https://github.com/Freescale/meta-freescale-ml.git
-	branch = kirkstone
+	branch = scarthgap
+[submodule "sources/meta-qt6"]
+	path = sources/meta-qt6
+	url = http://code.qt.io/yocto/meta-qt6.git
+	branch = 6.7

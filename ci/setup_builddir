@@ -78,10 +78,10 @@ Some BSPs depend on libraries and packages which are covered by TI's licenses
 you need to read and accept the following...
 EOF
 				;;
-			QT5)
+			QT6)
 cat <<EOF
-The BSP configuration includes meta-qt5. This BSP is configured to build the
-Open Source version of Qt5. Therefore you need to read and accept the following ...
+The BSP configuration includes meta-qt6. This BSP is configured to build the
+Open Source version of Qt6. Therefore you need to read and accept the following ...
 EOF
 				;;
 		esac
@@ -129,9 +129,10 @@ handle_licenses() {
 		handle_eula TI "${BSPROOT}/sources/meta-ti/meta-ti-bsp/licenses/TI-TFL ${BSPROOT}/sources/meta-ti/meta-ti-bsp/licenses/TI-TSPA"
 	fi
 
-	if grep -q "meta-qt5" conf/bblayers.conf; then
-		handle_eula QT5 "${BSPROOT}/sources/meta-qt5/licenses/Digia-Qt-LGPL-Exception-1.1 \
-			${BSPROOT}/sources/meta-qt5/licenses/The-Qt-Company-GPL-Exception-1.0"
+	if grep -q "meta-qt6" conf/bblayers.conf; then
+		handle_eula QT6 "${BSPROOT}/sources/meta-qt6/licenses/Qt-GPL-exception-1.0"
+		echo "Defaulting to Qt6 LGPL-3.0-only license: https://doc.qt.io/qt-6/lgpl.html"
+		echo "QT_EDITION = \"opensource\"" >> conf/local.conf
 	fi
 }
 

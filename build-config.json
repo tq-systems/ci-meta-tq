@@ -1,5 +1,5 @@
 {
-	"yocto-release": "kirkstone",
+	"yocto-release": "scarthgap",
 	"yocto-machine-folder": "sources/meta-tq/meta-tq/conf/machine",
 	"distros": [
 		{
