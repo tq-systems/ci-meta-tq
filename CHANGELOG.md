@@ -12,6 +12,20 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* meta-tq: TQMa93xx[CA,LA]:
+  * update RAM-Timing to support multiple set points
+  * add support for 2 GB SoM variants
+
+### Changed
+
+* meta-tq: TQMLX2160A: update kernel version to to linux v6.1
+* ci:
+  * Rewrite scripts to use build_config.json by default. The old behaviour of
+    ls-distros / ls-machines / ls-configs is kept when using new command line
+    arguments.
+
 ## kirkstone.TQ.ARM.BSP.0017
 
 ### Module BSP Revisions
@@ -20,8 +34,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Added
 
-* TQMa8MPxL: NPU support
-  * Installs tensorflow-lite when meta-freescale-ml is added
+* meta-tq: TQMa8MPxL: NPU support
+  * Install tensorflow-lite when meta-freescale-ml is added
   * meta-freescale-ml layer is added using git submodules
 
 ### Changed
@@ -31,7 +45,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-openembedded: updated to 8609de00952d65bb813a48c535c937324efeb18a
 * ci/buildall: improve per machine info output
 * ci: script style fixes
-* linux-imx-tq_6.1:
+* meta-tq: linux-imx-tq_6.1:
   * Enable `CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS` for better support for
     PIE post-mortem debugging
 
