@@ -12,6 +12,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* poky: updated to 4.0.17
+* meta-freescale: updated to 1aa79a0c9b7d6d8af626b2d39a1d518d70d28205
+* meta-openembedded: updated to 8bb16533532b6abc2eded7d9961ab2a108fd7a5b
+* meta-qt5: switch to branch master / b8e1ae8ce6140f6084388842751280b55d55988b
+  This enables support for v5.15.12-lts-lgpl and add CVE fixes.
+
 ## kirkstone.TQ.ARM.BSP.0018
 
 ### Module BSP Revisions
