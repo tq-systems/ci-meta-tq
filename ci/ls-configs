@@ -62,8 +62,8 @@ function parse_configs_from_dir () {
 	if [ -d "${templatepath}" ]; then
 		# filter out ci folder from the template dir
 		local exclude="ci"
-		local configurations="$(find ${templatepath}/* \
-			-maxdepth 1 -type d -exec basename {} \;)"
+		local configurations="$(find ${templatepath} \
+			-mindepth 1 -maxdepth 1 -type d -exec basename {} \;)"
 		configurations=$(echo "${configurations}" | grep -vxF "${exclude}")
 
 		for c in ${configurations}; do
