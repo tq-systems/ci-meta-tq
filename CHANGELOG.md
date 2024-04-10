@@ -14,6 +14,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* meta-tq:
+  * TQMa7x: support all variants of the SoM on the MBa7 starter kit base boards
+    with a single machine definition. The machine is called `tqma7x-multi-mba7`
+    and builds all boot images and WIC images for the different RAM configurations.
+* ci: improve coding style
+* meta-dumpling: Explicitly set variable `INIT_MANAGER` for distro definition.
 * poky: updated to 4.0.17
 * meta-freescale: updated to 1aa79a0c9b7d6d8af626b2d39a1d518d70d28205
 * meta-openembedded: updated to 8bb16533532b6abc2eded7d9961ab2a108fd7a5b
@@ -59,9 +65,15 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-openembedded: updated to 8609de00952d65bb813a48c535c937324efeb18a
 * ci/buildall: improve per machine info output
 * ci: script style fixes
-* meta-tq: linux-imx-tq_6.1:
-  * Enable `CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS` for better support for
-    PIE post-mortem debugging
+* meta-tq:
+  * TQMa8MxML: support all variants of the SoM on the MBa8Mx starter kit base boards
+    with a single machine definition. The machine is called `tqma8mx-multi-mba8mx`
+    and builds all boot images and WIC images for the different RAM configurations.
+  * TQMa8Mx: support all variants of the SoM on the MBa8Mx starter kit base boards
+    with a single machine definition. The machine is called `tqma8mx-multi-mba8mx`
+    and builds all boot images and WIC images for the different RAM configurations.
+  * linux-imx-tq\_6.1: Enable `CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS` for better
+    support for PIE post-mortem debugging
 
 ### Fixed
 
