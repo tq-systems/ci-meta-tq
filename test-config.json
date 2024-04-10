@@ -45,13 +45,13 @@
 		{
 			"lava-device": "tqma7d-1gb-mba7",
 			"devicetree": "imx7d-mba7.dtb",
-			"yocto-machine": "tqma7x-1gb-mba7",
+			"yocto-machine": "tqma7x-multi-mba7",
 			"linux-image": "zImage"
 		},
 		{
 			"lava-device": "tqma7s-512mb-mba7",
 			"devicetree": "imx7s-mba7.dtb",
-			"yocto-machine": "tqma7x-512mb-mba7",
+			"yocto-machine": "tqma7x-multi-mba7",
 			"linux-image": "zImage"
 		},
 		{
