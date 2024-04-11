@@ -367,7 +367,7 @@ main () {
 				# add some artifact unpacked for automated testing
 				# TODO: should we use bitbake variables here?
 				mkdir -p ${deploydir}/${machine}
-				find ${artifactsdir} -name *-${machine}.wic -exec cp "{}" ${deploydir}/${machine}/ \;
+				find ${artifactsdir} -name *.wic -type f -exec cp "{}" ${deploydir}/${machine}/ \;
 				find ${artifactsdir} -name *-${machine}.tar.gz -exec cp "{}" ${deploydir}/${machine}/ \;
 				local kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_DEVICETREE)
 				for dtb in ${kernel_dtb}; do
