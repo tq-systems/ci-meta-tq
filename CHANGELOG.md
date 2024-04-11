@@ -18,6 +18,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
   * allow to deploy multiple wic images per machine_archive
   * create release archives only if needed
 * meta-tq:
+  * TQMa6ULLx[L]: support all variants of the SoM on the MBa6ULx starter kit
+    base board with a single machine definition. The machine is called
+    `tqma6ull-multi-mba6ulx` and builds all boot images and WIC images for the
+    different RAM configurations and form factors.
+  * TQMa6ULx[L]: support all variants of the SoM on the MBa6ULx starter kit
+    base board with a single machine definition. The machine is called
+    `tqma6ul-multi-mba6ulx` and builds all boot images and WIC images for the
+    different RAM configurations and form factors.
   * TQMa7x: support all variants of the SoM on the MBa7 starter kit base boards
     with a single machine definition. The machine is called `tqma7x-multi-mba7`
     and builds all boot images and WIC images for the different RAM configurations.
