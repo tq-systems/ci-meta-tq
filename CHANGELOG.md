@@ -14,6 +14,9 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* ci:
+  * allow to deploy multiple wic images per machine_archive
+  * create release archives only if needed
 * meta-tq:
   * TQMa7x: support all variants of the SoM on the MBa7 starter kit base boards
     with a single machine definition. The machine is called `tqma7x-multi-mba7`
