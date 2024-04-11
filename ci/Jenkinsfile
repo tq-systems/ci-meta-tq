@@ -87,7 +87,7 @@ def mirrorConfiguration(directoryName) {
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ..."
-        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build_all --archive=yes --deploydir=${directoryName}/${env.DEPLOY_DIR} ${env.BUILD_DIR} \$(basename \$(pwd))"
+        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build_all --release=yes --deploydir=${directoryName}/${env.DEPLOY_DIR} ${env.BUILD_DIR} \$(basename \$(pwd))"
     }
 }
 

@@ -39,8 +39,10 @@ ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug]
 [--dryrun]: call bitbake in dry-run mode
 [--devel]: allow development mode (use different auto.conf to disable CI features)
 [--debug]: print additional informations
-[--archive=<yes|no>]: en/disable tarball generation, default no
-[--deploydir=<directory>]: deploy to this directory (only if --archive=yes)
+[--archive=<yes|no>]: synonym for deploy
+[--deploy=<yes|no>]: en/disable deploy, default no
+[--deploydir=<directory>]: deploy to this directory (only if --deploy=yes)
+[--release=<yes|no>]: en/disable tarball generation, default no, implies deploy=yes
 [--skipbitbake]: don't call bitbake
 
 If the variable "LOCAL" is defined in environment of ${SCRIPT}, the
@@ -163,7 +165,8 @@ END
 }
 
 main () {
-	local archive="no"
+	local deploy="no"
+	local release="no"
 	# default
 	local deploydir=$(readlink -f ./deployment)
 	pos_params=""
@@ -175,7 +178,7 @@ main () {
 			return 0
 			;;
 		--archive=* )
-			archive=${1#*=}
+			deploy=${1#*=}
 			shift
 			;;
 		--debug )
@@ -186,12 +189,20 @@ main () {
 			dryrun="on"
 			shift
 			;;
+		--deploy=* )
+			deploy=${1#*=}
+			shift
+			;;
 		--deploydir=* )
 			deploydir=$(readlink -f ${1#*=})
 			shift
 			;;
 		--devel )
 			develmode="on"
+			shift
+			;;
+		--release=* )
+			release=${1#*=}
 			shift
 			;;
 		--skipbitbake )
@@ -213,11 +224,17 @@ main () {
 		bitbake_args="--dry-run"
 	fi
 
-	if [ "${archive}" = "yes" ]; then
+	if [ "${release}" = "yes" ] || [ "${deploy}" = "yes" ]; then
 		if [ -n "${dryrun}" ] || [ -n "${skipbitbake}" ]; then
-			info "Disabling archive in dry-run / skip-bitbake mode"
-			archive="no"
+			info "Disabling archive/deploy in dry-run / skip-bitbake mode"
+			release="no"
+			deploy="no"
 		fi
+	fi
+
+	if [ "${release}" = "yes" ]; then
+		info "release/archive implies deploy"
+		deploy="yes"
 	fi
 
 	# set positional arguments in their proper place
@@ -242,7 +259,7 @@ main () {
 	local machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
 	local stamp=$(${SCRIPTPATH}/git-revision-name.sh "${YOCTO_VERSION}")
 
-	if [ "${archive}" = "yes" ]
+	if [ "${deploy}" = "yes" ]
 	then
 		# cleanup any old deployment
 		if [ -d "${deploydir}" ]; then
@@ -326,7 +343,7 @@ main () {
 				fi
 			done
 		done
-		if [ "${archive}" = "yes" ]
+		if [ "${deploy}" = "yes" ]
 		then
 			# note: this depends on a selected distro
 			local distro_codename=$(bitbake-getvar -q --value DISTRO_CODENAME)
@@ -357,11 +374,14 @@ main () {
 				# print_virtual_provider_info "${artifactsdir}/${machine_archive}.info" "trusted-firmware-a"
 
 				# create image archive for $MACHINE, assume DEPLOY_DIR_IMAGE has ${MACHINE} as final part
-				if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz \
-					-C "$(dirname "${artifactsdir}")" \
-					"$(basename "${artifactsdir}")" --use-compress-program=pigz
+				if [ "${release}" = "yes" ]
 				then
-					error_out "archiving for ${machine} failed"
+					if ! tar -cvf ${deploydir}/${machine_archive}.BIN.tar.gz \
+						-C "$(dirname "${artifactsdir}")" \
+						"$(basename "${artifactsdir}")" --use-compress-program=pigz
+					then
+						error_out "archiving for ${machine} failed"
+					fi
 				fi
 
 				# add some artifact unpacked for automated testing
@@ -382,7 +402,7 @@ main () {
 
 		cd ${top_dir}
 	done
-	if [ "${archive}" = "yes" ]
+	if [ "${release}" = "yes" ]
 	then
 		# create licenses and mirror archive
 		local archive_basename=${config}_${stamp}
