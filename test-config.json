@@ -73,12 +73,6 @@
 			"linux-image": "zImage"
 		},
 		{
-			"lava-device": "tqma6ull2-512mb-mba6ulx",
-			"devicetree": "imx6ull-tqma6ull2-mba6ulx.dtb",
-			"yocto-machine": "tqma6ullx-512mb-mba6ulx",
-			"linux-image": "zImage"
-		},
-		{
 			"lava-device": "tqma8xqp4-mba8xx",
 			"devicetree": "imx8qxp-tqma8xqp-mba8xx.dtb",
 			"yocto-machine": "tqma8xqp4-mba8xx",
