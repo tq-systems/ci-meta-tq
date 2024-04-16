@@ -80,6 +80,22 @@ function assign_or_replace() {
 }
 
 ####
+# func:   is_gnu_grep
+# brief:  checks for GNU grep (needed for perl regex with Negative Lookahead)
+####
+function is_gnu_grep() {
+	if which grep >> /dev/null; then
+		if grep --version | grep GNU >> /dev/null; then
+			return
+		fi
+	fi
+
+	err "need gnu grep"
+
+	return 1
+}
+
+####
 # func:   get_md5sum
 # brief:  calculate md5sum for all files directory
 # param:  $1 - directory
@@ -276,7 +292,7 @@ function get_machines_for_pattern () {
 	local count="0";
 
 	allmachines=$(get_machines_in_workspace "${fname}")
-	machines=$(echo "${allmachines}" | grep "${pattern}" )
+	machines=$(echo "${allmachines}" | grep --perl-regex "${pattern}" )
 	
 	echo ${machines}
 }

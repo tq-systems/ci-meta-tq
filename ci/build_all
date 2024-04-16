@@ -220,6 +220,10 @@ main () {
 		esac
 	done
 
+	if ! is_gnu_grep; then
+		return 1
+	fi
+
 	if [ -n "${dryrun}" ]; then
 		bitbake_args="--dry-run"
 	fi
