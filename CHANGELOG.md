@@ -12,12 +12,24 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* meta-tq:
+  * TQMLS1043A / TQMLS1046A / TQMLS1088A / TQMLX2160A: support for linux with
+    `PREEMPT_RT` using recipe `linux-rt-tq`
+
 ### Changed
 
 * ci:
   * allow to deploy multiple wic images per machine_archive
   * create release archives only if needed
 * meta-tq:
+  * TQMa6x: support all variants of the SoM on the MBa6x starter kit
+    base board with a single machine definition. The machine is called
+    `tqma6x-multi-mba6x` and builds all boot images and WIC images for the
+    different RAM configurations and form factors.
+  * TQMLS1043A / TQMLS1046A / TQMLS1088A / TQMLX2160A: switch to use `linux-tq`
+    recipe
   * TQMa6ULLx[L]: support all variants of the SoM on the MBa6ULx starter kit
     base board with a single machine definition. The machine is called
     `tqma6ull-multi-mba6ulx` and builds all boot images and WIC images for the
@@ -36,6 +48,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-openembedded: updated to 8bb16533532b6abc2eded7d9961ab2a108fd7a5b
 * meta-qt5: switch to branch master / b8e1ae8ce6140f6084388842751280b55d55988b
   This enables support for v5.15.12-lts-lgpl and add CVE fixes.
+
+### Fixes:
+
+* ci: `ls-machines` parses `build-config.json` for TI based SoM correctly now.
 
 ## kirkstone.TQ.ARM.BSP.0018
 
