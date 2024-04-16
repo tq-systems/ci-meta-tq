@@ -407,7 +407,7 @@ main () {
 					fi
 				fi
 
-				# add some artifact unpacked for automated testing
+				# add some artifacts unpacked for automated testing
 				# TODO: should we use bitbake variables here?
 				mkdir -p ${deploydir}/${machine}
 				find ${artifactsdir} -name *.wic -type f -exec cp "{}" ${deploydir}/${machine}/ \;
@@ -420,6 +420,12 @@ main () {
 				cp ${artifactsdir}/${kimage} ${deploydir}/${machine}/
 				# TODO: discuss if we need modules for multiple kernel test
 				find ${artifactsdir} -type f -name modules*.tgz -exec cp "{}" ${deploydir}/${machine}/ \;
+				# copy rest of artifact files but do not override existing files which could be
+				# needed for test
+				find ${artifactsdir} -type f -exec cp --no-clobber "{}" ${deploydir}/${machine}/ \;
+				
+				# TODO: linking ${artifactsdir} to ${deploydir}/${machine} only works for fresh
+				# checkout as used in a CI environment
 			done
 		fi
 
