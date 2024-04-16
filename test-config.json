@@ -57,18 +57,6 @@
 		{
 			"lava-device": "tqma6s-mba6x",
 			"devicetree": "imx6dl-mba6a.dtb",
-			"yocto-machine": "tqma6s-mba6x",
-			"linux-image": "zImage"
-		},
-		{
-			"lava-device": "tqma6q-2gb-mba6x",
-			"devicetree": "imx6q-mba6a.dtb",
-			"yocto-machine": "tqma6q-2gb-mba6x",
-			"linux-image": "zImage"
-		},
-		{
-			"lava-device": "tqma6s-mba6x",
-			"devicetree": "imx6dl-mba6a.dtb",
 			"yocto-machine": "tqma6qdl-multi-mba6x",
 			"linux-image": "zImage"
 		},
