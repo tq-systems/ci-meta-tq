@@ -52,10 +52,23 @@ git submodule update --init
 
 ## Supported boards
 
-See README of TQ-Sytems GmbH hardware support layer (`meta-tq/meta-tq`) or use `./ls-machines` to list machines
-from meta-tq.
+See README of TQ-Sytems GmbH hardware support layer (`meta-tq/meta-tq`) or
+use `./ls-machines` to list machines from meta-tq.
 
 ## Quick Start Guide
+
+### Needed Tools / Prerequisites
+
+For compatible environments and tools needed by the Yocto Project / OpenEmbedded
+build environment refer to the documentation of Yocto Project / OpenEmbedded.
+
+Scripts for CI and setup of the build environment in this repository additionally
+have the following prerequisites:
+
+- Python3
+- jq
+- bash
+- gnu grep
 
 ### Setting up an initial build space
 
