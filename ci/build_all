@@ -456,7 +456,7 @@ main () {
 		mkdir -p "${archive_basename}.MIRROR.SRC"
 		DL_DIR=$(bitbake-getvar -q --value DL_DIR)
 		# query all archived sources, needs archiver class in config
-		archived_src_path=$(ls -1 "${build_dir}_*/tmp*/deploy/sources/*/*/*")
+		archived_src_path=$(ls -1 ${build_dir}_*/tmp*/deploy/sources/*/*/*)
 
 		# copy the file from archived sources if it exists in DL_DIR
 		for f in ${archived_src_path}; do
