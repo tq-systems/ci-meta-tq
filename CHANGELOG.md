@@ -20,6 +20,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: updated to 4.0.18
+* meta-openembedded: updated to 5a6f7925bd2b885955c942573f70a5594f231563
+* meta-freescale: updated to f2255c8dd63c7a694b0af7df72355933f7e87955
+* meta-arm: updated to d7b7b6fb6c7c5545e718e44f38853d1718ce5446
+* meta-qt5: updated to d8eeef0bfd84672c7919cd346f25f7c9a98ddaea
+  This enables support for v5.15.13-lts-lgpl and adds CVE fixes. The master branch
+  was fixed to support older yocto versions like kirkstone, while the kirkstone
+  branch seems to be inactive.
 * ci:
   * allow to deploy multiple wic images per machine_archive
   * create release archives only if needed
