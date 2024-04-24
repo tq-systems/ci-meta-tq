@@ -395,7 +395,7 @@ main () {
 				# create a file containing md5sum of files
 				get_md5sum "${artifactsdir}" > "${deploydir}/${machine_archive}.md5sum"
 				cp "${deploydir}/${machine_archive}.md5sum" "${artifactsdir}/${machine_archive}.md5sum"
-				bitbake --environment > "${artifactsdir}/${machine_archive}.environment"
+				bitbake --environment | grep ^[A-Z,a-z,0-9][^[:space:]]*=\" > "${artifactsdir}/${machine_archive}.environment"
 				# use pregenerated build info
 				cp "${build_info_file}" "${artifactsdir}/${machine_archive}.md"
 				# enrich with machine specific information for some virtual packages
