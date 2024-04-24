@@ -22,12 +22,12 @@ TEMPLATEDIR=${CWD}/sources/template/conf/templates
 usage()
 {
     echo "
-Usage: MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <template>
-Usage:                                   source ${PROGNAME} <build-dir> <template>
+Usage: MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <config>
+Usage:                                   source ${PROGNAME} <build-dir> <config>
     <machine>    machine name
     <distro>     distro name
     <build-dir>  build directory
-    <template>: template bblayers.conf to use (optional, default: ${CONFIG_TEMPLATE})
+    <config>     configuration to use (optional, default: ${CONFIG_TEMPLATE})
 
 The first usage is for creating a new build directory. In this case, the
 script creates the build directory <build-dir>, configures it for the
@@ -37,35 +37,32 @@ bitbake on the build directory.
 The second usage is for using an existing build directory. In this case,
 the script prepares the calling shell for running bitbake on the build
 directory <build-dir>. The build directory configuration is unchanged.
-"
 
-    ls sources/meta-tq/meta-tq/conf/machine/*.conf > /dev/null 2>&1
-    ls sources/meta-tq/meta-dumpling/conf/distro/*.conf > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        echo "
-Supported configs:
-$(${SCRIPTDIR}/ls-configs --file)
+To query supported configs use:
+${SCRIPTDIR}/ls-configs --file
 
-Supported machines:
-$("${SCRIPTDIR}/ls-machines" --dir=sources/meta-tq/meta-tq)
+To query supported machines for a configuration:
+${SCRIPTDIR}/ls-machines --file --config=<config>
 
-Supported TQ-Systems distros:
-$("${SCRIPTDIR}/ls-distros" --dir=sources/meta-tq/meta-dumpling)
+To query supported TQ-Systems distros for a configuration:
+${SCRIPTDIR}/ls-distros --file --config=<config>
 
-Available poky distros:
-$("${SCRIPTDIR}/ls-distros" --dir=sources/poky/meta-poky)
+If 'meta-poky' is in 'bblayer.conf', available poky distros can be queried:
+${SCRIPTDIR}/ls-distros --dir=sources/poky/meta-poky
 
-Examples:
+Supported configurations in this project are:
+$(${SCRIPTDIR}/ls-configs --file | sort)
+
+Usage examples:
 
 - To create a new Yocto build directory:
-  \$ MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} build-dir <config>
+  \$ MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <config>
 
 - To use an existing Yocto build directory:
-  \$ source ${PROGNAME} build-dir
+  \$ source ${PROGNAME} <build-dir>
 
 See README.md for valid combinations of <machine>, <distro> and <config>
 "
-    fi
 }
 
 clean_up() {
