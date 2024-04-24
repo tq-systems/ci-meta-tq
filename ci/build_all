@@ -391,6 +391,7 @@ main () {
 				# we create some files in ${artifactsdir}, clean them before recreate
 				rm -f "${artifactsdir}"/*.md
 				rm -f "${artifactsdir}"/*.md5sum
+				rm -f "${artifactsdir}/${machine_archive}.environment"
 				# create a file containing md5sum of files
 				get_md5sum "${artifactsdir}" > "${deploydir}/${machine_archive}.md5sum"
 				cp "${deploydir}/${machine_archive}.md5sum" "${artifactsdir}/${machine_archive}.md5sum"
