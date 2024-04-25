@@ -372,6 +372,8 @@ main () {
 				# export $MACHINE before query bitbake
 				export MACHINE=${machine}
 				local artifactsdir
+				local kernel_dtb
+				local kimage
 				local machine_archive
 
 				artifactsdir=$(bitbake-getvar -q --value DEPLOY_DIR_IMAGE)
@@ -412,11 +414,11 @@ main () {
 				# TODO: should we use bitbake variables here?
 				mkdir -p ${deploydir}/${machine}
 				find ${artifactsdir} -name *-${machine}.tar.gz -exec cp "{}" ${deploydir}/${machine}/ \;
-				local kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_DEVICETREE)
+				kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_DEVICETREE)
 				for dtb in ${kernel_dtb}; do
 					cp "${artifactsdir}/$(basename ${dtb})" "${deploydir}/${machine}/"
 				done
-				local kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_IMAGETYPE)
+				kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_IMAGETYPE)
 				cp ${artifactsdir}/${kimage} ${deploydir}/${machine}/
 				# copy rest of artifact files but do not override existing files which could be
 				# needed for test
