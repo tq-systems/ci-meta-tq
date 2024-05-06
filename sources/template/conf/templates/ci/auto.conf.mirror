@@ -11,3 +11,6 @@ BB_GENERATE_SHALLOW_TARBALLS = "1"
 # needed but not available yet
 DL_DIR = "${TOPDIR}/downloads"
 SSTATE_DIR = "${TOPDIR}/sstate-cache"
+
+# Skip insane QA checks in fetch jobs only
+INHERIT:remove = "insane"
