@@ -411,6 +411,18 @@ main () {
 				# add some artifacts unpacked for automated testing
 				# TODO: should we use bitbake variables here?
 				mkdir -p ${deploydir}/${machine}
+
+				# starting with nanbield image artifacts changed naming scheme
+				# rename while archiving to expected name by test jobs
+				for img in ${images}; do
+					local image_name
+
+					image_name=$(bitbake-getvar --recipe ${img} --quiet --value IMAGE_LINK_NAME)
+					if [ -r "${artifactsdir}/${image_name}.tar.gz" ]; then
+						cp --dereference "${artifactsdir}/${image_name}.tar.gz" ${deploydir}/${machine}/${img}-${machine}.tar.gz
+					fi
+				done
+
 				find ${artifactsdir} -name *.wic -type f -exec cp "{}" ${deploydir}/${machine}/ \;
 				find ${artifactsdir} -name *-${machine}.tar.gz -exec cp "{}" ${deploydir}/${machine}/ \;
 				local kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_DEVICETREE)
