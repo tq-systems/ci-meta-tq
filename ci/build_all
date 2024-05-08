@@ -417,9 +417,17 @@ main () {
 				mkdir -p "${deploydir}/${machine}"
 				# options to find and copy links as artifacts for CI testing
 				artifact_link_find_opt="-type l -readable"
-				# deploy rootfs tar.gz image if existing
-				find "${artifactsdir}"  -maxdepth 1 -name *-${machine}.tar.gz ${artifact_link_find_opt} \
-					-exec cp "{}" "${deploydir}/${machine}/" \;
+				# deploy rootfs tar.gz image if existing. Use ${IMAGE_LINK_NAME} plus 'tar.gz'
+				# to decouple bitbale / YP and our test jobs expecting rootfs artifacts as
+				# '${image-recipe-name}-${machine}.tar.gz'
+				for img in ${images}; do
+					local image_name
+
+					image_name=$(bitbake-getvar --recipe ${img} --quiet --value IMAGE_LINK_NAME)
+					find "${artifactsdir}"  -maxdepth 1 -name "${image_name}.tar.gz" ${artifact_link_find_opt} \
+						-exec cp --dereference "{}" "${deploydir}/${machine}/${img}-${machine}.tar.gz" \;
+				done
+
 				# deploy kernel device tree if existing
 				kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_DEVICETREE)
 				for dtb in ${kernel_dtb}; do
