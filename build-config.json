@@ -139,7 +139,6 @@
 				"dumpling-wayland-nxp"
 			],
 			"groups": [
-				"i.MX6x",
 				"i.MX8x",
 				"i.MX8m",
 				"i.MX8qm",
