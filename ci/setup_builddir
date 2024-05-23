@@ -25,7 +25,7 @@ readonly SCRIPT="$(basename "${0}")"
 
 ##############
 # handle different type of licenses and cope with CI build setup
-# $1        - EULA_TYPE [NXP, FSL, TI, QT5]
+# $1        - EULA_TYPE [NXP, FSL, TI, QT6]
 # $2 ... $n - names of LICENSE files needed to accept
 #
 # - check for ACCEPT_${EULA_TYPE}_EULA in [local,auto].conf
@@ -98,6 +98,10 @@ EOF
 			y|Y)
 				echo "EULA has been accepted."
 				echo "ACCEPT_${EULA_TYPE}_EULA = \"1\"" >> conf/local.conf
+				if [ ${EULA_TYPE} == "QT6" ]; then
+					echo "Defaulting to Qt6 LGPL-3.0-only license: https://doc.qt.io/qt-6/lgpl.html"
+					echo "QT_EDITION = \"opensource\"" >> conf/local.conf
+				fi
 				;;
 			n|N)
 				echo "EULA has not been accepted."
@@ -131,8 +135,6 @@ handle_licenses() {
 
 	if grep -q "meta-qt6" conf/bblayers.conf; then
 		handle_eula QT6 "${BSPROOT}/sources/meta-qt6/licenses/Qt-GPL-exception-1.0"
-		echo "Defaulting to Qt6 LGPL-3.0-only license: https://doc.qt.io/qt-6/lgpl.html"
-		echo "QT_EDITION = \"opensource\"" >> conf/local.conf
 	fi
 }
 
