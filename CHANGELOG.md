@@ -20,6 +20,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* meta-freescale-ml: switch to use branch `master`
 * poky: updated to 4.0.18
 * meta-openembedded: updated to 5a6f7925bd2b885955c942573f70a5594f231563
 * meta-freescale: updated to f2255c8dd63c7a694b0af7df72355933f7e87955
