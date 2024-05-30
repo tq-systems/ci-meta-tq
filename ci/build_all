@@ -179,6 +179,8 @@ main () {
 	local config="mainline"
 	local deploydir=""
 	local distros=""
+	# machine specific packages to deploy, only needed if 'deploy="yes"'
+	local -r extra_machine_pkg_for_deploy="kernel-dev kernel-dbg kernel-vmlinux"
 	local machines=""
 	local pos_params=""
 	local stamp=""
@@ -372,8 +374,6 @@ main () {
 		if [ "${deploy}" = "yes" ]
 		then
 			local distro_codename
-			# machine specific packages to deploy
-			readonly extra_machine_pkg_for_deploy="kernel-dev kernel-dbg kernel-vmlinux"
 
 			# note: this depends on a selected distro
 			distro_codename=$(bitbake-getvar -q --value DISTRO_CODENAME)
