@@ -12,12 +12,14 @@ Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <ur
 
 ## License information
 
-This repo contains scripts released under the GPLv2, see the file [COPYING](COPYING)
+This repo contains scripts meta data and documentation. For licensing information
+see the file [LICENSE.md](LICENSE.md)
 
 This repo allows you to setup a workspace / buildspace for poky / the Yocto Project
-combining several recipe collections (meta layers). When using this repo to build
-software, you need to understand and accept all licenses of the software beeing built.
-You are responsible to fulfil all obligations by these licenses.
+combining several recipe collections (meta layers under the sources directory).
+When using this repo to build software, you need to understand and accept all
+licenses of the software being built. You are responsible to fulfil all obligations
+by these licenses.
 
 ## Supported branches of meta-tq
 
@@ -28,7 +30,7 @@ not supported.
 - kirkstone (bugfixing only)
 - scarthgap (current actively maintained branch)
 
-**Attention:** use README.md of used branch for exact details.
+**Attention:** See the file README.md in the branch you use for details.
 
 Branch names correspond to Yocto Project release names. Special branches
 supporting a special setup are named `<release-name>-<module>`
