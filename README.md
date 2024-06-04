@@ -12,33 +12,36 @@ Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <ur
 
 ## License information
 
-This repo contains scripts released under the GPLv2, see the file [COPYING](COPYING)
+This repo contains scripts meta data and documentation. For licensing information
+see the file [LICENSE.md](LICENSE.md)
 
 This repo allows you to setup a workspace / buildspace for poky / the Yocto Project
-combining several recipe collections (meta layers). When using this repo to build
-software, you need to understand and accept all licenses of the software beeing built.
-You are responsible to fulfil all obligations by these licenses.
+combining several recipe collections (meta layers under the sources directory).
+When using this repo to build software, you need to understand and accept all
+licenses of the software being built. You are responsible to fulfil all obligations
+by these licenses.
 
 ## Supported branches of meta-tq
 
 This project supports the following branches of meta-tq:
 
-- krogoth (not longer maintained)
-- morty (not longer maintained)
-- pyro (not longer maintained)
-- rocko (only for RZG2 based machines, no longer maintained for all others)
-- rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
-- sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK, no longer maintained)
-- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
-- thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
-- warrior (no longer maintained)
-- zeus (no further development, use hardknott)
-- zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
-- hardknott (maintained until transition to kirkstone completed)
-- honister (not tested, only transitional)
+- krogoth (not maintained)
+- morty (not maintained)
+- pyro (not maintained)
+- rocko (only for RZG2 based machines, not maintained)
+- rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, not maintained)
+- sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK, not maintained)
+- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP, not maintained)
+- thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, not maintained)
+- warrior (not maintained)
+- zeus (not maintained)
+- zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, not maintained)
+- dunfell (only for RZG2 based machines)
+- hardknott (not maintained)
+- honister (not tested and maintained, only transitional)
 - kirkstone (current active maintained branch)
 
-**Attention:** use README.md of used branch for exact details.
+**Attention:** See the file README.md in the branch you use for details.
 
 Branch names correspond to Yocto Project release names. Special branches
 supporting a special setup are named `<release-name>-<module>`

@@ -15,6 +15,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 ### Added
 
 * meta-tq:
+  * TQMa62xx/TQMa64xxL: optional inline ECC support
   * TQMLS1043A / TQMLS1046A / TQMLS1088A / TQMLX2160A: support for linux with
     `PREEMPT_RT` using recipe `linux-rt-tq`
 
