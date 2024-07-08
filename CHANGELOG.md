@@ -12,9 +12,27 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0020
+
+### Module BSP Revisions
+
+* kirkstone.TQMa93xx.BSP.SW.0003
+
+## kirkstone.TQ.ARM.BSP.0019
+
+### Module BSP Revisions
+
+* kirkstone.TQMLS1028A.IBPQ.SW.0016
+
 ### Added
 
 * meta-tq:
+  * TQMLS1028A:
+    * support additional RAM variants
+  * TQMa93xx:
+    * support additional RAM variants
+    * NPU support
+    * support for MBa91xxCA base board
   * TQMa62xx/TQMa64xxL: optional inline ECC support
   * TQMLS1043A / TQMLS1046A / TQMLS1088A / TQMLX2160A: support for linux with
     `PREEMPT_RT` using recipe `linux-rt-tq`
