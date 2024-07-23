@@ -12,6 +12,17 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0021
+
+### Module BSP Revisions
+
+* kirkstone.TQMa64xxL.BSP.SW.0007
+
+### Added
+* meta-tq:
+  * TQMa64xxL:
+    * Add support for 2 GiB RAM variant
+
 ### Changed
 
 * poky: updated to 4.0.19
@@ -19,6 +30,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-openembedded: updated to 0560b848996a0feb410a8cd8ca07c60fe2f3b5bc
 * meta-freescale: updated to fb17bfb8edcc9560bc1beb966a68f1f4c08ecfb3
 * meta-arm: updated to 260e3adc2bf322f52d81c0642c825088a88bb051
+
+### Fixed
+
+* meta-tq:
+  * TQMLS1028A: fix RAM timing conformance to RAM specification
 
 ## kirkstone.TQ.ARM.BSP.0020
 
