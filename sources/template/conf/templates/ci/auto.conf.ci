@@ -17,3 +17,7 @@ BB_FETCH_PREMIRRORONLY = "1"
 INHERIT += "archiver"
 COPYLEFT_LICENSE_EXCLUDE ?= "CLOSED Proprietary"
 ARCHIVER_MODE[src] ?= "original"
+
+# disable SPDX generation for merge request speedup
+# shall be enabled for release builds
+INHERIT:remove = "create-spdx"
