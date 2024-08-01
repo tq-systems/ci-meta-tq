@@ -36,14 +36,14 @@ ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug]
 <build-dir>: specifies the build directory location (required)
 [template]: template bblayers.conf to use
 [-h|--help]: print this message
-[--dryrun]: call bitbake in dry-run mode
-[--devel]: allow development mode (use different auto.conf to disable CI features)
-[--debug]: print additional informations
+[--dryrun=<yes|no>]: call bitbake in dry-run mode, default no
+[--devel=<yes|no>]: allow development mode, default no, (use different auto.conf to disable CI features)
+[--debug=<yes|no>]: print additional informations, default no
 [--archive=<yes|no>]: synonym for deploy
 [--deploy=<yes|no>]: en/disable deploy, default no
 [--deploydir=<directory>]: deploy to this directory (only if --deploy=yes)
 [--release=<yes|no>]: en/disable tarball generation, default no, implies deploy=yes
-[--skipbitbake]: don't call bitbake
+[--skipbitbake=<yes|no>]: don't call bitbake, default no
 
 If the variable "LOCAL" is defined in environment of ${SCRIPT}, the
 variables "DISTRO_LIST", "MACHINE_LIST" and "IMAGE_LIST" can be used
@@ -168,8 +168,12 @@ END
 }
 
 main () {
+	local debug="no"
 	local deploy="no"
+	local develmode="no"
+	local dryrun="no"
 	local release="no"
+	local skipbitbake="no"
 	local build_dir=""
 	local build_info_file=""
 	local config="mainline"
@@ -193,13 +197,17 @@ main () {
 			deploy=${1#*=}
 			shift
 			;;
-		--debug )
-			# set variable in utils lib
-			DEBUG="on"
+		--debug=* )
+			debug=${1#*=}
+			if [ "${debug}" = "yes" ]; then
+				# To enable output from function 'debug' need to set variable
+				# 'DEBUG' -  see sourced '${SCRIPTPATH}/utils'
+				DEBUG="on"
+			fi
 			shift
 			;;
-		--dryrun )
-			dryrun="on"
+		--dryrun=* )
+			dryrun=${1#*=}
 			shift
 			;;
 		--deploy=* )
@@ -210,16 +218,16 @@ main () {
 			deploydir="$(readlink -f ${1#*=})"
 			shift
 			;;
-		--devel )
-			develmode="on"
+		--devel=* )
+			develmode=${1#*=}
 			shift
 			;;
 		--release=* )
 			release=${1#*=}
 			shift
 			;;
-		--skipbitbake )
-			skipbitbake="on"
+		--skipbitbake=* )
+			skipbitbake=${1#*=}
 			shift
 			;;
 		--*=|-*) # unsupported flags
@@ -237,12 +245,12 @@ main () {
 		return 1
 	fi
 
-	if [ -n "${dryrun}" ]; then
+	if [ "${dryrun}" = "yes" ]; then
 		bitbake_args="--dry-run"
 	fi
 
 	if [ "${release}" = "yes" ] || [ "${deploy}" = "yes" ]; then
-		if [ -n "${dryrun}" ] || [ -n "${skipbitbake}" ]; then
+		if [ "${dryrun}" = "yes" ] || [ "${skipbitbake}" = "yes " ]; then
 			info "Disabling archive/deploy in dry-run / skip-bitbake mode"
 			release="no"
 			deploy="no"
@@ -320,7 +328,7 @@ main () {
 		#
 		# config bitbake from autoconf template
 		#
-		if [ -z ${develmode} ]
+		if [ "${develmode}" = "no" ]
 		then
 			do_create_auto_conf "ci"
 		else
@@ -352,7 +360,7 @@ main () {
 				# create image for $MACHINE
 				info "baking: ${machine} ${distro} ${img} ..."
 
-				if [ -z ${skipbitbake} ]
+				if [ "${skipbitbake}" = "no" ]
 				then
 					if ! bitbake ${bitbake_args} "${img}"
 					then
