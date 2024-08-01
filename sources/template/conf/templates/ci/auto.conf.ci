@@ -8,10 +8,6 @@ ACCEPT_NXP_EULA = "y"
 ACCEPT_TI_EULA = "y"
 ACCEPT_QT5_EULA = "y"
 
-# clean after build to save space
-INHERIT += "rm_work"
-RM_OLD_IMAGE = "1"
-
 INHERIT += "buildstats"
 # restrict network access
 BB_NO_NETWORK = "1"
