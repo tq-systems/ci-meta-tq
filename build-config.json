@@ -75,14 +75,6 @@
 			"pattern": "tqma335"
 		},
 		{
-			"name": "AM57x",
-			"pattern": "tqma57"
-		},
-		{
-			"name": "AM654x",
-			"pattern": "tqma65(?!.*?\\bk3r5\\b)"
-		},
-		{
 			"name": "AM64x",
 			"pattern": "tqma64(?!.*?\\bk3r5\\b)"
 		},
@@ -97,10 +89,6 @@
 		{
 			"name": "LX2160x",
 			"pattern": "tqmlx2160"
-		},
-		{
-			"name": "T10xx",
-			"pattern": "tqmt"
 		},
 		{
 			"name": "i.MX6x",
@@ -177,10 +165,8 @@
 			],
 			"groups": [
 				"AM335x",
-				"AM57x",
 				"AM62x",
-				"AM64x",
-				"AM654x"
+				"AM64x"
 			]
 		}
 	]
