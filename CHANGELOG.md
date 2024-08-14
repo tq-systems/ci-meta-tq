@@ -20,6 +20,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* templates: Do not manipulate IMAGE_FSTYPES in `auto.conf.ci`. Normal builds and
+  CI builds should not generate different artifacts by default
 * poky: updated to 4.0.20
 * meta-openembedded: updated to 4052c97dc83d0c88fc277d6fc1815e0699020daa
 * meta-freescale: updated to 4c81b4161b99698b03332842b588dd8235ac47e4
@@ -112,6 +114,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-openembedded: updated to 8bb16533532b6abc2eded7d9961ab2a108fd7a5b
 * meta-qt5: switch to branch master / b8e1ae8ce6140f6084388842751280b55d55988b
   This enables support for v5.15.12-lts-lgpl and add CVE fixes.
+
+### Removed
+
+* CI: build-config.json: Remove support for building and finding deprecated
+  machines. The machines are still buildable with older yocto releases.
 
 ### Fixes:
 
