@@ -20,6 +20,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* templates: Do not manipulate IMAGE_FSTYPES in `auto.conf.ci`. Normal builds and
+  CI builds should not generate different artifacts by default
+* meta-tq:
+  * TQMa64xxL: support new variants
+  * TQMLS1028A: support new variants
 * poky: updated to 5.0.3
 * meta-arm: updated to 38bce82e42ea093333a53c4a10e51d1b26cbc989
 * meta-ti: updated to 84328ead40d7e6fcce4d80ab7d07f4dcaf9d777e
@@ -54,6 +59,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-openembedded: updated to 8bb16533532b6abc2eded7d9961ab2a108fd7a5b
 * meta-qt5: switch to branch master / b8e1ae8ce6140f6084388842751280b55d55988b
   This enables support for v5.15.12-lts-lgpl and add CVE fixes.
+
+### Removed
+
+* CI: build-config.json: Remove support for building and finding deprecated
+  machines. The machines are still buildable with older yocto releases.
 
 ### Fixes:
 
