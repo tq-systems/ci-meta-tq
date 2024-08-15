@@ -20,12 +20,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
-* poky: updated to 5.0.2
-* meta-arm: updated to 58268ddccbe2780de28513273e15193ee949987b
-* meta-ti: updated to e902a647ec3685009f870d6222336bfb6e7af6c3
-* meta-qt6: updated to e7c1f03660746e374c5ea64950dbc0bb339a5802
-* meta-openembedded: updated to 78a14731cf0cf38a19ff8bd0e9255b319afaf3a7
-* meta-freescale: updated to 1444416aeb875d5b62008aaf31a5cb6b596cc41a
+* poky: updated to 5.0.3
+* meta-arm: updated to 38bce82e42ea093333a53c4a10e51d1b26cbc989
+* meta-ti: updated to 84328ead40d7e6fcce4d80ab7d07f4dcaf9d777e
+* meta-qt6: updated to d94723e4d50898459c9f2f450978d0fb9074fa89
+* meta-openembedded: updated to 2338409efc51cf2022ff5610a9fb689251706e2b
+* meta-freescale: updated to 1425fda62f7fa2f6bedaf0b2c41b2dae9ec1c3e7
 * ci:
   * allow to deploy multiple wic images per machine_archive
   * create release archives only if needed
