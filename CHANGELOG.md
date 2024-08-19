@@ -20,6 +20,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* ci: use `--<option>=[yes|no]` for alle bool parameters in `build_all` and
+  `fill_mirror` scripts
 * templates: Do not manipulate IMAGE_FSTYPES in `auto.conf.ci`. Normal builds and
   CI builds should not generate different artifacts by default
 * meta-tq:
