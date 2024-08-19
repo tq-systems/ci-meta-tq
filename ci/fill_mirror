@@ -48,7 +48,10 @@ main () {
 	local build_dir=""
 	local config="mainline"
 	local copy_mirror="yes"
+	local debug="no"
 	local distros=""
+	local dryrun="no"
+	local skipbitbake="no"
 	local machines=""
 	local pos_params=""
 	local top_dir=""
@@ -59,20 +62,25 @@ main () {
 			usage
 			return 0
 			;;
-		--debug )
-			DEBUG="on"
+		--debug=* )
+			debug=${1#*=}
+			if [ "${debug}" = "yes" ]; then
+				# To enable output from function 'debug' need to set variable
+				# 'DEBUG' -  see sourced '${SCRIPTPATH}/utils'
+				DEBUG="on"
+			fi
 			shift
 			;;
-		--dryrun )
-			dryrun="on"
+		--dryrun=* )
+			dryrun=${1#*=}
 			shift
 			;;
 		--mirror=* )
 			copy_mirror=${1#*=}
 			shift
 			;;
-		--skipbitbake )
-			skipbitbake="on"
+		--skipbitbake=* )
+			skipbitbake=${1#*=}
 			shift
 			;;
 		--*=|-*) # unsupported flags
@@ -90,12 +98,12 @@ main () {
 		return 1
 	fi
 
-	if [ -n "${dryrun}" ]; then
+	if [ "${dryrun}" = "yes" ]; then
 		bitbake_args="--dry-run"
 	fi
 
 	if [ "${copy_mirror}" = "yes" ]; then
-		if [ -n "${dryrun}" ] || [ -n "${skipbitbake}" ]; then
+		if [ "${dryrun}" = "yes" ] || [ "${skipbitbake}" = "yes " ]; then
 			info "Disabling copy to mirror in dry-run / skip-bitbake mode"
 			copy_mirror="no"
 		fi
@@ -110,23 +118,25 @@ main () {
 		exit 1
 	fi
 
-	build_dir=${1}
+	build_dir="${1}"
 	if [ -n "${2}" ]
 	then
 		config=${2}
 	fi
 
 	top_dir="$(pwd)"
-	distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
-	machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" ${config})"
+	distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${config}")"
+	machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${config}")"
 
 	debug "Machines to build: ${machines}"
 	debug "Distros to build: ${distros}"
 
 	for distro in ${distros}
 	do
+		local images
+
 		# GENERAL
-		local images=$(get_images "${top_dir}/build-config.json" ${distro})
+		images=$(get_images "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${distro}")
 		debug "Images to build: ${images}"
 
 		# source the real setup workhorse
@@ -174,7 +184,7 @@ main () {
 				# overwrite MACHINE
 				export MACHINE=${machine}
 				info "baking: ${machine} ${distro} ${img} with --runall=fetch"
-				if [ -z ${skipbitbake} ]
+				if [ "${skipbitbake}" = "no" ]
 				then
 					if ! bitbake ${bitbake_args} ${img} --runall=fetch -k
 					then
