@@ -24,6 +24,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * CI: build-config.json: Remove support for building and finding deprecated
   machines. The machines are still buildable with older yocto releases.
 
+### Fixed
+
+* meta-tq:
+  * TQMa64xxL: Fixed PRU Ethernet with recent meta-ti versions
+  * linux-tq-6.1: Enabled various missing drivers for TQMa7x / TQMa6 / TQMa6UL[L]
+
 ## kirkstone.TQ.ARM.BSP.0022
 
 ### Module BSP Revisions
