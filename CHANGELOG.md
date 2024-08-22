@@ -17,6 +17,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-tq:
   * TQMLS1043A / TQMLS1046A / TQMLS1088A / TQMLX2160A: support for linux with
     `PREEMPT_RT` using recipe `linux-rt-tq`
+  * `linux-imx-tq.6.6` support for TQMa8 and TQMa9 series
+* meta-qt6 support
 
 ### Changed
 
@@ -56,16 +58,18 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
     and builds all boot images and WIC images for the different RAM configurations.
 * ci: improve coding style
 * meta-dumpling: Explicitly set variable `INIT_MANAGER` for distro definition.
-* poky: updated to 4.0.17
-* meta-freescale: updated to 1aa79a0c9b7d6d8af626b2d39a1d518d70d28205
-* meta-openembedded: updated to 8bb16533532b6abc2eded7d9961ab2a108fd7a5b
-* meta-qt5: switch to branch master / b8e1ae8ce6140f6084388842751280b55d55988b
-  This enables support for v5.15.12-lts-lgpl and add CVE fixes.
 
 ### Removed
 
 * CI: build-config.json: Remove support for building and finding deprecated
   machines. The machines are still buildable with older yocto releases.
+* meta-qt5 support
+* meta-tq:
+  * Support for TQM7S has been removed
+  * Support for TQMa57xx has been removed
+  * Support for TQMa654x has been removed
+  * Support for MBa6ULxL has been removed
+  * Removed obsolete recipes
 
 ### Fixes:
 
