@@ -12,6 +12,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## kirkstone.TQ.ARM.BSP.0023
+
+### Module BSP Revisions
+
+* kirkstone.TQMa64xxL.BSP.SW.0008
+
 ### Changed
 
 * ci: use `--<option>=[yes|no]` for alle bool parameters in `build_all` and
