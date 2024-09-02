@@ -12,6 +12,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* ci: remove global classes from CI specific config modification to lower the IO
+  related build time for merge requests. SPDX generation will be reenabled
+  for release build jobs if needed.
+
 ## kirkstone.TQ.ARM.BSP.0023
 
 ### Module BSP Revisions
