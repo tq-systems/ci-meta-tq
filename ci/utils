@@ -90,7 +90,7 @@ function is_gnu_grep() {
 		fi
 	fi
 
-	err "need gnu grep"
+	error "need gnu grep"
 
 	return 1
 }
