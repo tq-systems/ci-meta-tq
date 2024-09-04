@@ -96,6 +96,37 @@ function is_gnu_grep() {
 }
 
 ####
+# func:   ensure_boolean_arg
+# brief:  checks if value is boolean and transform it to yes/no if applicable
+# $1 argval
+#
+# output: yes|no|error message
+# return: 0 on success
+####
+function ensure_boolean_arg () {
+	local argval="$1"
+
+	case "${argval}" in
+	yes|Yes|y|Y|true|1|True )
+		echo "yes"
+		return 0
+		;;
+	no|No|n|N|false|0|False )
+		echo "no"
+		return 0
+		;;
+	* )
+		# unsupported value
+		echo "invalid"
+		return 1
+		;;
+	esac
+
+	echo "unexpected"
+	return 255
+}
+
+####
 # func:   get_md5sum
 # brief:  calculate md5sum for all files directory
 # param:  $1 - directory
