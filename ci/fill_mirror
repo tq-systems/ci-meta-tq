@@ -63,7 +63,8 @@ main () {
 			return 0
 			;;
 		--debug=* )
-			debug=${1#*=}
+			debug=$(ensure_boolean_arg "${1#*=}") || \
+				error_out "Error: invalid option assignment $1, must be boolean"
 			if [ "${debug}" = "yes" ]; then
 				# To enable output from function 'debug' need to set variable
 				# 'DEBUG' -  see sourced '${SCRIPTPATH}/utils'
@@ -72,15 +73,18 @@ main () {
 			shift
 			;;
 		--dryrun=* )
-			dryrun=${1#*=}
+			dryrun=$(ensure_boolean_arg "${1#*=}") || \
+				error_out "Error: invalid option assignment $1, must be boolean"
 			shift
 			;;
 		--mirror=* )
-			copy_mirror=${1#*=}
+			copy_mirror=$(ensure_boolean_arg "${1#*=}") || \
+				error_out "Error: invalid option assignment $1, must be boolean"
 			shift
 			;;
 		--skipbitbake=* )
-			skipbitbake=${1#*=}
+			skipbitbake=$(ensure_boolean_arg "${1#*=}") || \
+				error_out "Error: invalid option assignment $1, must be boolean"
 			shift
 			;;
 		--*=|-*) # unsupported flags
