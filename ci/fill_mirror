@@ -209,13 +209,13 @@ main () {
 			info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
 			# search for newly downloaded files, links point to mounted
 			# SOURCE_MIRROR_URL. *.done files are only state info
-			find "${DL_DIR}" -maxdepth 1 -type f -not -name "*.done" -print0 | \
+			find "${DL_DIR}" -maxdepth 1 -type f -readable -not -name "*.done" -print0 | \
 				xargs --null --no-run-if-empty cp --target-directory="${SOURCE_MIRROR_URL}/"
 			# uninative normally consists of one file, so the loop should
 			# be no problem here
 			cwd="$(pwd)"
 			cd "${DL_DIR}"
-			files=$(find uninative -maxdepth 2 -type f -not -name "*.done")
+			files=$(find uninative -maxdepth 2 -type f -readable -not -name "*.done")
 			for f in ${files}; do
 				dir=$(dirname "${f}")
 				mkdir -p "${SOURCE_MIRROR_URL}/${dir}"
