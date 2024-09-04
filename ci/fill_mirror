@@ -201,6 +201,10 @@ main () {
 
 			SOURCE_MIRROR_URL=$(bitbake-getvar -q --value SOURCE_MIRROR_URL)
 			SOURCE_MIRROR_URL=${SOURCE_MIRROR_URL#file://*}
+			SOURCE_MIRROR_URL=$(readlink -f "${SOURCE_MIRROR_URL}")
+			if ! [ -d "${SOURCE_MIRROR_URL}" ]; then
+				error_out "${SOURCE_MIRROR_URL} does not exist, stop"
+			fi
 
 			info "copy tarballs from ${DL_DIR} to ${SOURCE_MIRROR_URL} ..."
 			# search for newly downloaded files, links point to mounted
