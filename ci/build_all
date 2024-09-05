@@ -482,6 +482,7 @@ main () {
 	then
 		local licenses_src_path
 		local archived_src_path
+		local download_dir
 
 		# create licenses and mirror archive
 		local archive_basename=${config}_${stamp}
@@ -498,14 +499,14 @@ main () {
 		rm -rf "${archive_basename}.LIC"
 
 		mkdir -p "${archive_basename}.MIRROR.SRC"
-		DL_DIR=$(bitbake-getvar -q --value DL_DIR)
+		download_dir=$(bitbake-getvar -q --value DL_DIR)
 		# query all archived sources, needs archiver class in config
 		archived_src_path=$(ls -1 ${build_dir}_*/tmp*/deploy/sources/*/*/*)
 
-		# copy the file from archived sources if it exists in DL_DIR
+		# copy the file from archived sources if it exists in download_dir
 		for f in ${archived_src_path}; do
 			local filename
-			filename="${DL_DIR}/$(basename ${f})"
+			filename="${download_dir}/$(basename ${f})"
 			if [ -e "${filename}" ]; then
 				cp "${filename}" "${archive_basename}.MIRROR.SRC";
 			else
@@ -515,9 +516,9 @@ main () {
 
 		# we assume here that bitbake is configured to use shallow cloning
 		# and that these packages use ${BITBAKE_GIT_MIRROR_PKG_EXTENSION} as extension
-		find ${DL_DIR} -name gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION} -print0 | \
+		find ${download_dir} -name gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION} -print0 | \
 			xargs --null --no-run-if-empty cp --target-directory="${archive_basename}.MIRROR.SRC/"
-		find ${DL_DIR} -name gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION} -print0 | \
+		find ${download_dir} -name gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION} -print0 | \
 			xargs --null --no-run-if-empty cp --target-directory="${archive_basename}.MIRROR.SRC/"
 
 		tar -cvf "${archive_basename}.MIRROR.SRC.tar.gz" "${archive_basename}.MIRROR.SRC" --use-compress-program=pigz
