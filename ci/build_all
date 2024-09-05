@@ -444,14 +444,14 @@ main () {
 					local image_name
 
 					image_name=$(bitbake-getvar --recipe ${img} --quiet --value IMAGE_LINK_NAME)
-					find "${artifactsdir}"  -maxdepth 1 -name "${image_name}.tar.gz" ${artifact_link_find_opt} \
+					find "${artifactsdir}" -maxdepth 1 -name "${image_name}.tar.gz" ${artifact_link_find_opt} \
 						-exec cp --dereference "{}" "${deploydir}/${machine}/${img}-${machine}.tar.gz" \;
 				done
 
 				# deploy kernel device tree if existing
 				kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_DEVICETREE)
 				for dtb in ${kernel_dtb}; do
-					find "${artifactsdir}"  -maxdepth 1 -name "$(basename ${dtb})" ${artifact_link_find_opt} \
+					find "${artifactsdir}" -maxdepth 1 -name "$(basename ${dtb})" ${artifact_link_find_opt} \
 						-exec cp "{}" "${deploydir}/${machine}/" \;
 				done
 				# deploy the kernel image if existing
@@ -467,7 +467,8 @@ main () {
 
 				# copy rest of artifact files but do not override existing files which could be
 				# needed for test
-				find ${artifactsdir} -type f -exec cp --no-clobber "{}" ${deploydir}/${machine}/ \;
+				find ${artifactsdir} -type f -print0 | \
+					xargs --null --no-run-if-empty cp --no-clobber --target-directory="${deploydir}/${machine}/"
 				
 				# TODO: linking ${artifactsdir} to ${deploydir}/${machine} only works for fresh
 				# checkout as used in a CI environment
@@ -513,8 +514,10 @@ main () {
 
 		# we assume here that bitbake is configured to use shallow cloning
 		# and that these packages use ${BITBAKE_GIT_MIRROR_PKG_EXTENSION} as extension
-		find ${DL_DIR} -name gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION} -exec cp "{}" "${archive_basename}.MIRROR.SRC/" \;
-		find ${DL_DIR} -name gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION} -exec cp "{}" "${archive_basename}.MIRROR.SRC/" \;
+		find ${DL_DIR} -name gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION} -print0 | \
+			xargs --null --no-run-if-empty cp --target-directory="${archive_basename}.MIRROR.SRC/"
+		find ${DL_DIR} -name gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION} -print0 | \
+			xargs --null --no-run-if-empty cp --target-directory="${archive_basename}.MIRROR.SRC/"
 
 		tar -cvf "${archive_basename}.MIRROR.SRC.tar.gz" "${archive_basename}.MIRROR.SRC" --use-compress-program=pigz
 		# do some cleanup
