@@ -14,6 +14,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: updated to 4.0.21
+* meta-openembedded: updated to 9a24b7679810628b594cc5a9b52f77f53d37004f
+* meta-freescale: updated to c525e0c19bdc46d45f71873b5f286f49abb69418
+* ci: optimize and improve scripts
 * ci: remove global classes from CI specific config modification to lower the IO
   related build time for merge requests. SPDX generation will be reenabled
   for release build jobs if needed.
