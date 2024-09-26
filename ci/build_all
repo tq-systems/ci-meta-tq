@@ -140,12 +140,12 @@ END
 #
 print_virtual_provider_info () {
 	local recipe
-	recipe=$(bitbake-getvar --quiet --value PREFERRED_PROVIDER_virtual/${2} 2>/dev/null)
+	recipe=$(bitbake-getvar --quiet --value --ignore-undefined PREFERRED_PROVIDER_virtual/${2})
 	if [ -n "${recipe}" ] && ! [ "${recipe}" = "None" ]; then
 		local srcrev
 		local srcuri
-		srcrev=$(bitbake-getvar --quiet --value --recipe "${recipe}" SRCREV 2>/dev/null)
-		srcuri=$(bitbake-getvar --quiet --value --recipe "${recipe}" SRC_URI 2>/dev/null)
+		srcrev=$(bitbake-getvar --quiet --value --recipe "${recipe}" --ignore-undefined SRCREV)
+		srcuri=$(bitbake-getvar --quiet --value --recipe "${recipe}" --ignore-undefined SRC_URI)
 		cat >> "${1}" <<END
 
 ### virtual/${2}
@@ -376,7 +376,7 @@ main () {
 			local distro_codename
 
 			# note: this depends on a selected distro
-			distro_codename=$(bitbake-getvar -q --value DISTRO_CODENAME)
+			distro_codename=$(bitbake-getvar -q --value --ignore-undefined DISTRO_CODENAME)
 
 			for machine in ${machines}; do
 				# export $MACHINE before query bitbake
@@ -444,19 +444,19 @@ main () {
 				for img in ${images}; do
 					local image_name
 
-					image_name=$(bitbake-getvar --recipe ${img} --quiet --value IMAGE_LINK_NAME)
+					image_name=$(bitbake-getvar --recipe ${img} --quiet --value --ignore-undefined IMAGE_LINK_NAME)
 					find "${artifactsdir}" -maxdepth 1 -name "${image_name}.tar.gz" ${artifact_link_find_opt} \
 						-exec cp --dereference "{}" "${deploydir}/${machine}/${img}-${machine}.tar.gz" \;
 				done
 
 				# deploy kernel device tree if existing
-				kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_DEVICETREE)
+				kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value --ignore-undefined KERNEL_DEVICETREE)
 				for dtb in ${kernel_dtb}; do
 					find "${artifactsdir}" -maxdepth 1 -name "$(basename ${dtb})" ${artifact_link_find_opt} \
 						-exec cp "{}" "${deploydir}/${machine}/" \;
 				done
 				# deploy the kernel image if existing
-				kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value KERNEL_IMAGETYPE)
+				kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value --ignore-undefined KERNEL_IMAGETYPE)
 				find "${artifactsdir}"  -maxdepth 1 -name "${kimage}" ${artifact_link_find_opt} \
 					-exec cp "{}" "${deploydir}/${machine}/" \;
 
