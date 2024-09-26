@@ -254,10 +254,11 @@ pipeline {
     post {
         success {
             script {
+                def repoName = env.GIT_URL.split('/').last().replaceFirst(/\.git$/, "")
                 sshagent(['jenkins-master-key']) {
-                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
+                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ${repoName}.\${STAMP}/ ${repoName}.\${STAMP}.tar"
                 }
-                archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
+                archiveArtifacts artifacts: "${repoName}.*.tar.gz"
                 cleanupBuild()
             }
         }
