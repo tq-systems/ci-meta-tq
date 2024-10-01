@@ -197,6 +197,7 @@ pipeline {
         DL_DIR = "shared-dl-dir"
         BUILD_DIR = "buildspace"
         DEPLOY_DIR = "deployment"
+        REPO_NAME = "ci-meta-tq"
     }
 
     stages {
@@ -255,9 +256,9 @@ pipeline {
         success {
             script {
                 sshagent(['jenkins-master-key']) {
-                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ci-meta-tq.\${STAMP}/ ci-meta-tq.\${STAMP}.tar"
+                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ${env.REPO_NAME}.\${STAMP}/ ${env.REPO_NAME}.\${STAMP}.tar"
                 }
-                archiveArtifacts artifacts: "ci-meta-tq.*.tar.gz"
+                archiveArtifacts artifacts: "${env.REPO_NAME}.*.tar.gz"
                 cleanupBuild()
             }
         }
