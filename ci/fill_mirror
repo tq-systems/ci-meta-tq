@@ -33,10 +33,10 @@ ${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug]
 <build-dir>: specifies the build directory location (required)
 [template]: template bblayers.conf to use
 [-h|--help]: print this message
-[--dryrun]: call bitbake in dry-run mode
-[--debug]: print additional informations
+[--dryrun=<yes|no>]: call bitbake in dry-run mode, default no
+[--debug=<yes|no>]: print additional informations, default no
 [--mirror=<yes|no>]: en/disable copy to mirror, default yes
-[--skipbitbake]: don't call bitbake
+[--skipbitbake=<yes|no>]: don't call bitbake, default no
 
 If the variable "LOCAL" is defined in environment of ${SCRIPT}, the
 variables "DISTRO_LIST", "MACHINE_LIST" and "IMAGE_LIST" can be used
