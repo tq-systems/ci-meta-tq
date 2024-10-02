@@ -107,7 +107,7 @@ main () {
 	fi
 
 	if [ "${copy_mirror}" = "yes" ]; then
-		if [ "${dryrun}" = "yes" ] || [ "${skipbitbake}" = "yes " ]; then
+		if [ "${dryrun}" = "yes" ] || [ "${skipbitbake}" = "yes" ]; then
 			info "Disabling copy to mirror in dry-run / skip-bitbake mode"
 			copy_mirror="no"
 		fi
