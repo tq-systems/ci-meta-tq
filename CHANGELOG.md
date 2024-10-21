@@ -14,9 +14,28 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
-* ci: remove global classes from CI specific config modification to lower the IO
+* meta-tq:
+  * TQMa93xx: initial support for secure boot
+  * TQMa62xx / TQMa64xx: improve support for linux-ti-imx 6.6
+* poky: updated to cd44e6bd40b0c1f498b3feaeb5e9b72f8bf32d41, includes 5.0.4
+* meta-ti: updated to c82f29cae79c6a4fec79c542649cb832e1fb67ab
+* meta-qt6: updated to 38c9b905506bc8515a345cb2fbdd71309ceb1fdb
+* meta-openembedded: updated to 72018ca1b1a471226917e8246e8bbf9a374ccf97
+* meta-freescale: updated to 01d9ff233a7ae41d39af436f9508103504708b58
+* ci:
+  * improve parsing and validation of boolean args
+  * improve error handling in build scripts
+  * remove global classes from CI specific config modification to lower the IO
     related build time for merge requests. SPDX generation will be reenabled
     for release build jobs.
+
+### Fixed
+
+* ci:
+  * fix a condition check in fill_mirror script
+  * fix help output in build scripts
+  * fix check for gnu grep
+  * fix building with undefined optional bitbake variables
 
 ## scarthgap.TQ.ARM.BSP.0001
 
@@ -30,7 +49,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
-* ci: use `--<option>=[yes|no]` for alle bool parameters in `build_all` and
+* ci: use `--<option>=[yes|no]` for all bool parameters in `build_all` and
   `fill_mirror` scripts
 * templates: Do not manipulate IMAGE_FSTYPES in `auto.conf.ci`. Normal builds and
   CI builds should not generate different artifacts by default
