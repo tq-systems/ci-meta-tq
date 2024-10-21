@@ -34,9 +34,10 @@ This project supports the following branches of meta-tq:
 - warrior (no longer maintained)
 - zeus (no further development, use hardknott)
 - zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, no longer maintained)
-- hardknott (maintained until transition to kirkstone completed)
+- hardknott (not longer maintained)
 - honister (not tested, only transitional)
-- kirkstone (current active maintained branch)
+- kirkstone (maintained branch)
+- scarthgap (current active maintained branch)
 
 **Attention:** use README.md of used branch for exact details.
 
