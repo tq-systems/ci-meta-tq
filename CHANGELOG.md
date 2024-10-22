@@ -17,10 +17,20 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * poky: updated to 4.0.21
 * meta-openembedded: updated to 9a24b7679810628b594cc5a9b52f77f53d37004f
 * meta-freescale: updated to c525e0c19bdc46d45f71873b5f286f49abb69418
-* ci: optimize and improve scripts
-* ci: remove global classes from CI specific config modification to lower the IO
-  related build time for merge requests. SPDX generation will be reenabled
-  for release build jobs if needed.
+* ci:
+  * improve parsing and validation of boolean args
+  * improve error handling in build scripts
+  * optimize and improve scripts
+  * remove global classes from CI specific config modification to lower the IO
+    related build time for merge requests. SPDX generation will be reenabled
+    for release build jobs if needed.
+
+### Fixed
+
+* ci:
+  * fix a condition check in fill_mirror script
+  * fix help output in build scripts
+  * fix check for gnu grep
 
 ## kirkstone.TQ.ARM.BSP.0023
 
