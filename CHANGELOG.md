@@ -18,7 +18,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
     related build time for merge requests. SPDX generation will be reenabled
     for release build jobs.
 
-## scarthgap.TQ.ARM.BSP.0001 (unreleased)
+## scarthgap.TQ.ARM.BSP.0001
 
 ### Added
 
