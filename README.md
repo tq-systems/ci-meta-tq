@@ -23,23 +23,12 @@ by these licenses.
 
 ## Supported branches of meta-tq
 
-This project supports the following branches of meta-tq:
+This project supports the following branches of meta-tq. Unmentioned branches are
+not supported.
 
-- krogoth (not maintained)
-- morty (not maintained)
-- pyro (not maintained)
-- rocko (only for RZG2 based machines, not maintained)
-- rocko-tqma8x (only for TQMa8 platforms, based on NXP BSP, not maintained)
-- sumo-tqmls1012al (only for TQMLS1012AL platform, based on NXP LSDK, not maintained)
-- sumo-tqma8x (only for TQMa8 platforms, based on NXP BSP, not maintained)
-- thud-tqma8x (only for TQMa8 platforms, based on NXP BSP, not maintained)
-- warrior (not maintained)
-- zeus (not maintained)
-- zeus-tqma8 (only for TQMa8 platforms, based on NXP BSP, not maintained)
-- dunfell (only for RZG2 based machines)
-- hardknott (not maintained)
-- honister (not tested and maintained, only transitional)
-- kirkstone (current active maintained branch)
+- dunfell (only for RZG2 based machines, no longer maintained for all others)
+- kirkstone (bugfixing only)
+- scarthgap (current actively maintained branch)
 
 **Attention:** See the file README.md in the branch you use for details.
 
