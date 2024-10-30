@@ -471,6 +471,9 @@ main () {
 				then
 					local download_dir
 					local archive_basename
+					local download_sources
+					local archived_sources
+					local combined_sources
 
 					archive_basename=${deploydir}/${machine_archive}
 
@@ -502,18 +505,12 @@ main () {
 					mkdir -p "${archive_basename}.MIRROR.SRC"
 					download_dir=$(bitbake-getvar -q --value DL_DIR)
 					# query all archived sources, needs archiver class in config
-					archived_src_path=$(ls -1 ./tmp*/deploy/sources/*/*/*)
-
+					archived_sources=$(find . -wholename "*tmp*/deploy/sources/*/*/*" -printf "%f\n" | sort)
+					
 					# copy the file from archived sources if it exists in download_dir
-					for f in ${archived_src_path}; do
-						local filename
-						filename="${download_dir}/$(basename ${f})"
-						if [ -e "${filename}" ]; then
-							cp "${filename}" "${archive_basename}.MIRROR.SRC";
-						else
-							debug "$f has no counterpart ${filename}"
-						fi
-					done
+					download_sources=$(find "${download_dir}" -printf "%f\n" | sort)
+					combined_sources=$(comm -12 <(echo "$archived_sources") <(echo "$download_sources"))
+					echo "$combined_sources" | xargs -I%  cp "${download_dir}/%" "${archive_basename}.MIRROR.SRC" --dereference
 
 					# we assume here that bitbake is configured to use shallow cloning
 					# and that these packages use ${BITBAKE_GIT_MIRROR_PKG_EXTENSION} as extension
