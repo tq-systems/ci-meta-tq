@@ -90,6 +90,17 @@ def buildConfiguration(directoryName) {
         sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build_all --release=yes --deploydir=${directoryName}/${env.DEPLOY_DIR} ${env.BUILD_DIR} \$(basename \$(pwd))"
     }
 }
+/**********************************************************************/
+/* collect mirror sources from builds and create an source mirror archive
+/**********************************************************************/
+
+def packMirrorSrc() {
+    sh "mkdir --parents ${env.WORKSPACE}/${env.MIRROR_DIR}"
+    sh "find CONFIGS/*/${env.DEPLOY_DIR}/*.MIRROR.SRC/* -type f -print0 | xargs --null --no-run-if-empty cp --no-clobber --target-directory=${env.WORKSPACE}/${env.MIRROR_DIR}"
+    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && tar -cvf ${env.WORKSPACE}/\${STAMP}.MIRROR.SRC.tar.gz --directory ${env.WORKSPACE} ${env.MIRROR_DIR} --use-compress-program=pigz"
+    sh "find . -type d -name '${env.WORKSPACE}/${env.MIRROR_DIR}'| xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
+    sh "find . -type d -name '${env.WORKSPACE}/${env.MIRROR_DIR}' -delete"
+}
 
 /**********************************************************************/
 /* Before the build starts we have to cleanup the Buildspace          */
@@ -198,6 +209,7 @@ pipeline {
         BUILD_DIR = "buildspace"
         DEPLOY_DIR = "deployment"
         REPO_NAME = "ci-meta-tq"
+        MIRROR_DIR = "mirror-src"
     }
 
     stages {
@@ -242,8 +254,6 @@ pipeline {
                 post {
                     success {
                         script {
-                            archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.LIC.tar.gz"
-                            archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/*.MIRROR.SRC.tar.gz"
                             archiveArtifacts artifacts: "CONFIGS/${CONFIGURATION}/${env.DEPLOY_DIR}/*"
                         }
                     }
@@ -258,7 +268,9 @@ pipeline {
                 sshagent(['jenkins-master-key']) {
                     sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ${env.REPO_NAME}.\${STAMP}/ ${env.REPO_NAME}.\${STAMP}.tar"
                 }
+                packMirrorSrc()
                 archiveArtifacts artifacts: "${env.REPO_NAME}.*.tar.gz"
+                archiveArtifacts artifacts: "*.MIRROR.SRC.tar.gz"
                 cleanupBuild()
             }
         }
