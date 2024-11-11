@@ -12,6 +12,21 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* poky: updated to dce4163d42f7036ea216b52b9135968d51bec4c1, includes 5.0.5
+* meta-ti: updated to d952379f55e14fe11166eaace2960400dd1171e0
+* meta-arm: updated to 7088279c0ab00c7dabefdd4544951b4746b48476
+* meta-qt6: updated to 416a83c4c4cedde4503239fff0079a66d8aacc16
+* meta-openembedded: updated to 2e3126c9c16bb3df0560f6b3896d01539a3bfad7
+* meta-freescale: updated to a7bf57d45cdd908155b4179845aa9d1d78095bc0
+* meta-tq:
+  * use common `DEFAULTTUNE` for all ARMv8a based machines in distros defined in
+    meta-dumpling
+  * unify definitions for `dumpling` family of distros
+* ci: make artifact generation for mirror archives and license info machine and
+  distro specific
+
 ## scarthgap.TQ.ARM.BSP.0002 (unreleased)
 
 ### Changed
