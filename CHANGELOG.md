@@ -14,6 +14,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: updated to 4.0.23
+* meta-openembedded: updated to 4ad41baed6236d499804cbfc4f174042d84fce97
+* meta-ti: updated to 963140e3b5820d6ebf54a4418946a628e0fea2c6
+* meta-tq:
+  * unify default tuning for ARMv8A machines in example distros
+  * backport fixes from scarthgap
+  * prepare compatibility to poky 4.0.23 (linux-firmware / ath10k)
+* ci: change artifact archiving (backport from scarthgap)
 * poky: updated to 4.0.22
 * meta-openembedded: updated to dd3d2293ffdf2559f8a433f241765a8ab50cd085
 * meta-arm: updated to 936c02ec13661bd86a05f7f90e1b920d5092d670
