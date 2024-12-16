@@ -14,6 +14,16 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: updated to 2541a8171f91812a4b16e7dc4da0d77d2318a256, includes 5.0.6
+* meta-ti: updated to 4213a71a8eaed4a57562c0608f9ba29efc39eede
+* meta-openembedded: updated to 3c293e14492f01e22a64004e2330fb620c27578a
+* meta-freescale: updated to ed0e245c9f0f50a393e55fdf92228fff52e73710
+* meta-arm: updated to a8fe9d22eaefc294f91096c6a32663e2f4ab3b10
+* meta-tq:
+  * TQMa6x/TQMa6UL[L]x[L]/TQMa7x: update default kernel to Linux 6.6
+  * TQMa6x/TQMa6UL[L]x[L]/TQMa7x: update PREEMPT-RT kernel to Linux 6.6
+  * TQMa7x/TQMa6UL[L]x[L]: update default bootloader to U-Boot v2023.04 this
+    includes some breaking changes. See meta-tq for details.
 * poky: updated to dce4163d42f7036ea216b52b9135968d51bec4c1, includes 5.0.5
 * meta-ti: updated to d952379f55e14fe11166eaace2960400dd1171e0
 * meta-arm: updated to 7088279c0ab00c7dabefdd4544951b4746b48476
