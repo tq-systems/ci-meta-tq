@@ -12,13 +12,15 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
-## scarthgap.TQ.ARM.BSP.0002 (unreleased)
+## scarthgap.TQ.ARM.BSP.0002
 
 ### Changed
 
-* meta-tq:
+* meta-tq: updated to d790f09d3dafad03afa0a50a9546500479b39ff8
+  * TQMa8MPxL/TQMa93xx: NPU support in meta-dumpling
   * TQMa93xx: initial support for secure boot
-  * TQMa62xx / TQMa64xx: improve support for linux-ti-imx 6.6
+  * TQMa62xx\[L\] / TQMa64xxL: various fixes for linux-ti-tq 6.6. Both machines
+    are now tested and supported again.
 * poky: updated to cd44e6bd40b0c1f498b3feaeb5e9b72f8bf32d41, includes 5.0.4
 * meta-ti: updated to c82f29cae79c6a4fec79c542649cb832e1fb67ab
 * meta-qt6: updated to 38c9b905506bc8515a345cb2fbdd71309ceb1fdb
