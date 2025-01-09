@@ -27,6 +27,13 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * ci: make artifact generation for mirror archives and license info machine and
   distro specific
 
+### Added
+
+* meta-tq: add Qt6 example images
+* templates: add `meta-qt6` to `bblayers.conf.sample` for `ti` and
+  `mainline` configuration template to allow building Qt6 enabled images
+  out of the box.
+
 ## scarthgap.TQ.ARM.BSP.0002
 
 ### Changed
