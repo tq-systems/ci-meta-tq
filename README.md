@@ -60,6 +60,21 @@ have the following prerequisites:
 - bash
 - gnu grep
 
+### Configurations
+
+Under sources/template/conf/templates/ci several configs are supplied as starting
+point for own bblayers.conf
+
+| config   | description                                                         |
+| -------- | ------------------------------------------------------------------- |
+| mainline | SoM supported by mainline based kernel, currently i.MX              |
+| imx      | SoM with i.MX CPU, depends on `meta-freescale` with vendor recipes  |
+| ti       | SoM with TI Sitara, depends on `meta-ti`                            |
+| ls       | SoM with NXP Layerscape CPU, depends on `meta-freescale`            |
+
+Use `ci/ls-configs --file` to show available configs.
+Use `ci/ls-machines --file --config=<config>` to show all machines supported by a config.
+
 ### Setting up an initial build space
 
 To set up an initial build space, clone this repo using 
@@ -103,18 +118,6 @@ To return to an existing buildspace go to the checked out dir and
 
 `. ./setup-environment <builddir>`
 
-### Configurations
-
-Under sources/template/conf/templates/ci several configs are supplied as starting
-point for own bblayers.conf
-
-| config   | description                                                  |
-| -------- | ------------------------------------------------------------ |
-| mainline | for machines not depending on a SOC vendor layer (`mainline`)|
-| imx      | for machines with i.MX CPU, uses `meta-freescale`            |
-| ti       | machines with TI Sitara (AM335x, AM57xx, AM65xx, AM64xx), uses `meta-ti`         |
-| ls       | machines with NXP Layerscape CPU, uses `meta-freescale`      |
-
 ### Reproducible build environment
 
 Devolopment and automated builds are supported by the scripts under ci and
@@ -122,7 +125,7 @@ configuration under `./sources/template/conf/templates/ci`, notably
 
 - sample `bblayer.conf` files
 - sample `auto.conf` files and inclusion fragments (see Yocto Project doc for
-  `local.conf` and `auto.conf`
+  `local.conf` and `auto.conf`)
 
 ### Build all supported machines
 
@@ -131,37 +134,24 @@ use the CI helper script:
 
 `ci/build_all <builddir> <configuration>`
 
-Depending on the configuration, following images will be built:
+Depending on the settings in `build-config.json` different distro definitions will be
+used to build images for the machines in the configuration.
 
-| config   | distro               | image                  | kernel       |
-| -------- | -------------------- | ---------------------- | -----------  |
-| mainline | spaetzle             | tq-image-small-debug   | linux-tq     |
-| mainline | dumpling             | tq-image-generic-debug | linux-tq     |
-| mainline | dumpling-wayland     | tq-image-weston-debug  | linux-tq     |
-| imx      | spaetzle-nxp         | tq-image-small-debug   | linux-imx-tq |
-| imx      | dumpling-wayland-nxp | tq-image-weston-debug  | linux-imx-tq |
-| ti       | spaetzle-ti          | tq-image-small-debug   | linux-ti-tq  |
-| ti       | dumpling-wayland-ti  | tq-image-weston-debug  | linux-ti-tq  |
-| ls       | spaetzle             | tq-image-small-debug   | linux-imx-tq or linux-tq |
-| ls       | dumpling             | tq-image-generic-debug | linux-imx-tq or linux-tq |
+The machine configs and kernel recipes are defined in `meta-tq`
+hardware support layer. Image recipes and distro configs can be
+found in the `meta-dumpling` distro layer. Both layers are part of the
+meta-tq repository.
 
-The kernel recipes are defined in `meta-tq` hardware support layer,
-image recipes and distro configs can be found in the `meta-dumpling`
-distro layer. Both layers are part of the meta-tq repository.
-
-Images:
-
-| image                      | description                                          |
-| -------------------------- | ---------------------------------------------------- |
-| `tq-image-small[-debug]`   | small image depending on `MACHINE_FEATURES`          |
-| `tq-image-generic[-debug]` | basic set of tools depending on `MACHINE_FEATURES`   |
-| `tq-image-weston[-debug]`  | weston GUI and multimedia support                    |
+See documentation in `meta-tq` and `meta-dumpling` for available machines, distros
+and images. Listing is possible with helper scripts `ci/ls-configs` and `ci/ls-machines`.
 
 ### Clean build
 
 To force a clean build of all supported machines and generate archives, do
 
 `ci/build_all <builddir> <config>`
+
+with a new build directory.
 
 ### Building package premirror
 
