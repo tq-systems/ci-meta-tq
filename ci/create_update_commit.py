@@ -170,6 +170,9 @@ def main():
                             )
 
     args = parser.parse_args()
+    # Clear any empty input for git subcommand, e.g. --logargs="" as this creates an invalid command line
+    if args.command == 'git' and not args.logargs:
+        args.logargs = None
     return 0 if process(args) else 1
 
 if __name__ == '__main__':
