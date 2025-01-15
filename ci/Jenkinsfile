@@ -86,8 +86,9 @@ def mirrorConfiguration(directoryName) {
 /**********************************************************************/
 def buildConfiguration(directoryName) {
     dir("${directoryName}") {
-        echo "build all machines for config ${directoryName} ..."
-        sh "export DL_DIR=${env.WORKSPACE}/${env.DL_DIR} && ./ci/build_all --release=yes --deploydir=${directoryName}/${env.DEPLOY_DIR} ${env.BUILD_DIR} \$(basename \$(pwd))"
+        echo "build all machines for config ${directoryName} ... for version: ${env.PRETTY_VERSION}"
+        sh """ export DL_DIR="${env.WORKSPACE}/${env.DL_DIR}" &&
+            ${env.WORKSPACE}/ci/build_all --release=yes --version=\"${env.PRETTY_VERSION}\" --deploydir=\"${directoryName}/${env.DEPLOY_DIR}\" \"${env.BUILD_DIR}\" \$(basename \$(pwd)) """
     }
 }
 /**********************************************************************/
@@ -97,7 +98,7 @@ def buildConfiguration(directoryName) {
 def packMirrorSrc() {
     sh "mkdir --parents ${env.WORKSPACE}/${env.MIRROR_DIR}"
     sh "find CONFIGS/*/${env.DEPLOY_DIR}/*.MIRROR.SRC/* -type f -print0 | xargs --null --no-run-if-empty cp --no-clobber --target-directory=${env.WORKSPACE}/${env.MIRROR_DIR}"
-    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && tar -cvf ${env.WORKSPACE}/\${STAMP}.MIRROR.SRC.tar.gz --directory ${env.WORKSPACE} ${env.MIRROR_DIR} --use-compress-program=pigz"
+    sh "tar -cvf \"${env.WORKSPACE}/${env.PRETTY_VERSION}.MIRROR.SRC.tar.gz\" --directory \"${env.WORKSPACE}\" \"${env.MIRROR_DIR}\" --use-compress-program=pigz"
     sh "find . -type d -name '${env.WORKSPACE}/${env.MIRROR_DIR}'| xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
     sh "find . -type d -name '${env.WORKSPACE}/${env.MIRROR_DIR}' -delete"
 }
@@ -223,6 +224,34 @@ pipeline {
                 checkoutMetaLayers("${env.WORKSPACE}")
             }
         }
+        stage ('Environment') {
+            steps {
+                script {
+                    try {
+                        /*
+                         * Note: without trim stdout of script has newline attached,
+                         * causing script errors when using in env scripts
+                         */
+                        def REAL_VERSION = sh( returnStdout:true, script: '''
+                                git log --format="%H" -1 ''').trim()
+                        env.REAL_VERSION=REAL_VERSION
+
+                        def GIT_VERSION = sh( returnStdout:true, script: """
+                                #!/bin/bash
+                                echo ${env.YOCTO_VERSION} | sed 's/refs\\/heads\\//refs\\/remotes\\/origin\\//g' """ ).trim()
+                        env.GIT_VERSION=GIT_VERSION
+                        def PRETTY_VERSION = sh( returnStdout:true, script: """
+                                #!/bin/bash
+                                bash ./ci/git-revision-name.sh ${env.GIT_VERSION} """ ).trim()
+                        env.PRETTY_VERSION=PRETTY_VERSION
+                        echo "building ${env.YOCTO_VERSION} with version string ${env.PRETTY_VERSION}"
+                    } catch(e) {
+                        println(e.toString())
+                        error 'Aborting the build as getting build version string failed.'
+                    }
+                }
+            }
+        }
         stage ('Matrix Build') {
             matrix {
                 axes {
@@ -266,7 +295,7 @@ pipeline {
         success {
             script {
                 sshagent(['jenkins-master-key']) {
-                    sh "export STAMP=\$(${env.WORKSPACE}/ci/git-revision-name.sh \"${env.YOCTO_VERSION}\") && ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix ${env.REPO_NAME}.\${STAMP}/ ${env.REPO_NAME}.\${STAMP}.tar"
+                    sh " ${env.WORKSPACE}/ci/git-archive-all.sh --format tar.gz --prefix \"${env.REPO_NAME}.${env.PRETTY_VERSION}/\" \"${env.REPO_NAME}.${env.PRETTY_VERSION}.tar\" "
                 }
                 packMirrorSrc()
                 archiveArtifacts artifacts: "${env.REPO_NAME}.*.tar.gz"
