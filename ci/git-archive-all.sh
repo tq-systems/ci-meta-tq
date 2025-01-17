@@ -36,13 +36,13 @@ TMPDIR=${TMPDIR:-/tmp}
  # Create a place to store our work's progress
 TMPFILE=$(mktemp "${TMPDIR}/${PROGRAM}.XXXXXX")
 TOARCHIVE=$(mktemp "${TMPDIR}/${PROGRAM}.toarchive.XXXXXX")
-OUT_FILE=${OLD_PWD} # assume "this directory" without a name change by default
+OUT_FILE="${OLD_PWD}" # assume "this directory" without a name change by default
 SEPARATE=0
 VERBOSE=0
 
-TARCMD=tar
-[[ $(uname) == "Darwin" ]] && TARCMD=gnutar
-FORMAT=tar
+TARCMD="tar"
+[[ "$(uname)" == "Darwin" ]] && TARCMD=gnutar
+FORMAT="tar"
 PREFIX=
 DO_TARGZ=0
 TREEISH=HEAD
@@ -53,8 +53,8 @@ readonly E_BAD_OPTION=254
 readonly E_UNKNOWN=255
 
 function cleanup () {
-	rm -f ${TMPFILE}
-	rm -f ${TOARCHIVE}
+	rm -f "${TMPFILE}"
+	rm -f "${TOARCHIVE}"
 	return 0
 }
 
@@ -64,17 +64,17 @@ function error_abort () {
 }
 
 function debug() {
-	[ ${VERBOSE} -eq 1 ] && echo $@
+	[ "${VERBOSE}" -eq 1 ] && echo "$@"
 	return 0
 }
 
 function error () {
-	echo $1 >&2
+	echo "$1" >&2
 }
 
 function exit_error () {
 	error "$2"
-	exit $1
+	exit "$1"
 }
 
 function usage () {
@@ -121,8 +121,8 @@ function version () {
 }
 
 function rm_file () {
-	if [ -f ${1} ]; then
-		rm -f ${1}
+	if [ -f "${1}" ]; then
+		rm -f "${1}"
 	fi
 }
 
@@ -194,7 +194,7 @@ function main () {
 	fi
 
 	# Validate parameters; error early, error often.
-	if [ ${SEPARATE} -eq 1 -a ! -d ${OUT_FILE} ]; then
+	if [ ${SEPARATE} -eq 1 -a ! -d "${OUT_FILE}" ]; then
 	    error "When creating multiple archives, your destination must be a directory."
 	    error "If it's not, you risk being surprised when your files are overwritten."
 	    exit -1
@@ -208,7 +208,7 @@ function main () {
 	    OLDBRANCH=$(git rev-parse --abbrev-ref HEAD);
 	    if [ "${OLDBRANCH}" == "tmp_release_${COMMIT}" ]; then
 		HEAD_STAMP=$(git log -1 --pretty=%H);
-		COMMIT_STAMP=$(git log ${COMMIT} -1 --pretty=%H);
+		COMMIT_STAMP=$(git log "${COMMIT}" -1 --pretty=%H);
 		if [ "$HEAD_STAMP" != "${COMMIT}_STAMP" ]; then
 		    exit_error -3 "temp branch is currently in use but is not what should be archived, give up ...";
 		fi
@@ -218,11 +218,11 @@ function main () {
 		if git branch | grep "tmp_release_${COMMIT}" > /dev/null; then
 		    echo "tmp_release_${COMMIT} exists ..."
 		    HEAD_STAMP=$(git log "tmp_release_${COMMIT}" -1 --pretty=%H);
-		    COMMIT_STAMP=$(git log ${COMMIT} -1 --pretty=%H);
+		    COMMIT_STAMP=$(git log "${COMMIT}" -1 --pretty=%H);
 		    if [ "$HEAD_STAMP" != "${COMMIT}_STAMP" ]; then
 		        error "temp branch exists but is not what should be archived, give up ...";
 		        git log "tmp_release_${COMMIT}" -1 --pretty=%H;
-		        git log ${COMMIT} -1 --pretty=%H;
+		        git log "${COMMIT}" -1 --pretty=%H;
 		        exit -4;
 		    fi
 		    echo "try tmp_release_${COMMIT} ..."
@@ -230,7 +230,7 @@ function main () {
 		    echo -n "use existing branch tmp_release_${COMMIT} ...";
 		else
 		    echo -n "creating temporary branch ..."
-		    git checkout -b tmp_release_${COMMIT} ${COMMIT};
+		    git checkout -b "tmp_release_${COMMIT}" "${COMMIT}";
 		    git submodule init;
 		    git submodule sync;
 		    git submodule update --init --recursive;
@@ -244,12 +244,12 @@ function main () {
 
 	rm_file "${TMPDIR}/$(basename "$(pwd)").${FORMAT}"
 
-	if ! git archive --format="${FORMAT}" --prefix="${PREFIX}" ${TREEISH} > "${TMPDIR}/$(basename "$(pwd)").${FORMAT}"; then
+	if ! git archive --format="${FORMAT}" --prefix="${PREFIX}" "${TREEISH}" > "${TMPDIR}/$(basename "$(pwd)").${FORMAT}"; then
 		error_exit -6 "creating superproject archive failed"
 	fi
 
-	echo ${TMPDIR}/$(basename "$(pwd)").${FORMAT} >| ${TMPFILE} # clobber on purpose
-	superfile=$(head -n 1 ${TMPFILE})
+	echo "${TMPDIR}/$(basename "$(pwd)").${FORMAT}" >| "${TMPFILE}" # clobber on purpose
+	superfile=$(head -n 1 "${TMPFILE}")
 
 	debug "looking for subprojects..."
 
@@ -260,13 +260,13 @@ function main () {
 # the submodules get a .git file that points to their .git dir. we need to find all of these too
 # find . -mindepth 2 -name '.git' -type f -print | xargs grep -l "gitdir" | sed -e 's/^\.\///' -e 's/\.git$//' >> ${TOARCHIVE}
 # git submodule foreach 'echo ${path} >> ${TOARCHIVE}'
-	rm ${TOARCHIVE}
-	grep path .gitmodules | sed 's/.*= //' > ${TOARCHIVE}
+	rm "${TOARCHIVE}"
+	grep path .gitmodules | sed 's/.*= //' > "${TOARCHIVE}"
 
 	if [ ${VERBOSE} -eq 1 ]; then
 	    echo "done"
 	    echo "  found:"
-	    cat ${TOARCHIVE} | while read arch
+	    cat "${TOARCHIVE}" | while read arch
 	    do
 	      echo "    $arch"
 	    done
@@ -281,34 +281,35 @@ function main () {
 		TESTNAME="${TMPDIR}"/"$(echo "${path}" | sed -e 's/\//./g')".${FORMAT}
 		rm_file "${TESTNAME}"
 
-		git archive --format=${FORMAT} --prefix="${PREFIX}${path}/" ${TREEISH:-HEAD} > "${TMPDIR}"/"$(echo "${path}" | sed -e 's/\//./g')".${FORMAT}
-		if [ ${FORMAT} == 'zip' ]; then
+		git archive --format="${FORMAT}" --prefix="${PREFIX}${path}/" "${TREEISH:-HEAD}" > \
+			"${TMPDIR}/$(echo "${path}" | sed -e 's/\//./g').${FORMAT}"
+		if [ "${FORMAT}" = "zip" ]; then
 			# delete the empty directory entry; zipped submodules won't unzip if we don't do this
-			zip -d "$(tail -n 1 ${TMPFILE})" "${PREFIX}${path%/}" >/dev/null # remove trailing '/'
+			zip -d "$(tail -n 1 "${TMPFILE}")" "${PREFIX}${path%/}" >/dev/null # remove trailing '/'
 		fi
-		echo "${TMPDIR}"/"$(echo "${path}" | sed -e 's/\//./g')".${FORMAT} >> ${TMPFILE}
+		echo "${TMPDIR}/$(echo "${path}" | sed -e 's/\//./g').${FORMAT}" >> "${TMPFILE}"
 		cd "${OLD_PWD}"
-	done < ${TOARCHIVE}
+	done < "${TOARCHIVE}"
 	debug "done"
 
 	debug "concatenating archives into single archive..."
 
 	# Concatenate archives into a super-archive.
 	if [ ${SEPARATE} -eq 0 ]; then
-	    if [ ${FORMAT} == 'tar' ]; then
-		sed -e '1d' ${TMPFILE} | while read file; do
-		    ${TARCMD} --concatenate -f "$superfile" "$file" && rm -f "$file"
+	    if [ "${FORMAT}" == "tar" ]; then
+		sed -e '1d' "${TMPFILE}" | while read file; do
+		    "${TARCMD}" --concatenate -f "$superfile" "$file" && rm -f "$file"
 		done
-	    elif [ ${FORMAT} == 'zip' ]; then
-		sed -e '1d' ${TMPFILE} | while read file; do
+	    elif [ "${FORMAT}" == "zip" ]; then
+		sed -e '1d' "${TMPFILE}" | while read file; do
 		    # zip incorrectly stores the full path, so cd and then grow
-		    cd $(dirname "$file")
-		    zip -g "${superfile}" $(basename "$file") && rm -f "$file"
+		    cd "$(dirname "$file")"
+		    zip -g "${superfile}" "$(basename "$file")" && rm -f "$file"
 		done
 		cd "${OLD_PWD}"
 	    fi
 
-	    echo "${superfile}" >| ${TMPFILE} # clobber on purpose
+	    echo "${superfile}" >| "${TMPFILE}" # clobber on purpose
 	fi
 
 	debug "done"
@@ -325,23 +326,23 @@ function main () {
 				exit_error -5 "gzip error for ${OUT_FILE}, give up ..."
 			fi
 		fi
-	done < ${TMPFILE}
+	done < "${TMPFILE}"
 
 	if ! [ -z "${OLDBRANCH}" ]; then
 	    debug "try checkout ${OLDBRANCH}..."
 
 	    if [ "${OLDBRANCH}" == "HEAD" ]; then
-		git checkout -f ${COMMIT}
+		git checkout -f "${COMMIT}"
 	    else
-		git checkout ${OLDBRANCH}
+		git checkout "${OLDBRANCH}"
 	    fi
 	    if [ "${OLDBRANCH}" != "tmp_release_${COMMIT}" ]; then
-		git branch -D tmp_release_${COMMIT}
+		git branch -D "tmp_release_${COMMIT}"
 	    fi
 	fi
 
 	if ! [ -z "${TMPFILE}" ]; then
-		rm -f ${TMPFILE};
+		rm -f "${TMPFILE}";
 		echo "erasing ${TMPFILE}";
 	fi
 
