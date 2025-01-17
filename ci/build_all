@@ -31,7 +31,7 @@ usage() {
 	cat <<END
 Usage:
 
-${SCRIPTNAME} <build-dir> [template] [--dryrun] [--debug]
+${SCRIPTNAME} [OPTIONS] <build-dir> [template]
 
 <build-dir>: specifies the build directory location (required)
 [template]: template bblayers.conf to use
