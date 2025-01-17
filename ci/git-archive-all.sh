@@ -199,7 +199,9 @@ function main () {
 	    error "When creating multiple archives, your destination must be a directory."
 	    error "If it's not, you risk being surprised when your files are overwritten."
 	    exit 255
-	elif [ `git config -l | grep -q '^core\.bare=false'; echo $?` -ne 0 ]; then
+	fi
+
+	if ! git config -l | grep -q '^core\.bare=false'; then
 	    exit_error 254 "${PROGRAM} must be run from a git working copy (i.e., not a bare repository)."
 	fi
 
