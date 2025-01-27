@@ -45,6 +45,9 @@ ${SCRIPTNAME} [OPTIONS] <build-dir> [template]
 [--release=<yes|no>]: en/disable tarball generation, default no, implies deploy=yes
 [--skipbitbake=<yes|no>]: don't call bitbake, default no
 [--version=<name>]: needed for deploy to generate the version part of archive names
+[--machines=<list>]: build only selected machines
+[--distros=<list>]: build only selected distros
+[--targets=<list>]: build only selected targets, usually images
 
 If the variable "LOCAL" is defined in environment of ${SCRIPT}, the
 variables "DISTRO_LIST", "MACHINE_LIST" and "IMAGE_LIST" can be used
@@ -184,6 +187,7 @@ main () {
 	local distros=""
 	local version="unknown"
 	local machines=""
+	local images=""
 	local pos_params=""
 	local stamp=""
 	local top_dir=""
@@ -245,6 +249,18 @@ main () {
 			version=${1#*=}
 			shift
 			;;
+		--distros=* )
+			distros=${1#*=}
+			shift
+			;;
+		--machines=* )
+			machines=${1#*=}
+			shift
+			;;
+		--images=* )
+			images=${1#*=}
+			shift
+			;;
 		--*=|-*) # unsupported flags
 			error_out "Error: Unsupported flag $1"
 			exit 1
@@ -294,8 +310,8 @@ main () {
 
 	build_info_file="${deploydir}/${config}-build_info.md"
 	top_dir="$(pwd)"
-	distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${config}")"
-	machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${config}")"
+	distros="$(get_distros "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${config}" "${distros}")"
+	machines="$(get_machines "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${config}" "${machines}")"
 	stamp="${version}"
 
 	if [ "${deploy}" = "yes" ]
@@ -316,10 +332,8 @@ main () {
 
 	for distro in ${distros}
 	do
-		local images
-
 		# GENERAL
-		images=$(get_images "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${distro}")
+		images=$(get_images "${top_dir}/${DEFAULT_BUILD_CONFIG}" "${distro}" "${images}")
 		debug "Images to build: ${images}"
 
 		# source the real setup workhorse
