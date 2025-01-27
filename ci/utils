@@ -381,10 +381,14 @@ function valid_config() {
 ####
 function get_images () {
 	local fname=${1}
-	local distro=${2}
+	shift;
+	local distro=${1}
+	shift;
+	local images=$*
 
-	if [ -z "${LOCAL}" ] || [ -z "${IMAGE_LIST}" ]
-	then
+	if [ -n "${images}" ]; then
+		echo "${images}"
+	elif [ -z "${LOCAL}" ] || [ -z "${IMAGE_LIST}" ]; then
 		local choosen_images
 
 		choosen_images=$(get_images_for_distro "${fname}" "${distro}")
@@ -403,15 +407,19 @@ function get_images () {
 ####
 function get_machines () {
 	local fname=${1}
-	local config=${2}
+	shift;
+	local config=${1}
+	shift;
+	local machines=$*
 
 	if ! valid_config "${fname}" "${config}"; then
 		error "invalid config: ${config}"
 		return 1
 	fi
 
-	if [ -z "${LOCAL}" ] || [ -z "${MACHINE_LIST}" ]
-	then
+	if [ -n "${machines}" ]; then
+		echo "${machines}"
+	elif [ -z "${LOCAL}" ] || [ -z "${MACHINE_LIST}" ]; then
 		local choosen_machines
 		choosen_machines=$(get_machines_for_config "${fname}" "${config}")
 		echo "${choosen_machines}"
@@ -430,16 +438,21 @@ function get_machines () {
 # return: list of machines
 ####
 function get_distros () {
+
 	local fname=${1}
-	local config=${2}
+	shift
+	local config=${1}
+	shift
+	local distros=$*
 
 	if ! valid_config "${fname}" "${config}"; then
 		error "invalid config: ${config}"
 		return 1
 	fi
 
-	if [ -z "${LOCAL}" ] || [ -z "${DISTRO_LIST}" ]
-	then
+	if [ -n "${distros}" ]; then
+		echo "${distros}"
+	elif [ -z "${LOCAL}" ] || [ -z "${DISTRO_LIST}" ]; then
 		local choosen_distros
 		choosen_distros=$(get_distros_for_config "${fname}" "${config}")
 		echo "${choosen_distros}"
