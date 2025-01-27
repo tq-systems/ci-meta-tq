@@ -294,12 +294,12 @@ function get_machine_pattern_for_config () {
 	local mgroups
 	local mpattern=""
 
-	mgroups="$(get_groups_for_config "${fname}" ${config})"
+	mgroups="$(get_groups_for_config "${fname}" "${config}")"
 	for mg in ${mgroups}; do
-		mpattern="${mpattern} $(get_machine_pattern_for_group ${fname} ${mg})"
+		mpattern="${mpattern} $(get_machine_pattern_for_group "${fname}" "${mg}")"
 	done
 
-	echo ${mpattern}
+	echo "${mpattern}"
 }
 
 function get_machines_in_workspace () {
@@ -314,7 +314,7 @@ function get_machines_in_workspace () {
 		xargs --null --no-run-if-empty -n1 basename | sed s/\.conf//g)"
 	# one per line
 	for m in ${machines}; do
-		echo ${m}
+		echo "${m}"
 	done
 }
 
@@ -328,7 +328,7 @@ function get_machines_for_pattern () {
 	allmachines=$(get_machines_in_workspace "${fname}")
 	machines=$(echo "${allmachines}" | grep --perl-regex "${pattern}" )
 	
-	echo ${machines}
+	echo "${machines}"
 }
 
 function get_machines_for_config () {
@@ -337,12 +337,12 @@ function get_machines_for_config () {
 	local mpattern
 	local machines=""
 
-	mpattern=$(get_machine_pattern_for_config ${fname} ${config})
+	mpattern=$(get_machine_pattern_for_config "${fname}" "${config}")
 	for mp in ${mpattern}; do
 		machines="${machines} $(get_machines_for_pattern "${fname}" "${mp}")"
 	done
 
-	echo ${machines}
+	echo "${machines}"
 }
 
 
@@ -357,7 +357,7 @@ get_configs_in_workspace () {
 	local configs
 
 	configs=$(jq -r ".configs[].name" "${fname}")
-	echo ${configs}
+	echo "${configs}"
 }
 
 ####
