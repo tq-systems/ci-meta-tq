@@ -140,18 +140,18 @@ main() {
 		exit 1
 	fi
 
-	if [ -z ${config_file} ] && [ -z ${machine_dir} ]; then
+	if [ -z "${config_file}" ] && [ -z "${machine_dir}" ]; then
 		usage
 		exit 1
 	fi
 
-	if [ -n "${config_file}" ] && [ -z ${config_name} ]; then
+	if [ -n "${config_file}" ] && [ -z "${config_name}" ]; then
 		usage
 		exit 1
 	fi
 
 	if [ -n "${config_file}" ]; then
-		parse_machines_from_file "${config_file}" ${config_name}
+		parse_machines_from_file "${config_file}" "${config_name}"
 		return 0
 	fi
 
