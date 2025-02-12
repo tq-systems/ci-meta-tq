@@ -68,7 +68,7 @@ def mirrorConfiguration(directoryName) {
     dir("${directoryName}") {
         sshagent(['jenkins-master-key']) {
             echo "create mirror packages for all machines of config ${directoryName} ..."
-            sh "./ci/fill_mirror ${env.BUILD_DIR}-mirror \$(basename \$(pwd))"
+            sh """./ci/fill_mirror --machines="${MACHINES}" --distros="${DISTROS}" --images="${IMAGES}" ${env.BUILD_DIR}-mirror \$(basename \$(pwd))"""
             sh "find . -maxdepth 2 -wholename '*-mirror*downloads' | xargs -n1 -I% rsync -rl --checksum --ignore-existing --exclude 'git2*' %/ ${env.WORKSPACE}/${env.DL_DIR}/"
             sh "find . -type d -name '*mirror*' | xargs -n1 -P4 -I% rsync --delete-before -a ${env.WORKSPACE}/empty/ %/"
             sh "find . -type d -name '*mirror*' -delete"
@@ -88,7 +88,7 @@ def buildConfiguration(directoryName) {
     dir("${directoryName}") {
         echo "build all machines for config ${directoryName} ... for version: ${env.PRETTY_VERSION}"
         sh """ export DL_DIR="${env.WORKSPACE}/${env.DL_DIR}" &&
-            ${env.WORKSPACE}/ci/build_all --release=yes --version=\"${env.PRETTY_VERSION}\" --deploydir=\"${directoryName}/${env.DEPLOY_DIR}\" \"${env.BUILD_DIR}\" \$(basename \$(pwd)) """
+            ${env.WORKSPACE}/ci/build_all  --machines="${env.MACHINES}" --distros="${env.DISTROS}" --images="${IMAGES}" --release=yes --version=\"${env.PRETTY_VERSION}\" --deploydir=\"${directoryName}/${env.DEPLOY_DIR}\" \"${env.BUILD_DIR}\" \$(basename \$(pwd)) """
     }
 }
 /**********************************************************************/
@@ -260,6 +260,20 @@ pipeline {
                         values 'imx', 'ls', 'mainline', 'ti'
                     }
                 }
+                /* Environment specific for axis */
+                environment {
+                    MACHINES = """${sh(
+                                    returnStdout: true,
+                                    script: './ls-machines --file --config=${CONFIGURATION}'
+                                )}""".trim()
+                    DISTROS = """${sh(
+                                    returnStdout: true,
+                                    script: './ci/ls-distros --file --config=${CONFIGURATION}'
+                                )}""".trim()
+                    IMAGES = """${sh(
+                                    returnStdout: true,
+                                    script: './ci/ls-targets --file --config=${CONFIGURATION} --distro="\$(./ci/ls-distros --file --config=${CONFIGURATION})"'
+                                )}""".trim()                }
                 stages {
                     stage('Prepare Workspace') {
                         steps{
@@ -270,6 +284,7 @@ pipeline {
                     stage('Fetch') {
                         steps{
                             echo "Fetch ${CONFIGURATION} configuration"
+                            echo "Fetch ${env.DISTROS} for ${env.MACHINES} and ${env.IMAGES}"
                             mirrorConfiguration("CONFIGS/${CONFIGURATION}")
                         }
                     }
