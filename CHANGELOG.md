@@ -12,8 +12,16 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* ci: add new group for i.MX91 based SOM to include the in i.MX builds
+* meta-tq:
+  * add initial support for TQMa91xx[CA,LA] SOM
+
 ### Changed
 
+* templates: add layers meta-arm and meta-arm-toolchain to `imx`-template
+  configuration
 * poky: updated to 2541a8171f91812a4b16e7dc4da0d77d2318a256, prepare 5.0.7
 * meta-openembedded: updated to dda0d53326017d6758ec6bdfdaf2f484c089d13f
 * meta-freescale: updated to de62184d9f94e888d9ef7d0d741cd8c38be0b9aa
