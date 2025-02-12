@@ -12,6 +12,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## scarthgap.TQ.ARM.BSP.0003 (unreleased)
+
 ### Changed
 
 * poky: updated to 2541a8171f91812a4b16e7dc4da0d77d2318a256, includes 5.0.6
