@@ -115,6 +115,10 @@
 			"pattern": "tqma8qm"
 		},
 		{
+			"name": "i.MX91x",
+			"pattern": "tqma91[^0-9]"
+		},
+		{
 			"name": "i.MX93x",
 			"pattern": "tqma93[^0-9]"
 		}
@@ -130,6 +134,7 @@
 				"i.MX8x",
 				"i.MX8m",
 				"i.MX8qm",
+				"i.MX91x",
 				"i.MX93x"
 			]
 		},
