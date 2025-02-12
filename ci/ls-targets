@@ -1,0 +1,135 @@
+#!/bin/bash
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# Copyright (C) 2025 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# D-82229 Seefeld, Germany.
+# Author: Markus Niebel
+#
+# Description: list targets marked as buildable for configuration/distro pair
+#
+###############################################################################
+
+set -e
+set -C # noclobber
+
+readonly SCRIPTNAME="${0}"
+readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
+
+# TRAP SIGNALS
+trap 'error_abort $LINENO' ERR
+
+function error_abort () {
+	echo "error at $1"
+}
+
+. "${SCRIPTPATH}/utils"
+
+usage() {
+	cat <<END
+
+ usage:
+
+List available targets from config file
+${SCRIPTNAME} --file[=<filename>] --config=<name> --distro=<distroname>
+use default config file ${DEFAULT_BUILD_CONFIG} or given file to parse for supported
+target for given distro and config name
+
+Note: config file needs to be a json file and must be in sync with workspace
+structure and settings
+END
+}
+
+function parse_distros_from_file () {
+	local configfile
+	configfile="$(readlink --canonicalize-existing "${1}")"
+	local config="${2}"
+
+	if [ -f "${configfile}" ]; then
+		distros="$(get_distros_for_config "${configfile}" "${config}")"
+
+		for d in ${distros}; do
+			echo "${d}"
+		done
+	else
+		error_out "config file ${1} not existing"
+	fi
+}
+
+main() {
+	local distro_name=""
+	local config_file=""
+	local config_name=""
+	local pos_params=""
+
+	if [ "${#}" -gt "3" ]; then
+		usage
+		return 1
+	fi
+
+	if ! is_gnu_grep; then
+		return 1
+	fi
+
+	while (( "$#" )); do
+		case ${1} in
+		-h|--help )
+			usage
+			return 0
+			;;
+		--config=* )
+			config_name=${1#*=}
+			shift
+			;;
+		--distro=* )
+			distro_name=${1#*=}
+			shift
+			;;
+		--file=* )
+			config_file=${1#*=}
+			shift
+			;;
+		--file )
+			config_file="${DEFAULT_BUILD_CONFIG}"
+			shift
+			;;
+		--*=|-*) # unsupported flags
+			error_out "Error: Unsupported flag $1"
+			exit 1
+			;;
+		*) # preserve positional arguments
+			pos_params="$pos_params $1"
+			shift
+			;;
+		esac
+	done
+
+	if [ -n "${pos_params}" ]; then
+		error_out "unhandled parameters $pos_params"
+	fi
+
+	if [ -z ${config_file} ]; then
+		usage
+		exit 1
+	fi
+
+	if [ -z ${config_name} ]; then
+		usage
+		exit 1
+	fi
+
+	if [ -z ${distro_name} ]; then
+		usage
+		exit 1
+	fi
+
+	if supported_distro "${config_file}" "${config_name}" "${distro_name}"; then
+		get_images "${config_file}" "${distro_name}"
+		return 0
+	fi
+
+	usage
+
+	return 1
+}
+
+main "$@"
