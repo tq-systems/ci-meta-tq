@@ -465,3 +465,20 @@ function get_distros () {
 
 	return 0
 }
+
+####
+# func:   supported_distro
+# brief:  check if a distro is in list of supported distros for a given config
+# param:  $1 - config file
+# param:  $2 - config name
+# param:  $3 - distro name
+####
+function supported_distro() {
+	local fname=${1}
+	local config=${2}
+	local distro=${3}
+	local supported_distros
+
+	supported_distros=$(get_distros "${fname}" "${config}")
+	echo "${supported_distros}" | grep -wq "${distro}"
+}
