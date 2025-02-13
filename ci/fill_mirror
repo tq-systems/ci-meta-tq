@@ -40,9 +40,6 @@ ${SCRIPTNAME} [OPTIONS] <build-dir> [template]
 [--distros=<list>]: build only selected distros
 [--targets=<list>]: build only selected targets, usually images
 
-If the variable "LOCAL" is defined in environment of ${SCRIPT}, the
-variables "DISTRO_LIST", "MACHINE_LIST" and "IMAGE_LIST" can be used
-to define what is fetched. Otherwise the lists are calculated.
 END
 }
 
