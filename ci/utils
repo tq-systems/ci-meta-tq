@@ -391,13 +391,11 @@ function get_images () {
 
 	if [ -n "${images}" ]; then
 		echo "${images}"
-	elif [ -z "${LOCAL}" ] || [ -z "${IMAGE_LIST}" ]; then
+	else
 		local choosen_images
 
 		choosen_images=$(get_images_for_distro "${fname}" "${distro}")
 		echo "${choosen_images}"
-	else
-		echo "${IMAGE_LIST}"
 	fi
 }
 
@@ -422,12 +420,10 @@ function get_machines () {
 
 	if [ -n "${machines}" ]; then
 		echo "${machines}"
-	elif [ -z "${LOCAL}" ] || [ -z "${MACHINE_LIST}" ]; then
+	else
 		local choosen_machines
 		choosen_machines=$(get_machines_for_config "${fname}" "${config}")
 		echo "${choosen_machines}"
-	else
-		echo "${MACHINE_LIST}"
 	fi
 
 	return 0
@@ -455,12 +451,10 @@ function get_distros () {
 
 	if [ -n "${distros}" ]; then
 		echo "${distros}"
-	elif [ -z "${LOCAL}" ] || [ -z "${DISTRO_LIST}" ]; then
+	else
 		local choosen_distros
 		choosen_distros=$(get_distros_for_config "${fname}" "${config}")
 		echo "${choosen_distros}"
-	else
-		echo "${DISTRO_LIST}"
 	fi
 
 	return 0
