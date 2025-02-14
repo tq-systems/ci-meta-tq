@@ -306,9 +306,12 @@ function get_machines_in_workspace () {
 	local fname=${1}
 	local folder
 	local machines
+	local topdir
 
-	folder=$(jq -r ".[\"yocto-machine-folder\"]" "${fname}")
-	machines="$(ls -1 $(pwd)/${folder}/*.conf | sed s/\.conf//g | xargs -n1 basename)"
+	topdir=$(dirname "$(readlink --canonicalize-existing "${fname}")")
+	folder="${topdir}/$(jq -r ".[\"yocto-machine-folder\"]" "${fname}")"
+	machines="$(find "${folder}"  -mindepth 1 -maxdepth 1 -name "*.conf" -print0 | \
+		xargs --null --no-run-if-empty -n1 basename | sed s/\.conf//g)"
 	# one per line
 	for m in ${machines}; do
 		echo ${m}
