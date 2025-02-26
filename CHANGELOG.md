@@ -28,10 +28,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
   * prepare i.MX91 support
 * ci: improve version name string generation
 
-## scarthgap.TQ.ARM.BSP.0003 (unreleased)
+## scarthgap.TQ.ARM.BSP.0003
 
 ### Changed
 
+* ci: cleanups in preparation of Jenkins deprecation
 * poky: updated to 2541a8171f91812a4b16e7dc4da0d77d2318a256, includes 5.0.6
 * meta-ti: updated to 4213a71a8eaed4a57562c0608f9ba29efc39eede
 * meta-openembedded: updated to 3c293e14492f01e22a64004e2330fb620c27578a
