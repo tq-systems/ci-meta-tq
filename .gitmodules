@@ -26,3 +26,7 @@
 	path = sources/meta-qt6
 	url = http://code.qt.io/yocto/meta-qt6.git
 	branch = 6.7
+[submodule "sources/meta-rauc"]
+	path = sources/meta-rauc
+	url = https://github.com/rauc/meta-rauc.git
+	branch = scarthgap
