@@ -13,7 +13,10 @@ BBLAYERS = "\
     \
     ${BSPDIR}/sources/meta-arm/meta-arm \
     ${BSPDIR}/sources/meta-arm/meta-arm-toolchain \
+    \
     ${BSPDIR}/sources/meta-ti/meta-ti-bsp \
+    \
+    ${BSPDIR}/sources/meta-rauc \
     \
     ${BSPDIR}/sources/meta-qt6 \
     \
