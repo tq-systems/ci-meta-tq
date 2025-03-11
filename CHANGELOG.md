@@ -20,13 +20,27 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: updated to dc4827b3660bc1a03a2bc3b0672615b50e9137ff, prepare 5.0.8
+* meta-arm: updated to 3cadb81ffaa9f03b92e302843cb22a9cd41df34b
+* meta-openembedded: updated to 6c9f1f8d4538119803bf793747b65e4d23c33544
+* meta-ti: updated to ed05150b00376cc3e6e466f2ee9d9df60e37996a (11.00.06)
+  * Notably, meta-ti does not set `UBOOT_SIGN_ENABLE` anymore for K3 SoCs
+    (AM62/AM64/...), so by default the kernel is not verified on
+    secure-boot-enabled machines. If desired, signing can be enabled in a
+    custom machine or distro.
+* meta-freescale: updated to a8a6b9d1b274f1a24e4d75243af1bbde011b2ebb
+* meta-tq: updated to f06fd2ae13bdd8ee8855c554aa458fa0b9f19647
+  * use buildinfo when building a distro from `meta-dumpling
+  * add wifi to DISTRO_FEATURES when not building a tiny distro
 * templates: add layers meta-arm and meta-arm-toolchain to `imx`-template
   configuration
 * poky: updated to 2541a8171f91812a4b16e7dc4da0d77d2318a256, prepare 5.0.7
 * meta-openembedded: updated to dda0d53326017d6758ec6bdfdaf2f484c089d13f
 * meta-freescale: updated to de62184d9f94e888d9ef7d0d741cd8c38be0b9aa
   * prepare i.MX91 support
-* ci: improve version name string generation
+* ci:
+  * do not depend on hidden environment variables
+  * improve version name string generation
 
 ## scarthgap.TQ.ARM.BSP.0003
 
