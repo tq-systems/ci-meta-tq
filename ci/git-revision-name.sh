@@ -82,7 +82,7 @@ function main () {
 	eval set -- "$pos_params"
 
 	# commit hash for head
-	GITHEAD="$(git rev-parse --verify HEAD 2>/dev/null)"
+	GITHEAD="$(git rev-parse --verify HEAD)"
 
 	if [ -n "${1}" ]; then
 		local PREFERRED_HEAD_COMMIT=""
@@ -97,9 +97,9 @@ function main () {
 		fi
 
 		# check if given parameter denotes a tag
-		PREFERRED_TAG_COMMIT="$(git show-ref --tags --dereference "${1}" 2>/dev/null | awk 'END { print $1 }')"
+		PREFERRED_TAG_COMMIT="$( (git show-ref --tags --dereference "${1}" 2>/dev/null || true) | awk 'END { print $1 }')"
 		# check if given parameter denotes a head
-		PREFERRED_HEAD_COMMIT="$(git show-ref --heads --dereference "${1}" 2>/dev/null | awk 'END { print $1 }')"
+		PREFERRED_HEAD_COMMIT="$( (git show-ref --heads --dereference "${1}" 2>/dev/null || true) | awk 'END { print $1 }')"
 
 		if [ -n "${PREFERRED_TAG_COMMIT}" ]; then
 			if [ "${VERIFY}" -ne "0" ] && [ "${PREFERRED_TAG_COMMIT}" != "${GITHEAD}" ]; then
@@ -109,7 +109,7 @@ function main () {
 			PREFERRED_TAG="$1"
 			GITHEAD="${PREFERRED_TAG_COMMIT}"
 			# <last reachable tag>-<commits since>-g<12 cipher short hash>
-			GIT_DESCRIPTION=$(git describe --abbrev=12 "${PREFERRED_TAG}" 2>/dev/null)
+			GIT_DESCRIPTION=$(git describe --abbrev=12 "${PREFERRED_TAG}" 2>/dev/null || true)
 		elif [ -n "${PREFERRED_HEAD_COMMIT}" ]; then
 			if [ "${VERIFY}" -ne "0" ] && [ "${PREFERRED_HEAD_COMMIT}" != "${GITHEAD}" ]; then
 				echo "error: head $1 is not at HEAD" >&2
@@ -118,19 +118,19 @@ function main () {
 			PREFERRED_HEAD="$1"
 			GITHEAD="${PREFERRED_HEAD_COMMIT}"
 			# <last reachable tag>-<commits since>-g<12 cipher short hash>
-			GIT_DESCRIPTION=$(git describe --abbrev=12 "${PREFERRED_HEAD}" 2>/dev/null)
+			GIT_DESCRIPTION=$(git describe --abbrev=12 "${PREFERRED_HEAD}" 2>/dev/null || true)
 		else
 			if [ "${VERIFY}" -ne "0" ] && [ "${PREFERRED_REV}" != "${GITHEAD}" ]; then
 				echo "error: commit $1 is not at HEAD" >&2
 				return 255
 			fi
 			# <last reachable tag>-<commits since>-g<12 cipher short hash>
-			GIT_DESCRIPTION=$(git describe --abbrev=12 "${PREFERRED_REV}" 2>/dev/null)
+			GIT_DESCRIPTION=$(git describe --abbrev=12 "${PREFERRED_REV}" 2>/dev/null || true)
 			GITHEAD="${PREFERRED_REV}"
 		fi
 	else
 		# <last reachable tag>-<commits since>-g<12 cipher short hash>
-		GIT_DESCRIPTION="$(git describe --abbrev=12 2>/dev/null)"
+		GIT_DESCRIPTION="$(git describe --abbrev=12 2>/dev/null || true)"
 	fi
 
 	# go further if no parameter was given or parameter is valid
