@@ -14,12 +14,19 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Added
 
-* ci: add new group for i.MX91 based SOM to include the in i.MX builds
+* ci:
+  * enable mainline builds for mainboards using TQMa93xx SOM
+  * enable mainline builds for MBa8MP-RAS314 SBC
+  * enable imx builds for i.MX91 based SOM
 * meta-tq:
+  * add initial support for MBaMP-RAS314 SBC
   * add initial support for TQMa91xx[CA,LA] SOM
 
 ### Changed
 
+* meta-tq: updated to c677015a1551d00ae6213085e16ddb9019803470
+  * linux 6.12 LTS support for TQMa335x and TQMa93xx
+  * experimental linux-rt 6.12 for TQMa8MPxL and TQMa93xx
 * poky: updated to dc4827b3660bc1a03a2bc3b0672615b50e9137ff, prepare 5.0.8
 * meta-arm: updated to 3cadb81ffaa9f03b92e302843cb22a9cd41df34b
 * meta-openembedded: updated to 6c9f1f8d4538119803bf793747b65e4d23c33544
@@ -41,6 +48,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * ci:
   * do not depend on hidden environment variables
   * improve version name string generation
+
+### Fixed
+
+* ci: fix error handling in git-revision-name.sh
 
 ## scarthgap.TQ.ARM.BSP.0003
 
