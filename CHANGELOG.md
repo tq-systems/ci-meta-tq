@@ -12,6 +12,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## scarthgap.TQ.ARM.BSP.0004 (unreleased)
+
 ### Added
 
 * ci:
@@ -19,6 +21,9 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
   * enable mainline builds for MBa8MP-RAS314 SBC
   * enable imx builds for i.MX91 based SOM
 * meta-tq:
+  * Verified Boot demo for TQMa93xx and TQMa91xx
+  * restore support for MBa6ULxL SBC
+  * prepare RAUC support for TQMa93xx and TQMa91xx
   * add initial support for MBaMP-RAS314 SBC
   * add initial support for TQMa91xx[CA,LA] SOM
 
