@@ -112,12 +112,12 @@ main() {
 		exit 1
 	fi
 
-	if [ -z ${config_name} ]; then
+	if [ -z "${config_name}" ]; then
 		usage
 		exit 1
 	fi
 
-	if [ -z ${distro_name} ]; then
+	if [ -z "${distro_name}" ]; then
 		usage
 		exit 1
 	fi
