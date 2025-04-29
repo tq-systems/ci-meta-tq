@@ -14,6 +14,19 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: updated to 4.0.26
+* meta-openembedded: update to f8dddbfcbfe502cb71375a7a907e61a92e8d4474
+* meta-freescale: updated to 2f83b211beff98d84632b186691ca1ffda34fa6c
+* meta-dumpling: add buildinfo generation for dumpling distros
+* poky: updated to 4.0.25
+* meta-openembedded: updated to de8681b4a2a101b99dd2c48d89a7de2ccd9a961f
+* meta-tq:
+  * compatibility to newer poky versions for glibc bbappend (PowerPC targets)
+* ci: do not depend on hidden environment variables
+* poky: updated to 4.0.24
+* meta-openembedded: updated to 66ec16850573a7ec69248b81f9904cdfba79b930
+* meta-tq: compatibility fixes for i.MX HAB
+* meta-dumpling: silence log spam to serial console via `sysctl.conf`
 * poky: updated to 4.0.23
 * meta-openembedded: updated to 4ad41baed6236d499804cbfc4f174042d84fce97
 * meta-ti: updated to 963140e3b5820d6ebf54a4418946a628e0fea2c6
@@ -38,6 +51,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Fixed
 
+* meta-tq:
+  * compatibility fixes for i.MX8M HAB
 * ci:
   * fix a condition check in fill_mirror script
   * fix help output in build scripts
