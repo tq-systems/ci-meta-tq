@@ -12,6 +12,13 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* templates:
+  * add `meta-rauc` to `mainline`, `ti` and `imx` templates to prepare wider usage of RAUC examples.
+  * add `meta-arm` and `meta-arm-toolchain` to `mainline` template to prepare usage of `optee`.
+* submodules: add `meta-rauc` to allow usage of RAUC example without additional manual steps.
+
 ## scarthgap.TQ.ARM.BSP.0004 (unreleased)
 
 ### Added
