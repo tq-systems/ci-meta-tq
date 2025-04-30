@@ -38,7 +38,7 @@ ${SCRIPTNAME} [OPTIONS] <build-dir> [template]
 [--skipbitbake=<yes|no>]: don't call bitbake, default no
 [--machines=<list>]: build only selected machines
 [--distros=<list>]: build only selected distros
-[--targets=<list>]: build only selected targets, usually images
+[--images=<list>]: build only selected targets, usually images
 
 END
 }
