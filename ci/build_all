@@ -47,7 +47,7 @@ ${SCRIPTNAME} [OPTIONS] <build-dir> [template]
 [--version=<name>]: needed for deploy to generate the version part of archive names
 [--machines=<list>]: build only selected machines
 [--distros=<list>]: build only selected distros
-[--targets=<list>]: build only selected targets, usually images
+[--images=<list>]: build only selected targets, usually images
 
 END
 }
