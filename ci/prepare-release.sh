@@ -12,12 +12,6 @@
 set -e
 set -C # noclobber
 
-# For security reasons, explicitly set the internal field separator
-# to newline, space, tab
-OLD_IFS="$IFS"
-IFS='
- 	'
-
 # TRAP SIGNALS
 trap 'cleanup' QUIT EXIT
 
@@ -32,7 +26,6 @@ readonly E_BAD_OPTION=254
 readonly E_UNKNOWN=255
 
 function cleanup () {
-	IFS="${OLD_IFS}"
 	return 0
 }
 
