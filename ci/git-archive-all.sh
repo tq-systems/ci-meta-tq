@@ -27,12 +27,6 @@ trap 'cleanup' QUIT EXIT
 
 trap 'error_abort $LINENO' ERR
 
-# For security reasons, explicitly set the internal field separator
-# to newline, space, tab
-OLD_IFS=$IFS
-IFS='
- 	'
-
 # Internal variables and initializations.
 readonly PROGRAM=`basename "$0"`
 readonly VERSION=0.2
@@ -61,7 +55,6 @@ readonly E_UNKNOWN=255
 function cleanup () {
 	rm -f ${TMPFILE}
 	rm -f ${TOARCHIVE}
-	IFS="${OLD_IFS}"
 	return 0
 }
 
