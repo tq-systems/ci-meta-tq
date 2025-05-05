@@ -28,7 +28,7 @@ trap 'cleanup' QUIT EXIT
 trap 'error_abort $LINENO' ERR
 
 # Internal variables and initializations.
-readonly PROGRAM=`basename "$0"`
+readonly PROGRAM=$(basename "$0")
 readonly VERSION=0.2
 
 readonly OLD_PWD="$(pwd)"
