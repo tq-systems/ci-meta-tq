@@ -19,6 +19,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
   * add `meta-arm` and `meta-arm-toolchain` to `mainline` template to prepare usage of `optee`.
 * submodules: add `meta-rauc` to allow usage of RAUC example without additional manual steps.
 
+### Changed
+
+* meta-qt6: switch to branch 6.8 and update to c58fdf7af5d92f5dc0a3446a9865580511ae8691
+  Qt 6.8 is maintained as LTS version.
+
 ## scarthgap.TQ.ARM.BSP.0004 (unreleased)
 
 ### Added
