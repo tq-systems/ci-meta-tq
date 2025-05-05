@@ -380,7 +380,9 @@ function valid_config() {
 # brief:  return image based on distro
 # param:  $1 - config file
 # param:  $2 - distro
-# return: image
+# param:  $3 - image list (optional)
+# return: the given image list or the images configured for given distro from
+#         parameter $2 in build config file from parameter $1
 ####
 function get_images () {
 	local fname=${1}
@@ -404,7 +406,9 @@ function get_images () {
 # brief:  return buildable machines for config
 # param:  $1 - config file
 # param:  $2 - config (imx/ls/ti/mainline)
-# return: list of machines for given configuration
+# param:  $3 - machine list (optional)
+# return: the given machine list or the machines configured for given config from
+#         parameter $2 in build config file from parameter $1
 ####
 function get_machines () {
 	local fname=${1}
@@ -434,7 +438,9 @@ function get_machines () {
 # brief:  return buildable distros for config
 # param:  $1 - config file
 # param:  $2 - config (imx/ls/ti/mainline)
-# return: list of machines
+# param:  $3 - distro list (optional)
+# return: the given distro list or the distros configured for given config from
+#         parameter $2 in build config file from parameter $1
 ####
 function get_distros () {
 
