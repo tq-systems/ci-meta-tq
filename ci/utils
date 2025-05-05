@@ -203,7 +203,7 @@ function lookup_values_for_key () {
 	count=$(jq "${query}" "${fname}")
 	#debug "lookup_values_for_key count=$count"
 
-	if [ -z ${count} ] || [ "${count}" -le "0" ]; then
+	if [ -z "${count}" ] || [ "${count}" -le "0" ]; then
 		error "no entries for ${aname} in ${fname}"
 		return 5
 	fi
@@ -372,7 +372,7 @@ function valid_config() {
 	local supported_configs
 
 	supported_configs=$(get_configs_in_workspace "${fname}")
-	echo ${supported_configs} | grep -wq "${config}"
+	echo "${supported_configs}" | grep -wq "${config}"
 }
 
 ####
