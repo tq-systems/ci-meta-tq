@@ -274,8 +274,6 @@ function main () {
 
 	debug "archiving submodules..."
 
-	TMPFILES=""
-
 	while read path; do
 		# git submodule does not list trailing slashes in ${path}
 		TREEISH=$(git submodule | grep "^ .*${path%/} " | cut -d ' ' -f 2)
@@ -283,7 +281,6 @@ function main () {
 		TESTNAME="${TMPDIR}"/"$(echo "${path}" | sed -e 's/\//./g')".${FORMAT}
 		rm_file "${TESTNAME}"
 
-		TMPFILES="${TMPFILE}S ${TESTNAME} "
 		git archive --format=${FORMAT} --prefix="${PREFIX}${path}/" ${TREEISH:-HEAD} > "${TMPDIR}"/"$(echo "${path}" | sed -e 's/\//./g')".${FORMAT}
 		if [ ${FORMAT} == 'zip' ]; then
 			# delete the empty directory entry; zipped submodules won't unzip if we don't do this
@@ -343,9 +340,9 @@ function main () {
 	    fi
 	fi
 
-	if ! [ -z "${TMPFILE}S" ]; then
-		rm -f ${TMPFILE}S;
-		echo "erasing ${TMPFILE}S";
+	if ! [ -z "${TMPFILE}" ]; then
+		rm -f ${TMPFILE};
+		echo "erasing ${TMPFILE}";
 	fi
 
 	debug "done"
