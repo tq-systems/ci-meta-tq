@@ -21,6 +21,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: update to fa7bc4c1a8e1e59d57e6deeaf74f7784975ab9b4, prepare 5.0.9
+* meta-ti: update to 8c258e731e62954ff41460febc2c036fb5ca552c
+* meta-arm: update to 8e0f8af90fefb03f08cd2228cde7a89902a6b37c
+* meta-openembedded: update to e92d0173a80ea7592c866618ef5293203c50544c
+* meta-tq: updated to f2ad7046cf1087659a32f204267939bb6ee03875
+  * linux-imx-tq 6.6 support for TQMLS1028A and TQMLS1012AL
+  * linux-tq 6.12 (LTS) support for TQMLX2160A and TQMLS102xA
+  * generate compressed WIC images by default (usable with bmap-tool)
 * meta-qt6: switch to branch 6.8 and update to c58fdf7af5d92f5dc0a3446a9865580511ae8691
   Qt 6.8 is maintained as LTS version.
 
