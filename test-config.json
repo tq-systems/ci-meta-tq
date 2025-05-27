@@ -60,7 +60,8 @@
 			"lava-device": "tqma7s-512mb-mba7",
 			"devicetree": "imx7s-mba7.dtb",
 			"yocto-machine": "tqma7x-multi-mba7",
-			"linux-image": "zImage"
+			"linux-image": "zImage",
+			"image": "tq-image-weston-debug"
 		},
 		{
 			"lava-device": "tqma6s-mba6x",
