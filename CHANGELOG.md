@@ -14,6 +14,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: update to 3810d71ad8ee9dee94903901c87cd0b642425cd1 (includes 4.0.27)
+* meta-openembedded: update to e42549cef364ae09b3b7c8b64bbeab32e50f1bb0
+* meta-arm: updated to 6b2d97cecd1b0e4bf4caee9a65595d279b57a686
+* meta-tq: compatibility to newer versions of meta-openembedded (lmsensors recipe fixes)
 * poky: updated to 4.0.26
 * meta-openembedded: update to f8dddbfcbfe502cb71375a7a907e61a92e8d4474
 * meta-freescale: updated to 2f83b211beff98d84632b186691ca1ffda34fa6c
