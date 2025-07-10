@@ -12,9 +12,21 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
-## kirkstone.TQ.ARM.BSP.0025 (not released yet)
+## kirkstone.TQ.ARM.BSP.0025
+
+### Module specific BSP notes
+
+* generic bugfix release
+
+### Changed
+
+* meta-tq: U-Boot Bugfixes TQMa8MxML / TQMa8MxNL
 
 ## kirkstone.TQ.ARM.BSP.0024
+
+### Module specific BSP notes
+
+* TQMTxxxx preinstalled boot firmware update
 
 ### Changed
 
