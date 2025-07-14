@@ -12,6 +12,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* poky: update to ae2d52758fc2fcb0ed996aa234430464ebf4b310, include 5.0.11
+* meta-openembedded: update to e8fd97d86af86cdcc5a6eb3f301cbaf6a2084943
+* meta-freescale: update to 3a266d9aac5e0d4535aa0832fa9fe6ede56b44e9
+
 ## scarthgap.TQ.ARM.BSP.0005
 
 ### Added
