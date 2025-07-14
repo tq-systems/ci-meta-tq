@@ -12,8 +12,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## scarthgap.TQ.ARM.BSP.0005 (not released yet)
+
 ### Added
 
+* meta-tq: new machine for TQMa67xx on MBa67xx starter kit mainboard
 * templates:
   * add `meta-rauc` to `mainline`, `ti` and `imx` templates to prepare wider usage of RAUC examples.
   * add `meta-arm` and `meta-arm-toolchain` to `mainline` template to prepare usage of `optee`.
