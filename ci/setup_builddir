@@ -29,11 +29,8 @@ readonly SCRIPT="$(basename "${0}")"
 # $2 ... $n - names of LICENSE files needed to accept
 #
 # - check for ACCEPT_${EULA_TYPE}_EULA in [local,auto].conf
-# - check for ${EULA} in env
 # if not set, show LICENSE files given with a preface depending on ${EULA_TYPE}
 # and query for acception. If accepted, set ACCEPT_${EULA_TYPE}_EULA in local.conf
-# Additionally add 'NXP-EULA-v24' to the list of enabled licenses if ${EULA_TYPE}
-# is 'NXP''
 ##############
 handle_eula() {
 	local EULA_TYPE="${1}"
@@ -49,12 +46,7 @@ handle_eula() {
 		EULA_ACCEPTED=1
 	fi
 
-	if [ -z "${EULA_ACCEPTED}" ] && [ -n "${EULA}" ]; then
-		# The EULA is not set as accepted in [local,auto].conf, but the EULA
-		# variable is set in the environment, so we just configure
-		# ACCEPT_${EULA_TYPE}_EULA in local.conf according to $EULA.
-		echo "ACCEPT_${EULA_TYPE}_EULA = \"${EULA}\"" >> conf/local.conf
-	elif [ -n "${EULA_ACCEPTED}" ]; then
+	if [ -n "${EULA_ACCEPTED}" ]; then
 		# The EULA has been accepted once, so ACCEPT_${EULA_TYPE}_EULA is set
 		# in local.conf.  No need to do anything.
 		:
