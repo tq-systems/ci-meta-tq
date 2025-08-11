@@ -334,7 +334,6 @@ main () {
 		debug "Images to build: ${images}"
 
 		# source the real setup workhorse
-		export EULA="y"
 		export DISTRO=${distro}
 		export MACHINE
 		MACHINE=$(echo ${machines} | awk '{ print $1 }')
