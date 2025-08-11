@@ -6,7 +6,7 @@
 ACCEPT_FSL_EULA = "y"
 ACCEPT_NXP_EULA = "y"
 ACCEPT_TI_EULA = "y"
-ACCEPT_QT5_EULA = "y"
+ACCEPT_QT6_EULA = "y"
 
 INHERIT += "buildstats"
 # restrict network access
