@@ -14,6 +14,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: update to 81ab000fa437ca04f584a3327b076f7a512dc6d0 (includes 4.0.29)
+* meta-openembedded: update to 06fc0278f10d630838d703dde707bbf0e2999873
 * poky: update to 3171dcc835afe49ab49847bdd6bf0d6d392fad03 (includes 4.0.28)
 * meta-qt5: update to 554fc20c326a9b205169331644f0cb471619e63c
 * meta-openembedded: update to 058249f9a836e3aa866436aa6e37d6d48ff768fd
