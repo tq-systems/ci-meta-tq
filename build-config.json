@@ -112,11 +112,15 @@
 		},
 		{
 			"name": "i.MX8m",
-			"pattern": "tqma8m(?!.*?\\bras314\\b)"
+			"pattern": "tqma8m(?!.*?\\bras314\\b|pxs.*)"
 		},
 		{
 			"name": "i.MX8MP-RAS314",
 			"pattern": "tqma8m.*ras314"
+		},
+		{
+			"name": "i.MX8MP-SMARC",
+			"pattern": "tqma8mpxs"
 		},
 		{
 			"name": "i.MX8qm",
@@ -169,6 +173,7 @@
 				"i.MX7x",
 				"i.MX8m",
 				"i.MX8MP-RAS314",
+				"i.MX8MP-SMARC",
 				"i.MX93x"
 			]
 		},
