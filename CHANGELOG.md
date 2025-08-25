@@ -14,6 +14,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: update to 6400741e0c11d1620a5ebe394d24deec295236f9, include 5.0.12
+* meta-ti: update to 11a60314cf00695f0131b6d955667d502a93165a
+* meta-freescale: update to 212f4b3b175f6d58c691192545454cd2d2e908d9
+* meta-arm: update to 0f1e7bf92c89759f0ab74cfa5be4ee47b092ad46
+* meta-openembedded: update to c29a18fa39ede952f3f6108ec007c1906e2d9a0d
+* meta-tq: update patch revisions for linux-tq-6.6 / linux-tq-6.12 / linux-imx-tq-6.6
 * ci: rework git archive script
 
 ## scarthgap.TQ.ARM.BSP.0006 (not released yet)
@@ -25,6 +31,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* meta-freescale: update to 4ea1005c570ce783bb0a4130159b6af8615ce273
 * poky: update to ae2d52758fc2fcb0ed996aa234430464ebf4b310, include 5.0.11
 * meta-openembedded: update to e8fd97d86af86cdcc5a6eb3f301cbaf6a2084943
 * meta-freescale: update to 3a266d9aac5e0d4535aa0832fa9fe6ede56b44e9
