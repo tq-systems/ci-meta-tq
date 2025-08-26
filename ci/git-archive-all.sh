@@ -126,7 +126,7 @@ function main () {
 	local COMMIT=HEAD
 	local OUT_FILE="${OLD_PWD}" # assume "this directory" without a name change by default
 
-	[[ "$(uname)" == "Darwin" ]] && TARCMD=gnutar
+	[[ "$(uname)" = "Darwin" ]] && TARCMD=gnutar
 
 	# Process command-line arguments.
 	while test $# -gt 0; do
@@ -181,7 +181,7 @@ function main () {
 	    esac
 	done
 
-	if [ "${FORMAT}"=="tar.gz" ]; then
+	if [ "${FORMAT}" = "tar.gz" ]; then
 	    echo "FORMAT = ${FORMAT}"
 	    DO_TARGZ=1
 	    FORMAT="tar"
@@ -203,14 +203,14 @@ function main () {
 	    exit_error -2 "${PROGRAM} must be run from a git working copy (i.e., not a bare repository)."
 	fi
 
-	if [ "${TREEISH}" == "${COMMIT}" ]; then
+	if [ "${TREEISH}" = "${COMMIT}" ]; then
 	    echo "use HEAD ..."
 	else
 	    OLDBRANCH=$(git rev-parse --abbrev-ref HEAD);
-	    if [ "${OLDBRANCH}" == "tmp_release_${COMMIT}" ]; then
+	    if [ "${OLDBRANCH}" = "tmp_release_${COMMIT}" ]; then
 		HEAD_STAMP=$(git log -1 --pretty=%H);
 		COMMIT_STAMP=$(git log "${COMMIT}" -1 --pretty=%H);
-		if [ "$HEAD_STAMP" != "${COMMIT}_STAMP" ]; then
+		if [ "${HEAD_STAMP}" != "${COMMIT}_STAMP" ]; then
 		    exit_error -3 "temp branch is currently in use but is not what should be archived, give up ...";
 		fi
 		echo -n "use current branch HEAD ...";
@@ -296,11 +296,11 @@ function main () {
 
 	# Concatenate archives into a super-archive.
 	if [ ${SEPARATE} -eq 0 ]; then
-	    if [ "${FORMAT}" == "tar" ]; then
+	    if [ "${FORMAT}" = "tar" ]; then
 		sed -e '1d' "${TMPFILE}" | while read file; do
 		    "${TARCMD}" --concatenate -f "$superfile" "$file" && rm -f "$file"
 		done
-	    elif [ "${FORMAT}" == "zip" ]; then
+	    elif [ ${FORMAT} = 'zip' ]; then
 		sed -e '1d' "${TMPFILE}" | while read file; do
 		    # zip incorrectly stores the full path, so cd and then grow
 		    cd "$(dirname "$file")"
@@ -331,7 +331,7 @@ function main () {
 	if ! [ -z "${OLDBRANCH}" ]; then
 	    debug "try checkout ${OLDBRANCH}..."
 
-	    if [ "${OLDBRANCH}" == "HEAD" ]; then
+	    if [ "${OLDBRANCH}" = "HEAD" ]; then
 		git checkout -f "${COMMIT}"
 	    else
 		git checkout "${OLDBRANCH}"
