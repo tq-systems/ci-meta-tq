@@ -189,7 +189,7 @@ function main () {
 	    DO_TARGZ=0
 	fi
 
-	if [ ! -z "$1" ]; then
+	if [ -n "$1" ]; then
 	    OUT_FILE="$1"
 	    shift
 	fi
@@ -328,7 +328,7 @@ function main () {
 		fi
 	done < "${TMPFILE}"
 
-	if ! [ -z "${OLDBRANCH}" ]; then
+	if [ -n "${OLDBRANCH}" ]; then
 	    debug "try checkout ${OLDBRANCH}..."
 
 	    if [ "${OLDBRANCH}" = "HEAD" ]; then
@@ -341,7 +341,7 @@ function main () {
 	    fi
 	fi
 
-	if ! [ -z "${TMPFILE}" ]; then
+	if [ -n "${TMPFILE}" ]; then
 		rm -f "${TMPFILE}";
 		echo "erasing ${TMPFILE}";
 	fi
