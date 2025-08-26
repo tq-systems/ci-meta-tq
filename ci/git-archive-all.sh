@@ -198,9 +198,9 @@ function main () {
 	if [ ${SEPARATE} -eq 1 ] && ! [ -d "${OUT_FILE}" ]; then
 	    error "When creating multiple archives, your destination must be a directory."
 	    error "If it's not, you risk being surprised when your files are overwritten."
-	    exit -1
+	    exit 255
 	elif [ `git config -l | grep -q '^core\.bare=false'; echo $?` -ne 0 ]; then
-	    exit_error -2 "${PROGRAM} must be run from a git working copy (i.e., not a bare repository)."
+	    exit_error 254 "${PROGRAM} must be run from a git working copy (i.e., not a bare repository)."
 	fi
 
 	if [ "${TREEISH}" = "${COMMIT}" ]; then
@@ -211,7 +211,7 @@ function main () {
 		HEAD_STAMP=$(git log -1 --pretty=%H);
 		COMMIT_STAMP=$(git log "${COMMIT}" -1 --pretty=%H);
 		if [ "${HEAD_STAMP}" != "${COMMIT}_STAMP" ]; then
-		    exit_error -3 "temp branch is currently in use but is not what should be archived, give up ...";
+		    exit_error 253 "temp branch is currently in use but is not what should be archived, give up ...";
 		fi
 		echo -n "use current branch HEAD ...";
 	    else
@@ -224,7 +224,7 @@ function main () {
 		        error "temp branch exists but is not what should be archived, give up ...";
 		        git log "tmp_release_${COMMIT}" -1 --pretty=%H;
 		        git log "${COMMIT}" -1 --pretty=%H;
-		        exit -4;
+		        exit 252;
 		    fi
 		    echo "try tmp_release_${COMMIT} ..."
 		    git checkout "tmp_release_${COMMIT}";
@@ -246,7 +246,7 @@ function main () {
 	rm_file "${TMPDIR}/$(basename "$(pwd)").${FORMAT}"
 
 	if ! git archive --format="${FORMAT}" --prefix="${PREFIX}" "${TREEISH}" > "${TMPDIR}/$(basename "$(pwd)").${FORMAT}"; then
-		error_exit -6 "creating superproject archive failed"
+		error_exit 250 "creating superproject archive failed"
 	fi
 
 	echo "${TMPDIR}/$(basename "$(pwd)").${FORMAT}" >| "${TMPFILE}" # clobber on purpose
@@ -323,7 +323,7 @@ function main () {
 		mv "${file}" "${OUT_FILE}"
 		if [ "${DO_TARGZ}" -eq "1" ]; then
 			if ! gzip "${OUT_FILE}"; then
-				exit_error -5 "gzip error for ${OUT_FILE}, give up ..."
+				exit_error 251 "gzip error for ${OUT_FILE}, give up ..."
 			fi
 		fi
 	done < "${TMPFILE}"
