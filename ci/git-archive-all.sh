@@ -67,42 +67,43 @@ function exit_error () {
 	exit "$1"
 }
 
-function usage () {
-    echo "Usage is as follows:"
+usage() {
+	cat <<END
+Usage is as follows:"
     echo
-    echo "${PROGRAM} <--version>"
-    echo "    Prints the program version number on a line by itself and exits."
+${PROGRAM} <--version>"
+    Prints the program version number on a line by itself and exits."
     echo
-    echo "${PROGRAM} <--usage|--help|-?>"
-    echo "    Prints this usage output and exits."
+${PROGRAM} <--usage|--help|-?>"
+    Prints this usage output and exits."
     echo
-    echo "${PROGRAM} [--format <fmt>] [--prefix <path>] [--verbose|-v] [--separate|-s] [output_file]"
-    echo "    Creates an archive for the entire git superproject, and its submodules"
-    echo "    using the passed parameters, described below."
-    echo
-    echo "    If '--format' is specified, the archive is created with the named"
-    echo "    git archiver backend. Obviously, this must be a backend that git archive"
-    echo "    understands. The format defaults to 'tar' if not specified."
-    echo
-    echo "    If '--prefix' is specified, the archive's superproject and all submodules"
-    echo "    are created with the <path> prefix named. The default is to not use one."
-    echo
-    echo "    If '--separate' or '-s' is specified, individual archives will be created"
-    echo "    for each of the superproject itself and its submodules. The default is to"
-    echo "    concatenate individual archives into one larger archive."
-    echo
-    echo "    If '--commit' or '-c' is specified, use commit instead of HEAD"
-    echo
-    echo "    If 'output_file' is specified, the resulting archive is created as the"
-    echo "    file named. This parameter is essentially a path that must be writeable."
-    echo "    When combined with '--separate' ('-s') this path must refer to a directory."
-    echo "    Without this parameter or when combined with '--separate' the resulting"
-    echo "    archive(s) are named with a dot-separated path of the archived directory and"
-    echo "    a file extension equal to their format (e.g., 'superdir.submodule1dir.tar')."
-    echo
-    echo "    If '--verbose' or '-v' is specified, progress will be printed."
+${PROGRAM} [--format <fmt>] [--prefix <path>] [--verbose|-v] [--separate|-s] [output_file]"
+    Creates an archive for the entire git superproject, and its submodules"
+    using the passed parameters, described below."
 
-    return 0
+    If '--format' is specified, the archive is created with the named"
+    git archiver backend. Obviously, this must be a backend that git archive"
+    understands. The format defaults to 'tar' if not specified."
+
+    If '--prefix' is specified, the archive's superproject and all submodules"
+    are created with the <path> prefix named. The default is to not use one."
+
+    If '--separate' or '-s' is specified, individual archives will be created"
+    for each of the superproject itself and its submodules. The default is to"
+    concatenate individual archives into one larger archive."
+
+    If '--commit' or '-c' is specified, use commit instead of HEAD"
+
+    If 'output_file' is specified, the resulting archive is created as the"
+    file named. This parameter is essentially a path that must be writeable."
+    When combined with '--separate' ('-s') this path must refer to a directory."
+    Without this parameter or when combined with '--separate' the resulting"
+    archive(s) are named with a dot-separated path of the archived directory and"
+    a file extension equal to their format (e.g., 'superdir.submodule1dir.tar')."
+
+    If '--verbose' or '-v' is specified, progress will be printed."
+
+END
 }
 
 function version () {
