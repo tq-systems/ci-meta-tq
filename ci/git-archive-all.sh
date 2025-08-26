@@ -195,7 +195,7 @@ function main () {
 	fi
 
 	# Validate parameters; error early, error often.
-	if [ ${SEPARATE} -eq 1 -a ! -d "${OUT_FILE}" ]; then
+	if [ ${SEPARATE} -eq 1 ] && ! [ -d "${OUT_FILE}" ]; then
 	    error "When creating multiple archives, your destination must be a directory."
 	    error "If it's not, you risk being surprised when your files are overwritten."
 	    exit -1
