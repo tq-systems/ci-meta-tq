@@ -267,10 +267,9 @@ function main () {
 	if [ ${VERBOSE} -eq 1 ]; then
 	    echo "done"
 	    echo "  found:"
-	    cat "${TOARCHIVE}" | while read arch
-	    do
+	    while read arch; do
 	      echo "    $arch"
-	    done
+	    done < "${TOARCHIVE}"
 	fi
 
 	debug "archiving submodules..."
