@@ -36,17 +36,7 @@ TMPDIR=${TMPDIR:-/tmp}
  # Create a place to store our work's progress
 TMPFILE=$(mktemp "${TMPDIR}/${PROGRAM}.XXXXXX")
 TOARCHIVE=$(mktemp "${TMPDIR}/${PROGRAM}.toarchive.XXXXXX")
-OUT_FILE="${OLD_PWD}" # assume "this directory" without a name change by default
-SEPARATE=0
 VERBOSE=0
-
-TARCMD="tar"
-[[ "$(uname)" == "Darwin" ]] && TARCMD=gnutar
-FORMAT="tar"
-PREFIX=
-DO_TARGZ=0
-TREEISH=HEAD
-COMMIT=HEAD
 
 # RETURN VALUES/EXIT STATUS CODES
 readonly E_BAD_OPTION=254
@@ -127,6 +117,17 @@ function rm_file () {
 }
 
 function main () {
+	local FORMAT="tar"
+	local PREFIX=""
+	local SEPARATE=0
+	local TARCMD="tar"
+	local DO_TARGZ=0
+	local TREEISH=HEAD
+	local COMMIT=HEAD
+	local OUT_FILE="${OLD_PWD}" # assume "this directory" without a name change by default
+
+	[[ "$(uname)" == "Darwin" ]] && TARCMD=gnutar
+
 	# Process command-line arguments.
 	while test $# -gt 0; do
 	    case $1 in
