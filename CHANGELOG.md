@@ -12,6 +12,13 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## scarthgap.TQ.ARM.BSP.0006 (not released yet)
+
+### Added
+
+* meta-tq: new machine for TQMa8MPxS on MB-SMARC-2
+* meta-tq: secure boot support for TQMLX2160A
+
 ### Changed
 
 * poky: update to ae2d52758fc2fcb0ed996aa234430464ebf4b310, include 5.0.11
