@@ -12,6 +12,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* ci: rework git archive script
+
 ## scarthgap.TQ.ARM.BSP.0006 (not released yet)
 
 ### Added
