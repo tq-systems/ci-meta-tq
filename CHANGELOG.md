@@ -14,7 +14,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
-* ci: rework git archive script
+* poky: update to d847c8aac132c557e93933c10c51a4caa397f52a (includes 4.0.30)
+* meta-openembedded: update to 96fbc156364fd78530d2bfbe1b8a77789f52997d
+* meta-freescale: update to 7286bef07802fc493894c5917a315d53c8fe2191
+* meta-qt5: update to e197839013fa2cfd59339508303bce91fef48928
+* ci: backport script fixes
+  * rework git archive script
+  * remove undocumented variable `EULA`
+  * improvements in scripts
 * poky: update to 81ab000fa437ca04f584a3327b076f7a512dc6d0 (includes 4.0.29)
 * meta-openembedded: update to 06fc0278f10d630838d703dde707bbf0e2999873
 * meta-freescale: update to dd7a8a50025c3bc8925d59f818bafbdae4e2001c
