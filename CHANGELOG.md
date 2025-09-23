@@ -12,8 +12,13 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Added
+
+* meta-tq: add PREEMPT_RT 6.12 support for TQMa335x and TQMLS102xA
+
 ### Changed
 
+* meta-freescale: update to 281202125dee44b45ddd56822e43af9c007e4d3d
 * poky: update to 6400741e0c11d1620a5ebe394d24deec295236f9, include 5.0.12
 * meta-ti: update to 11a60314cf00695f0131b6d955667d502a93165a
 * meta-freescale: update to 212f4b3b175f6d58c691192545454cd2d2e908d9
