@@ -132,7 +132,11 @@
 		},
 		{
 			"name": "i.MX93x",
-			"pattern": "tqma93[^0-9]"
+			"pattern": "tqma93[^0-9](?!.*?\\bmini.*)"
+		},
+		{
+			"name": "i.MX93x-MINI",
+			"pattern": "tqma93[^0-9].*mini"
 		}
 	],
 	"configs": [
@@ -174,7 +178,8 @@
 				"i.MX8m",
 				"i.MX8MP-RAS314",
 				"i.MX8MP-SMARC",
-				"i.MX93x"
+				"i.MX93x",
+				"i.MX93x-MINI"
 			]
 		},
 		{
