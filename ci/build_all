@@ -25,6 +25,8 @@ readonly SCRIPT="$(basename "${0}")"
 # depends on bitbake / poky version
 readonly BITBAKE_GIT_MIRROR_PKG_EXTENSION="tar.gz"
 
+readonly COMMIT_TIMESTAMP="$(git show --no-patch --pretty='format:%ct' HEAD 2>/dev/null || echo '0')"
+
 . "${SCRIPTPATH}/utils"
 
 usage() {
@@ -492,13 +494,19 @@ main () {
 					local download_sources
 					local archived_sources
 					local combined_sources
+					declare -a tar_options=(
+						--numeric-owner --owner=0 --group=0
+						--sort=name --mtime="@${COMMIT_TIMESTAMP}"
+						--use-compress-program='pigz -nm'
+					)
 
 					archive_basename=${deploydir}/${machine_archive}
 
 					# create image archive for $MACHINE, assume DEPLOY_DIR_IMAGE has ${MACHINE} as final part
+					# shellcheck disable=SC2086
 					if ! tar -cvf "${archive_basename}.BIN.tar.gz" \
 						-C "$(dirname "${artifactsdir}")" \
-						"$(basename "${artifactsdir}")" --use-compress-program=pigz
+						"$(basename "${artifactsdir}")" "${tar_options[@]}"
 					then
 						error_out "archiving for ${machine} failed"
 					fi
@@ -513,10 +521,12 @@ main () {
 						xargs --null --no-run-if-empty cp --recursive \
 						--target-directory="${archive_basename}.LIC/"
 
+					# shellcheck disable=SC2086
 					tar -cvf "${archive_basename}.LIC.tar.gz" \
 						--directory "$(dirname "${archive_basename}.LIC")" \
 						"$(basename "${archive_basename}.LIC")" \
-						--use-compress-program=pigz
+						"${tar_options[@]}"
+
 					# do some cleanup
 					rm -rf "${archive_basename}.LIC"
 
@@ -524,7 +534,7 @@ main () {
 					download_dir=$(bitbake-getvar -q --value DL_DIR)
 					# query all archived sources, needs archiver class in config
 					archived_sources=$(find . -wholename "*tmp*/deploy/sources/*/*/*" -printf "%f\n" | sort)
-					
+
 					# copy the file from archived sources if it exists in download_dir
 					download_sources=$(find "${download_dir}" -printf "%f\n" | sort)
 					combined_sources=$(comm -12 <(echo "$archived_sources") <(echo "$download_sources"))
