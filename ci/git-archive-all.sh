@@ -325,7 +325,7 @@ function main () {
 	while read file; do
 		mv "${file}" "${OUT_FILE}"
 		if [ "${DO_TARGZ}" -eq "1" ]; then
-			if ! gzip "${OUT_FILE}"; then
+			if ! gzip -n "${OUT_FILE}"; then
 				exit_error 251 "gzip error for ${OUT_FILE}, give up ..."
 			fi
 		fi
