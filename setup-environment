@@ -183,7 +183,7 @@ fi
 
 # Clean up PATH, because if it includes tokens to current directories somehow,
 # wrong binaries can be used instead of the expected ones during task execution
-export PATH="`echo "${PATH}" | sed 's/\(:.\|:\)*:/:/g;s/^.\?://;s/:.\?$//'`"
+export PATH="$(echo "${PATH}" | sed 's/\(:.\|:\)*:/:/g;s/^.\?://;s/:.\?$//')"
 
 generated_config=
 if [ "$build_dir_setup_enabled" = "true" ]; then
