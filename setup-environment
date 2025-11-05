@@ -97,6 +97,11 @@ if [ $? != 0 ] || [ $# -lt 1 ]; then
    return 1
 fi
 
+if [ "$(id -u)" -eq 0 ]; then
+    echo "ERROR: do not use the BSP as root. Exiting..." >&2
+    return 1
+fi
+
 eval set -- "${ARGS}"
 while true;
 do
@@ -112,10 +117,6 @@ do
            ;;
     esac
 done
-
-if [ "$(whoami)" = "root" ]; then
-    echo "ERROR: do not use the BSP as root. Exiting..." >&2
-fi
 
 if [ ! -e ${1}/conf/local.conf.sample ]; then
     build_dir_setup_enabled="true"
