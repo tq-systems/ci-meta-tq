@@ -24,18 +24,16 @@ function error_abort () {
 
 . "${SCRIPTPATH}/utils"
 
-readonly DEFAULT_LAYER_DIR="./sources/meta-tq/meta-tq"
-
 usage() {
 	cat <<END
 ${SCRIPTNAME} usage:
 
-List available machines either from config file or from template directory
+List available machines either from config file or from a directory
 
-${SCRIPTNAME} --dir[=<directory>]
-use default template dir ${DEFAULT_TEMPLATEDIR} or directory
-Note: directory needs to have the structure of a layer and distros are
-under <layer dir>/conf/distro/.
+${SCRIPTNAME} --dir=<directory>
+Use the given directory to find machines.
+Note: directory needs to have the structure of a layer and machines are
+under <directory>/conf/machine/.
 ${SCRIPTNAME} --file[=<filename>] --config=<name>
 use default config file ${DEFAULT_BUILD_CONFIG} or given file to parse for supported
 distros for given config name
@@ -113,10 +111,6 @@ main() {
 			;;
 		--dir=* )
 			machine_dir=${1#*=}
-			shift
-			;;
-		--dir )
-			machine_dir="${DEFAULT_LAYER_DIR}"
 			shift
 			;;
 		--*=|-*) # unsupported flags
