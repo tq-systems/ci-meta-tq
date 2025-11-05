@@ -1,0 +1,218 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# -*- mode: shell-script; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+#
+# Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
+# Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
+#
+# Copyright (C) 2017-2024 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# D-82229 Seefeld, Germany.
+# Author: Markus Niebel
+#
+# Add options for the script
+# Copyright (C) 2013 Freescale Semiconductor, Inc.
+
+CWD=$(pwd)
+PROGNAME="setup-environment"
+SCRIPTDIR="${CWD}/ci"
+CONFIG_TEMPLATE=""
+TEMPLATEDIR=${CWD}/sources/template/conf/templates
+
+usage()
+{
+    echo "
+Usage: MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <config>
+Usage:                                   source ${PROGNAME} <build-dir> <config>
+    <machine>    machine name
+    <distro>     distro name
+    <build-dir>  build directory
+    <config>     configuration to use (see README.md / use ${SCRIPTDIR}/ls-configs)
+
+The first usage is for creating a new build directory. In this case, the
+script creates the build directory <build-dir>, configures it for the
+specified <machine> and <distro>, and prepares the calling shell for running
+bitbake on the build directory.
+
+The second usage is for using an existing build directory. In this case,
+the script prepares the calling shell for running bitbake on the build
+directory <build-dir>. The build directory configuration is unchanged.
+
+To query supported configs use:
+${SCRIPTDIR}/ls-configs --file
+
+To query supported machines for a configuration:
+${SCRIPTDIR}/ls-machines --file --config=<config>
+
+To query supported TQ-Systems distros for a configuration:
+${SCRIPTDIR}/ls-distros --file --config=<config>
+
+If 'meta-poky' is in 'bblayer.conf', available poky distros can be queried:
+${SCRIPTDIR}/ls-distros --dir=sources/poky/meta-poky
+
+Supported configurations in this project are:
+$("${SCRIPTDIR}/ls-configs" --file | sort)
+
+Usage examples:
+
+- To create a new Yocto build directory:
+  \$ MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <config>
+
+- To use an existing Yocto build directory:
+  \$ source ${PROGNAME} <build-dir>
+
+See README.md for valid combinations of <machine>, <distro> and <config>
+"
+}
+
+clean_up() {
+	unset ARGS
+	unset CONFIG_TEMPLATE
+	unset CWD
+	unset DISTRO_VAR
+	unset generated_config
+	unset build_dir_setup_enabled
+	unset LIST_MACHINES
+	unset LONGOPTS
+	unset OEROOT
+	unset PROGNAME
+	unset SCRIPTDIR
+	unset SHORTOPTS
+	unset TEMPLATECONF
+	unset TEMPLATEDIR
+	unset THE_DISTRO
+	unset THE_MACHINE
+	unset VALID_MACHINE
+}
+
+# get command line options
+SHORTOPTS="h"
+LONGOPTS="help"
+
+ARGS=$(getopt --options "${SHORTOPTS}"  \
+  --longoptions "${LONGOPTS}" --name "${PROGNAME}" -- "$@" )
+# Print the usage menu if invalid options are specified
+if [ $? != 0 ] || [ $# -lt 1 ]; then
+   usage && clean_up
+   return 1
+fi
+
+if [ "$(id -u)" -eq 0 ]; then
+    echo "ERROR: do not use the BSP as root. Exiting..." >&2
+    return 1
+fi
+
+eval set -- "${ARGS}"
+while true;
+do
+    case $1 in
+        -h|--help)
+           usage
+           clean_up
+           return 0
+           ;;
+        --)
+           shift
+           break
+           ;;
+    esac
+done
+
+if [ ! -e "${1}/conf/local.conf.sample" ]; then
+    build_dir_setup_enabled="true"
+else
+    build_dir_setup_enabled="false"
+fi
+
+if [ "${build_dir_setup_enabled}" = "true" ]; then
+    # we need a configuration to setup build dir
+    if [ $# -lt 2 ]; then
+        usage && clean_up
+        return 1
+    fi
+
+    CONFIG_TEMPLATE="${2}"
+    TEMPLATECONF="${TEMPLATEDIR}/${CONFIG_TEMPLATE}"
+
+    if [ -z "${MACHINE}" ]; then
+        THE_MACHINE="$("${SCRIPTDIR}/ls-machines" --file --config="${CONFIG_TEMPLATE}" | awk 'NR==1 {print; exit}')"
+    else
+        THE_MACHINE=${MACHINE}
+    fi
+
+    if [ -z "${THE_MACHINE}" ]; then
+       usage
+       echo "ERROR: You must set MACHINE when creating a new build directory."  >&2
+       clean_up
+       return 1
+    fi
+
+    if [ -z "${DISTRO}" ]; then
+        THE_DISTRO="$("${SCRIPTDIR}/ls-distros" --file --config="${CONFIG_TEMPLATE}" | awk 'NR==1 {print; exit}')"
+
+    else
+        THE_DISTRO=${DISTRO}
+    fi
+
+    if [ -z "${THE_DISTRO}" ]; then
+        usage
+        echo "ERROR: You must set DISTRO when creating a new build directory." >&2
+        clean_up
+        return 1
+    fi
+fi
+
+OEROOT="${CWD}/sources/poky"
+if [ -e "${CWD}/sources/oe-core" ]; then
+    OEROOT="${CWD}/sources/oe-core"
+fi
+
+BB_ENV_PASSTHROUGH_ADDITIONS="${BB_ENV_PASSTHROUGH_ADDITIONS} TQ_GIT_BASEURL TQ_GIT_PROTOCOL"
+
+# Hide messages from oe-init-build-env.
+# Since we do some more stuff after the basic builddir setup
+# as setting own bblayers.conf and display some licenses
+# the output will not be read from most of the users.
+# We therefore show the content of conf-notes.txt rigth before finishing.
+. "${OEROOT}/oe-init-build-env" "${1}" > /dev/null
+
+# if conf/local.conf not generated, no need to go further
+if [ ! -e "conf/local.conf" ]; then
+    clean_up && return 1
+fi
+
+# Clean up PATH, because if it includes tokens to current directories somehow,
+# wrong binaries can be used instead of the expected ones during task execution
+export PATH="$(echo "${PATH}" | sed 's/\(:.\|:\)*:/:/g;s/^.\?://;s/:.\?$//')"
+
+generated_config=
+if [ "$build_dir_setup_enabled" = "true" ]; then
+    "${SCRIPTDIR}/setup_builddir" confdir_setup "${TEMPLATECONF}"
+    if [ "${?}" -ne "0" ]; then
+        clean_up && return 1
+    fi
+    "${SCRIPTDIR}/setup_builddir" localconf_defaults "${THE_MACHINE}" "${THE_DISTRO}"
+    generated_config=1
+fi
+
+"${SCRIPTDIR}/setup_builddir" handle_licenses "${CWD}"
+
+# Print welcome banner, since we drop output from oe-init-build-env above
+if [ -e "${TEMPLATECONF}/conf-notes.txt" ]; then
+    cat "${TEMPLATECONF}/conf-notes.txt"
+fi
+
+# finally give info whether we use an existing buildspace or
+# just created a new one ...
+if [ -n "${generated_config}" ]; then
+    cat <<EOF
+Your build environment has been configured with:
+
+    MACHINE=${THE_MACHINE}
+    DISTRO=${THE_DISTRO}
+EOF
+else
+    echo "Your configuration files at $1 have not been touched."
+fi
+
+clean_up
