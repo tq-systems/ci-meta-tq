@@ -113,16 +113,17 @@ EOF
 handle_licenses() {
 	local BSPROOT="${1}"
 
-	# call handle_eula for meta-freescale is in conf/bblayers.conf
-	# otherwise call it for meta-tq
+	# call handle_eula for meta-freescale when found in conf/bblayers.conf
 	if grep -q "meta-freescale" conf/bblayers.conf; then
 		handle_eula FSL "${BSPROOT}/sources/meta-freescale/EULA"
 	fi
 
+	# call handle_eula for meta-ti when found in conf/bblayers.conf
 	if grep -q "meta-ti" conf/bblayers.conf; then
 		handle_eula TI "${BSPROOT}/sources/meta-ti/meta-ti-bsp/licenses/TI-TFL ${BSPROOT}/sources/meta-ti/meta-ti-bsp/licenses/TI-TSPA"
 	fi
 
+	# call handle_eula for meta-qt6 when found in conf/bblayers.conf
 	if grep -q "meta-qt6" conf/bblayers.conf; then
 		handle_eula QT6 "${BSPROOT}/sources/meta-qt6/licenses/Qt-GPL-exception-1.0"
 	fi
