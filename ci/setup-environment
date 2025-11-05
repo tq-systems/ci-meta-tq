@@ -162,8 +162,6 @@ if [ -e "${CWD}/sources/oe-core" ]; then
     OEROOT="${CWD}/sources/oe-core"
 fi
 
-BB_ENV_PASSTHROUGH_ADDITIONS="${BB_ENV_PASSTHROUGH_ADDITIONS} TQ_GIT_BASEURL TQ_GIT_PROTOCOL"
-
 # Hide messages from oe-init-build-env.
 # Since we do some more stuff after the basic builddir setup
 # as setting own bblayers.conf and display some licenses
