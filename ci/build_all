@@ -33,10 +33,10 @@ usage() {
 	cat <<END
 Usage:
 
-${SCRIPTNAME} [OPTIONS] <build-dir> [template]
+${SCRIPTNAME} [OPTIONS] <build-dir> <template>
 
 <build-dir>: specifies the build directory location (required)
-[template]: template bblayers.conf to use
+<template>: template bblayers.conf to use
 [-h|--help]: print this message
 [--dryrun=<yes|no>]: call bitbake in dry-run mode, default no
 [--devel=<yes|no>]: allow development mode, default no, (use different auto.conf to disable CI features)
@@ -179,7 +179,7 @@ main () {
 	local skipbitbake="no"
 	local build_dir=""
 	local build_info_file=""
-	local config="mainline"
+	local config=""
 	local deploydir=""
 	local distros=""
 	local version="unknown"
@@ -295,17 +295,14 @@ main () {
 	# set positional arguments in their proper place
 	eval set -- "$pos_params"
 
-	if [ $# -lt 1 ]
+	if [ $# -lt 2 ]
 	then
 		usage
 		exit 1
 	fi
 
 	build_dir="${1}"
-	if [ -n "${2}" ]
-	then
-		config=${2}
-	fi
+	config="${2}"
 
 	build_info_file="${deploydir}/${config}-build_info.md"
 	top_dir="$(pwd)"
