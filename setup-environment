@@ -16,7 +16,7 @@
 CWD=$(pwd)
 PROGNAME="setup-environment"
 SCRIPTDIR="${CWD}/ci"
-CONFIG_TEMPLATE=mainline
+CONFIG_TEMPLATE=""
 TEMPLATEDIR=${CWD}/sources/template/conf/templates
 
 usage()
@@ -27,7 +27,7 @@ Usage:                                   source ${PROGNAME} <build-dir> <config>
     <machine>    machine name
     <distro>     distro name
     <build-dir>  build directory
-    <config>     configuration to use (optional, default: ${CONFIG_TEMPLATE})
+    <config>     configuration to use (see README.md / use ${SCRIPTDIR}/ls-configs)
 
 The first usage is for creating a new build directory. In this case, the
 script creates the build directory <build-dir>, configures it for the
@@ -117,11 +117,6 @@ if [ "$(whoami)" = "root" ]; then
     echo "ERROR: do not use the BSP as root. Exiting..." >&2
 fi
 
-if [ -n "${2}" ]; then
-    CONFIG_TEMPLATE=${2}
-fi
-TEMPLATECONF=${TEMPLATEDIR}/${CONFIG_TEMPLATE}
-
 if [ ! -e ${1}/conf/local.conf.sample ]; then
     build_dir_setup_enabled="true"
 else
@@ -129,6 +124,15 @@ else
 fi
 
 if [ "${build_dir_setup_enabled}" = "true" ]; then
+    # we need a configuration to setup build dir
+    if [ $# -lt 2 ]; then
+        usage && clean_up
+        return 1
+    fi
+
+    CONFIG_TEMPLATE="${2}"
+    TEMPLATECONF="${TEMPLATEDIR}/${CONFIG_TEMPLATE}"
+
     if [ -z "${MACHINE}" ]; then
         THE_MACHINE="$(${SCRIPTDIR}/ls-machines --file --config=${CONFIG_TEMPLATE} | awk 'NR==1 {print; exit}')"
     else
