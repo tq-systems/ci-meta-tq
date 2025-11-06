@@ -137,6 +137,10 @@
 		{
 			"name": "i.MX93x-MINI",
 			"pattern": "tqma93[^0-9].*mini"
+		},
+		{
+			"name": "i.MX95x",
+			"pattern": "tqma95[^0-9]"
 		}
 	],
 	"configs": [
@@ -151,7 +155,8 @@
 				"i.MX8m",
 				"i.MX8qm",
 				"i.MX91x",
-				"i.MX93x"
+				"i.MX93x",
+				"i.MX95x"
 			]
 		},
 		{
