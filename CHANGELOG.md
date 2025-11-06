@@ -14,6 +14,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Added
 
+* ci: add new group for i.MX95 based SOM to include the in i.MX builds
 * meta-tq: new machine for TQMa93xxLA on MBa93xxLA-MINI
 * meta-tq: add PREEMPT_RT 6.12 support for TQMa335x and TQMLS102xA
 
