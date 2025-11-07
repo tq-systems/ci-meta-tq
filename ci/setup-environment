@@ -6,7 +6,7 @@
 # Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
 # Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
 #
-# Copyright (C) 2017-2024 TQ-Systems GmbH <oss@ew.tq-group.com>,
+# Copyright (C) 2017-2025 TQ-Systems GmbH <oss@ew.tq-group.com>,
 # D-82229 Seefeld, Germany.
 # Author: Markus Niebel
 #
@@ -14,7 +14,7 @@
 # Copyright (C) 2013 Freescale Semiconductor, Inc.
 
 CWD=$(pwd)
-PROGNAME="setup-environment"
+PROGNAME="${0}"
 SCRIPTDIR="${CWD}/ci"
 CONFIG_TEMPLATE=""
 TEMPLATEDIR=${CWD}/sources/template/conf/templates
@@ -22,21 +22,24 @@ TEMPLATEDIR=${CWD}/sources/template/conf/templates
 usage()
 {
     echo "
-Usage: MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <config>
-Usage:                                   source ${PROGNAME} <build-dir> <config>
-    <machine>    machine name
-    <distro>     distro name
-    <build-dir>  build directory
-    <config>     configuration to use (see README.md / use ${SCRIPTDIR}/ls-configs)
+Usage:
 
-The first usage is for creating a new build directory. In this case, the
-script creates the build directory <build-dir>, configures it for the
-specified <machine> and <distro>, and prepares the calling shell for running
+Create a new build directorynamed <build-dir>, configure it for the
+specified <machine> and <distro>, and prepare the calling shell for running
 bitbake on the build directory.
 
-The second usage is for using an existing build directory. In this case,
-the script prepares the calling shell for running bitbake on the build
-directory <build-dir>. The build directory configuration is unchanged.
+MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <config>
+
+Return to existing build directory and prepare the calling shell for
+running bitbake on the build directory <build-dir>. The build directory
+configuration is unchanged.
+
+source ${PROGNAME} <build-dir> <config>
+
+    <machine>    machine name to use as default for new 'local.conf'
+    <distro>     distro name to use as default for new 'local.conf'
+    <build-dir>  build directory
+    <config>     configuration to use (see README.md / use ${SCRIPTDIR}/ls-configs)
 
 To query supported configs use:
 ${SCRIPTDIR}/ls-configs --file
@@ -52,14 +55,6 @@ ${SCRIPTDIR}/ls-distros --dir=sources/poky/meta-poky
 
 Supported configurations in this project are:
 $("${SCRIPTDIR}/ls-configs" --file | sort)
-
-Usage examples:
-
-- To create a new Yocto build directory:
-  \$ MACHINE=<machine> DISTRO=<distro> source ${PROGNAME} <build-dir> <config>
-
-- To use an existing Yocto build directory:
-  \$ source ${PROGNAME} <build-dir>
 
 See README.md for valid combinations of <machine>, <distro> and <config>
 "
