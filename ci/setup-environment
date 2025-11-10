@@ -113,7 +113,7 @@ do
     esac
 done
 
-if [ ! -e "${1}/conf/local.conf.sample" ]; then
+if ! [ -e "${1}/conf/local.conf" ]; then
     build_dir_setup_enabled="true"
 else
     build_dir_setup_enabled="false"
@@ -172,7 +172,7 @@ BB_ENV_PASSTHROUGH_ADDITIONS="${BB_ENV_PASSTHROUGH_ADDITIONS} TQ_GIT_BASEURL TQ_
 . "${OEROOT}/oe-init-build-env" "${1}" > /dev/null
 
 # if conf/local.conf not generated, no need to go further
-if [ ! -e "conf/local.conf" ]; then
+if ! [ -e "conf/local.conf" ]; then
     clean_up && return 1
 fi
 
