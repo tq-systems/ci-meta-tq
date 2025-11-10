@@ -181,9 +181,9 @@ fi
 export PATH="$(echo "${PATH}" | sed 's/\(:.\|:\)*:/:/g;s/^.\?://;s/:.\?$//')"
 
 generated_config=
+
 if [ "$build_dir_setup_enabled" = "true" ]; then
-    "${SCRIPTDIR}/setup_builddir" confdir_setup "${TEMPLATECONF}"
-    if [ "${?}" -ne "0" ]; then
+    if ! "${SCRIPTDIR}/setup_builddir" confdir_setup "${TEMPLATECONF}"; then
         clean_up && return 1
     fi
     "${SCRIPTDIR}/setup_builddir" localconf_defaults "${THE_MACHINE}" "${THE_DISTRO}"
