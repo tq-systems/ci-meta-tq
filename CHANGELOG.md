@@ -12,6 +12,10 @@ files in git submodules for meta-tq and meta-dumpling.
 
 ## Next Release
 
+### Removed
+
+* Remove all code, submodules and scripts, branch is no longer maintained.
+
 ### Changed
 
 * meta-tq: update for codeaurora.org to github move of imx / qoriq packages
