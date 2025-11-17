@@ -1,9 +1,0 @@
-require common.inc
-
-# control usage of mirrors
-BB_GENERATE_SHALLOW_TARBALLS = "1"
-
-# force to have a separate DL_DIR to make sure we download all stuff
-# needed but not available yet
-DL_DIR = "${TOPDIR}/downloads"
-SSTATE_DIR = "${TOPDIR}/sstate-cache"
