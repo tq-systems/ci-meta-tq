@@ -14,6 +14,15 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: update to e2d947b1cce43f3c4ab5cd6bbe69ea466339666b (includes 4.0.31)
+* meta-openembedded: update to 07ac1890c843b374c27e150f1a2e53ad3db2a8e4
+* meta-qt5: update to 9ae2fe2696b10f5dc4253c4f467dc388139860bd
+* meta-arm: update to c3e9fb12aa31d25e33d8392c4a233ed1275a3278
+* ci: backport script improvements
+  * improve reproducibility of tar archive creation
+  * do not use guessed defaults for parameters in scripts
+  * move setup-environment implementation to ci/ and make it a symbolic link in .
+  * improve coding style
 * poky: update to d847c8aac132c557e93933c10c51a4caa397f52a (includes 4.0.30)
 * meta-openembedded: update to 96fbc156364fd78530d2bfbe1b8a77789f52997d
 * meta-freescale: update to 7286bef07802fc493894c5917a315d53c8fe2191
@@ -29,6 +38,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-qt5: update to 554fc20c326a9b205169331644f0cb471619e63c
 * meta-openembedded: update to 058249f9a836e3aa866436aa6e37d6d48ff768fd
 * meta-arm: update to 10c27f061b22af78e17a23cf540b69501afc7160
+
+### Removed
+
+* ci: remove Jenkinsfile support
 
 ## kirkstone.TQ.ARM.BSP.0025
 
