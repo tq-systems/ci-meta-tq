@@ -10,15 +10,21 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 [[_TOC_]]
 
-## Next Release
+## No New Releases Planned
 
 ### Deprecated
+
+* Configurations for imx and ti:
+
+  Support for machines based on kernel branches forked from vendor downstream is no longer maintained
+  since there are no more security backports to the base branches available since a longer time.
+  Please update to a more recent LTS branch.
 
 Upstream support and development for kirkstone branch will end in April 2026. See
 * https://lists.openembedded.org/g/openembedded-devel/message/124804
 * https://lists.openembedded.org/g/bitbake-devel/message/19196
 
-Please update to a newer branch with LTS maintenance (scarthgap at time of writing)
+**Please update to a newer branch with LTS maintenance**
 
 ### Changed
 
