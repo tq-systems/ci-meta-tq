@@ -133,20 +133,6 @@
 	],
 	"configs": [
 		{
-			"name": "imx",
-			"distros": [
-				"spaetzle-nxp",
-				"dumpling-wayland-nxp"
-			],
-			"groups": [
-				"i.MX6x",
-				"i.MX8x",
-				"i.MX8m",
-				"i.MX8qm",
-				"i.MX93x"
-			]
-		},
-		{
 			"name": "ls",
 			"distros": [
 				"spaetzle-ls",
@@ -169,20 +155,6 @@
 				"i.MX6ULx",
 				"i.MX7x",
 				"i.MX8m"
-			]
-		},
-		{
-			"name": "ti",
-			"distros": [
-				"spaetzle-ti",
-				"dumpling-wayland-ti"
-			],
-			"groups": [
-				"AM335x",
-				"AM57x",
-				"AM62x",
-				"AM64x",
-				"AM654x"
 			]
 		}
 	]
