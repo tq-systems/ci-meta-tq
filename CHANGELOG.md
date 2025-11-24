@@ -14,12 +14,16 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Added
 
-* ci: add new group for i.MX95 based SOM to include the in i.MX builds
+* ci: add new group for i.MX95 based SOM to include in i.MX builds
 * meta-tq: new machine for TQMa93xxLA on MBa93xxLA-MINI
 * meta-tq: add PREEMPT_RT 6.12 support for TQMa335x and TQMLS102xA
 
 ### Changed
 
+* poky: update to e6bfeed8f3e72c577820e3d01f7d697c4d3fc5d4, include 5.0.14
+* meta-arm: update to a81c19915b5b9e71ed394032e9a50fd06919e1cd
+* meta-ti: update to ee5c64043811d1469c11ea14e760d5124dc46eb7
+* meta-openembedded: update to 89a01c3d9ad1f8fce6aeb4dd0e694cfa28d42099
 * poky: update to ad597f4a54ec5b51677160d537b87b1b7e3828db, include 5.0.13
 * meta-ti: update to f7cd5f92135bd53a843b188bce559ec894425766
 * meta-freescale: update to 7d83a350d8b28498321a481a2a1c51bb4afb48e9
