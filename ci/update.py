@@ -22,7 +22,7 @@ def main(argv):
 	# print(PWD)
 
 	config = configparser.ConfigParser()
-	config.readfp(open('.gitmodules'))
+	config.read_file(open('.gitmodules'))
 	sections = config.sections()
 
 	index = 0
