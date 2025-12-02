@@ -1,7 +1,3 @@
-[submodule "sources/poky"]
-	path = sources/poky
-	url = https://git.yoctoproject.org/git/poky
-	branch = scarthgap
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
