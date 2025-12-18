@@ -26,3 +26,15 @@
 	path = sources/meta-rauc
 	url = https://github.com/rauc/meta-rauc.git
 	branch = scarthgap
+[submodule "sources/bitbake"]
+	path = sources/bitbake
+	url = https://git.openembedded.org/bitbake
+	branch = 2.8
+[submodule "sources/openembedded-core"]
+	path = sources/openembedded-core
+	url = https://git.openembedded.org/openembedded-core
+	branch = scarthgap
+[submodule "sources/meta-yocto"]
+	path = sources/meta-yocto
+	url = https://git.yoctoproject.org/meta-yocto
+	branch = scarthgap

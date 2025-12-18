@@ -157,9 +157,12 @@ if [ "${build_dir_setup_enabled}" = "true" ]; then
     fi
 fi
 
-OEROOT="${CWD}/sources/poky"
-if [ -e "${CWD}/sources/oe-core" ]; then
-    OEROOT="${CWD}/sources/oe-core"
+if [ -e "${CWD}/sources/openembedded-core/meta" ]; then
+    OEROOT="${CWD}/sources/openembedded-core"
+else
+    echo "ERROR: Your checkout of openembedded-core is not at the expected location." >&2
+    clean_up
+    return 1
 fi
 
 # Hide messages from oe-init-build-env.
