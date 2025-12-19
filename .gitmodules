@@ -5,7 +5,7 @@
 [submodule "sources/meta-tq"]
 	path = sources/meta-tq
 	url = ../meta-tq.git
-	branch = scarthgap
+	branch = scarthgap-next
 [submodule "sources/meta-openembedded"]
 	path = sources/meta-openembedded
 	url = https://github.com/openembedded/meta-openembedded.git
