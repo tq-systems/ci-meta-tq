@@ -36,7 +36,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-tq: update patch revisions for linux-tq-6.6 / linux-tq-6.12 / linux-imx-tq-6.6
 * ci: rework git archive script
 
-## scarthgap.TQ.ARM.BSP.0006 (not released yet)
+## scarthgap.TQ.ARM.BSP.0006
+
 
 ### Added
 
