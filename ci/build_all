@@ -469,9 +469,11 @@ main () {
 						-exec cp "{}" "${deploydir}/${machine}/" \;
 				done
 				# deploy the kernel image if existing
-				kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value --ignore-undefined KERNEL_IMAGETYPE)
-				find "${artifactsdir}"  -maxdepth 1 -name "${kimage}" ${artifact_link_find_opt} \
-					-exec cp "{}" "${deploydir}/${machine}/" \;
+				kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value --ignore-undefined KERNEL_IMAGETYPES)
+				for image in ${kimage}; do
+					find "${artifactsdir}" -maxdepth 1 -name "${image}" ${artifact_link_find_opt} \
+						-exec cp "{}" "${deploydir}/${machine}/" \;
+				done
 
 				# device tree and dev package, exact pattern for version depends on $pkg_type
 				for pkg in ${extra_machine_pkg_for_deploy}; do
