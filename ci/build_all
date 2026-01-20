@@ -18,14 +18,16 @@ function error_abort () {
 	echo "error at $1"
 }
 
-readonly SCRIPTNAME="${0}"
-readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
-readonly SCRIPT="$(basename "${0}")"
+SCRIPTNAME="${0}"
+SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
+SCRIPT="$(basename "${0}")"
+readonly SCRIPTNAME SCRIPTPATH SCRIPT
 
 # depends on bitbake / poky version
 readonly BITBAKE_GIT_MIRROR_PKG_EXTENSION="tar.gz"
 
-readonly COMMIT_TIMESTAMP="$(git show --no-patch --pretty='format:%ct' HEAD 2>/dev/null || echo '0')"
+COMMIT_TIMESTAMP="$(git show --no-patch --pretty='format:%ct' HEAD 2>/dev/null || echo '0')"
+readonly COMMIT_TIMESTAMP
 
 . "${SCRIPTPATH}/utils"
 
@@ -79,7 +81,10 @@ $(git log -1)
 ### Submodules
 
 \`\`\`
-$(git submodule foreach --quiet 'echo "$name:\n\tURL: $(git remote get-url origin)\n\tREV: $(git log --format="%H" -1) $(git describe --all $(git log --format="%H" -1))"')
+$(
+	# shellcheck disable=SC2016
+	git submodule foreach --quiet 'echo "$name:\n\tURL: $(git remote get-url origin)\n\tREV: $(git log --format="%H" -1) $(git describe --all $(git log --format="%H" -1))"'
+)
 \`\`\`
 
 END
@@ -143,7 +148,7 @@ END
 #
 print_virtual_provider_info () {
 	local recipe
-	recipe=$(bitbake-getvar --quiet --value --ignore-undefined PREFERRED_PROVIDER_virtual/${2})
+	recipe=$(bitbake-getvar --quiet --value --ignore-undefined "PREFERRED_PROVIDER_virtual/${2}")
 	if [ -n "${recipe}" ] && ! [ "${recipe}" = "None" ]; then
 		local srcrev
 		local srcuri
@@ -190,6 +195,7 @@ main () {
 	local pos_params=""
 	local stamp=""
 	local top_dir=""
+	local -a bitbake_args=()
 
 	# default
 	deploydir="$(readlink -f ./deployment)"
@@ -226,7 +232,7 @@ main () {
 			shift
 			;;
 		--deploydir=* )
-			deploydir="$(readlink -f ${1#*=})"
+			deploydir="$(readlink -f "${1#*=}")"
 			shift
 			;;
 		--devel=* )
@@ -262,7 +268,6 @@ main () {
 			;;
 		--*=|-*) # unsupported flags
 			error_out "Error: Unsupported flag $1"
-			exit 1
 			;;
 		*) # preserve positional arguments
 			pos_params="$pos_params $1"
@@ -276,7 +281,7 @@ main () {
 	fi
 
 	if [ "${dryrun}" = "yes" ]; then
-		bitbake_args="--dry-run"
+		bitbake_args=('--dry-run')
 	fi
 
 	if [ "${release}" = "yes" ] || [ "${deploy}" = "yes" ]; then
@@ -335,7 +340,9 @@ main () {
 		# source the real setup workhorse
 		export DISTRO=${distro}
 		export MACHINE
-		MACHINE=$(echo ${machines} | awk '{ print $1 }')
+		# TODO: `machines` should always contain one machine per line, so a simple
+		# `head -n 1` can be used to get the first one
+		MACHINE=$(echo "${machines}" | xargs | awk '{ print $1 }')
 
 		# clean conf, to enforce a really clean configuration and to enable
 		# incremental changes in the config using our template dir
@@ -388,9 +395,9 @@ main () {
 
 				if [ "${skipbitbake}" = "no" ]
 				then
-					if ! bitbake ${bitbake_args} "${img}"
+					if ! bitbake "${bitbake_args[@]}" "${img}"
 					then
-						error_out "bitbake ${bitbake_args} ${img} for ${MACHINE} failed"
+						error_out "bitbake ${bitbake_args[*]} ${img} for ${MACHINE} failed"
 					fi
 				fi
 			done
@@ -419,7 +426,7 @@ main () {
 				# DEPLOY_DIR_<pkg> depends on PACKAGE_CLASSES, images are built from first type
 				# package class names have naming convention 'package_<type>'
 				pkg_type=$(bitbake-getvar --quiet --value PACKAGE_CLASSES | awk -F '_' '{ print toupper($2) }')
-				pkg_deploy_dir=$(bitbake-getvar --quiet --value DEPLOY_DIR_${pkg_type})
+				pkg_deploy_dir=$(bitbake-getvar --quiet --value "DEPLOY_DIR_${pkg_type}")
 				# replace dash with underscore for yocto (default) machine directory name
 				yocto_machine_dir=${machine//-/_}
 				info "archiving ${machine} ..."
@@ -447,31 +454,31 @@ main () {
 				# add some artifacts for automated testing, needed by name / pattern without
 				# bitbake timestamp annotation etc. Copy the named links as file. Real files
 				# will be copied after this.
-				mkdir -p ${deploydir}/${machine}
+				mkdir -p "${deploydir}/${machine}"
 
 				# options to find and copy links as artifacts for CI testing
-				artifact_link_find_opt="-type l -readable"
+				local -a artifact_link_find_opt=(-type l -readable)
 				# deploy rootfs tar.gz image if existing. Use ${IMAGE_LINK_NAME} plus 'tar.gz'
 				# to decouple bitbake / YP and our test jobs expecting rootfs artifacts as
 				# '${image-recipe-name}-${machine}.tar.gz'
 				for img in ${images}; do
 					local image_name
 
-					image_name=$(bitbake-getvar --recipe ${img} --quiet --value --ignore-undefined IMAGE_LINK_NAME)
-					find "${artifactsdir}" -maxdepth 1 -name "${image_name}.tar.gz" ${artifact_link_find_opt} \
+					image_name=$(bitbake-getvar --recipe "${img}" --quiet --value --ignore-undefined IMAGE_LINK_NAME)
+					find "${artifactsdir}" -maxdepth 1 -name "${image_name}.tar.gz" "${artifact_link_find_opt[@]}" \
 						-exec cp --dereference "{}" "${deploydir}/${machine}/${img}-${machine}.tar.gz" \;
 				done
 
 				# deploy kernel device tree if existing
 				kernel_dtb=$(bitbake-getvar --recipe virtual/kernel --quiet --value --ignore-undefined KERNEL_DEVICETREE)
 				for dtb in ${kernel_dtb}; do
-					find "${artifactsdir}" -maxdepth 1 -name "$(basename ${dtb})" ${artifact_link_find_opt} \
+					find "${artifactsdir}" -maxdepth 1 -name "$(basename "${dtb}")" "${artifact_link_find_opt[@]}" \
 						-exec cp "{}" "${deploydir}/${machine}/" \;
 				done
 				# deploy the kernel image if existing
 				kimage=$(bitbake-getvar --recipe virtual/kernel --quiet --value --ignore-undefined KERNEL_IMAGETYPES)
 				for image in ${kimage}; do
-					find "${artifactsdir}" -maxdepth 1 -name "${image}" ${artifact_link_find_opt} \
+					find "${artifactsdir}" -maxdepth 1 -name "${image}" "${artifact_link_find_opt[@]}" \
 						-exec cp "{}" "${deploydir}/${machine}/" \;
 				done
 
@@ -483,7 +490,7 @@ main () {
 
 				# copy rest of artifact files but do not override existing files which could be
 				# needed for test
-				find ${artifactsdir} -type f -print0 | \
+				find "${artifactsdir}" -type f -print0 | \
 					xargs --null --no-run-if-empty cp --no-clobber --target-directory="${deploydir}/${machine}/"
 
 				if [ "${release}" = "yes" ]
@@ -502,7 +509,6 @@ main () {
 					archive_basename=${deploydir}/${machine_archive}
 
 					# create image archive for $MACHINE, assume DEPLOY_DIR_IMAGE has ${MACHINE} as final part
-					# shellcheck disable=SC2086
 					if ! tar -cvf "${archive_basename}.BIN.tar.gz" \
 						-C "$(dirname "${artifactsdir}")" \
 						"$(basename "${artifactsdir}")" "${tar_options[@]}"
@@ -520,7 +526,6 @@ main () {
 						xargs --null --no-run-if-empty cp --recursive \
 						--target-directory="${archive_basename}.LIC/"
 
-					# shellcheck disable=SC2086
 					tar -cvf "${archive_basename}.LIC.tar.gz" \
 						--directory "$(dirname "${archive_basename}.LIC")" \
 						"$(basename "${archive_basename}.LIC")" \
@@ -541,9 +546,9 @@ main () {
 
 					# we assume here that bitbake is configured to use shallow cloning
 					# and that these packages use ${BITBAKE_GIT_MIRROR_PKG_EXTENSION} as extension
-					find ${download_dir} -name "gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION}" -print0 | \
+					find "${download_dir}" -name "gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION}" -print0 | \
 						xargs --null --no-run-if-empty cp --no-clobber --target-directory="${archive_basename}.MIRROR.SRC/"
-					find ${download_dir} -name "gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION}" -print0 | \
+					find "${download_dir}" -name "gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION}" -print0 | \
 						xargs --null --no-run-if-empty cp --no-clobber --target-directory="${archive_basename}.MIRROR.SRC/"
 
 				fi
