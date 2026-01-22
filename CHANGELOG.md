@@ -12,6 +12,14 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Deprecated
+
+* poky: drop usage in favour of dedicated bitbake / openembedded-core repos
+
+  This poky repo will only be maintained for existing releases. The poky repo
+  is a compound of multiple repos and is already deprecated in master branch.
+  It is planned to replace poky submodule with separate submodules.
+
 ### Added
 
 * ci: add new group for i.MX95 based SOM to include in i.MX builds
@@ -20,6 +28,10 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: update to 72983ac391008ebceb45edc7a8f0f6d5f4fe715c, include 5.0.15
+* meta-openembedded: update to 2759d8870ea387b76c902070bed8a6649ff47b56
+* meta-freescale: update to 902dde8c5bd29bb507ac8d37772565a6c9ab77cd
+* meta-ti: update to da28ae30cabd39ebce054ea2e230548d9b9c3322
 * poky: update to e6bfeed8f3e72c577820e3d01f7d697c4d3fc5d4, include 5.0.14
 * meta-arm: update to a81c19915b5b9e71ed394032e9a50fd06919e1cd
 * meta-ti: update to ee5c64043811d1469c11ea14e760d5124dc46eb7
@@ -37,7 +49,6 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * ci: rework git archive script
 
 ## scarthgap.TQ.ARM.BSP.0006
-
 
 ### Added
 
