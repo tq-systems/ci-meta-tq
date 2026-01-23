@@ -12,14 +12,6 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
-### Deprecated
-
-* poky: drop usage in favour of dedicated bitbake / openembedded-core repos
-
-  This poky repo will only be maintained for existing releases. The poky repo
-  is a compound of multiple repos and is already deprecated in master branch.
-  It is planned to replace poky submodule with separate submodules.
-
 ### Added
 
 * ci: add new group for i.MX95 based SOM to include in i.MX builds
@@ -28,6 +20,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* poky: replaced by dedicated submodules
+
+  bitbake, openembedded-core and meta-yocto are now used instead of poky combo
+  repository. The poky repo will only be maintained for existing releases.
+  Since the mentioned repos are the source of poky simply switch to the
+  revisions that are equivalent to poky 5.0.15 release.
 * poky: update to 72983ac391008ebceb45edc7a8f0f6d5f4fe715c, include 5.0.15
 * meta-openembedded: update to 2759d8870ea387b76c902070bed8a6649ff47b56
 * meta-freescale: update to 902dde8c5bd29bb507ac8d37772565a6c9ab77cd
