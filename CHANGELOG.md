@@ -12,8 +12,11 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## scarthgap.TQ.ARM.BSP.0007 (not released yet)
+
 ### Added
 
+* meta-tq: new machines for TQMa95xxLA on MBa95xxCA and TQMa95xxSA on MB-SMARC-2
 * ci: add new group for i.MX95 based SOM to include in i.MX builds
 * meta-tq: new machine for TQMa93xxLA on MBa93xxLA-MINI
 * meta-tq: add PREEMPT_RT 6.12 support for TQMa335x and TQMLS102xA
