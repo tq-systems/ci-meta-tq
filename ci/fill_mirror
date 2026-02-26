@@ -173,11 +173,6 @@ main () {
 		info "clean local dirs in $(pwd) ..."
 		rm -rf ./cache ./tmp* ./sstate-cache
 
-		# bitbake-getvar --value will hide error messages when bitbake fails to start
-		# because of configuration errors. Run bitbake once before the first bitbake-getvar
-		# to aid debugging such cases.
-		bitbake --parse-only
-
 		# get DL_DIR to cleanup packages generated from git ...
 		DL_DIR=$(bitbake-getvar -q --value DL_DIR)
 
