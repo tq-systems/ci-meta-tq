@@ -117,6 +117,14 @@ point for own bblayers.conf
 | ti       | machines with TI Sitara (AM335x, AM57xx, AM65xx, AM64xx), uses `meta-ti`         |
 | ls       | machines with NXP Layerscape CPU, uses `meta-freescale`      |
 
+**Attention:** Development and maintenance of vendor specific kernel versions and
+software versions used in this branch was stopped by NXP and TI. Users should update
+to newer branch or consider using mainline / upstream versions.
+
+**Note:** Upstream development of yocto / openembedded for kirkstone LTS is planned
+up to end of April 2026. See https://wiki.yoctoproject.org/wiki/Releases.
+Users should update to a newer version with longer maintenance.
+
 ### Reproducible build environment
 
 Devolopment and automated builds are supported by the scripts under ci and
