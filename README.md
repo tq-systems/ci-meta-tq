@@ -77,6 +77,10 @@ point for own bblayers.conf
 Use `ci/ls-configs --file` to show available configs.
 Use `ci/ls-machines --file --config=<config>` to show all machines supported by a config.
 
+**Attention:** Development and maintenance of vendor specific kernel versions and
+software versions used in this branch was stopped by NXP and TI. Users should update
+to newer branch or consider using mainline / upstream versions.
+
 ### Setting up an initial build space
 
 To set up an initial build space, clone this repo using 
