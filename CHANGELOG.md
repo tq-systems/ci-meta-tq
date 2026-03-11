@@ -12,8 +12,19 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Deprecated
+
+Upstream support and development for kirkstone branch will end in April 2026. See
+* https://lists.openembedded.org/g/openembedded-devel/message/124804
+* https://lists.openembedded.org/g/bitbake-devel/message/19196
+
+Please update to a newer branch with LTS maintenance (scarthgap at time of writing)
+
 ### Changed
 
+* poky: update to 8334e82e1d85e50557bd3da64054fc9e3eafc495 (includes 4.0.33)
+* meta-openembedded: update to 8a598a2bc9199a4fbb9008a32ab143fb509a0933
+* meta-qt5: update to 310a54596785d51db89039f44c564a3aa50744ef
 * poky: update to c942cdb0572ab065a13424aa7482404269ff9554 (includes 4.0.32)
 * meta-openembedded: update to 97d4be2839754dadfc326c21948472c2fc2985ce
 * poky: update to e2d947b1cce43f3c4ab5cd6bbe69ea466339666b (includes 4.0.31)
