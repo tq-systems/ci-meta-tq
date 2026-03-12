@@ -17,6 +17,10 @@ trap 'cleanup' QUIT EXIT
 
 trap 'error_abort $LINENO' ERR
 
+# list of tq-owned submodules to set tags in
+# separated by `\|` for grep
+readonly MODULES_EXCLUDE_LIST='/(meta-(openembedded|freescale|ti|arm|qt6|rauc|yocto)|bitbake|openembedded-core)'
+
 readonly PROGRAM="$(basename "$0")"
 VERBOSE=0
 
@@ -107,8 +111,9 @@ function main () {
 
 function do_handle_tag() {
 	local VERSION="$1"
+	local MODULES_PATH=
 
-	MODULES_PATH=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
+	MODULES_PATH=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | grep -vE "${MODULES_EXCLUDE_LIST}$")
 
 	for m in ./ ${MODULES_PATH}; do
 		cd ${m}
