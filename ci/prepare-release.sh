@@ -132,16 +132,7 @@ function main () {
 
 	MODULES_PATH=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
 
-	if ! git show-ref --quiet --tags ${LAST} 2>/dev/null; then
-		if [ "${FORCE}" -eq "0" ]
-		then
-			error "${LAST} is not a tag"
-			usage
-			exit $E_BAD_OPTION
-		fi
-	fi
-
-	for m in ${MODULES_PATH}; do
+	for m in ./ ${MODULES_PATH}; do
 		cd ${m} 1>/dev/null
 		if ! git show-ref --quiet --tags ${LAST} 2>/dev/null; then
 			if [ "${FORCE}" -eq "0" ]; then
@@ -153,9 +144,7 @@ function main () {
 		cd - 1>/dev/null
 	done
 
-	do_set_tag "${VERSION}" "${LAST}" "${FORCE}"
-
-	for m in ${MODULES_PATH}; do
+	for m in ./ ${MODULES_PATH}; do
 		cd ${m}
 		echo "tagging in $(pwd)"
 		do_set_tag "${VERSION}" "${LAST}" "${FORCE}"
