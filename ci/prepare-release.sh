@@ -39,9 +39,7 @@ Usage: $PROGRAM OPTIONS
 
 OPTIONS
   --usage|--help|-?        Prints this usage output and exits.
-  --version=<Release Tag>  create release tag with commit log
-  --last=<Release Tag>     reference to last release tag for commit log
-  --force                  tags will be created without log
+  --version=<Release Tag>  create release tag
 	"
 }
 
@@ -57,24 +55,13 @@ function error () {
 
 function do_set_tag() {
 	local VERSION="$1"
-	local LAST="$2"
-	local FORCE="$3"
 
-	if git show-ref --quiet --tags ${LAST} 2>/dev/null; then
-		echo "$(pwd): tag with log message"
-		git tag -a ${VERSION} -m "${VERSION}" -m "$(git log --date=short --format="%ad %an: %s" ${LAST}..HEAD)"
-	else
-		if [ "${FORCE}" -ne "0" ]; then
-			echo "$(pwd): tag without log message"
-			git tag -a ${VERSION} -m "${VERSION}"
-		fi
-	fi
+	echo "creating tag in $(pwd)"
+	git tag -a "${VERSION}" -m "${VERSION}"
 }
 
 function main () {
 	local VERSION=
-	local LAST=
-	local FORCE=0
 
 	# Process command-line arguments.
 	while test $# -gt 0; do
@@ -83,16 +70,6 @@ function main () {
 		--version=* )
 		    VERSION="${1#*=}"
 		    shift
-		    ;;
-
-		--last=* )
-		    LAST="${1#*=}"
-		    shift
-		    ;;
-
-		--force )
-		    shift
-		    FORCE=1
 		    ;;
 
 		--verbose )
@@ -117,35 +94,17 @@ function main () {
 	    esac
 	done
 
-	if [ -z ${VERSION} ]; then
+	if [ -z "${VERSION}" ]; then
 		error "missing version"
 		usage
 		exit $E_BAD_OPTION
 	fi
 
-	if [ -z ${LAST} ]; then
-		REV=$(echo ${VERSION##*.})
-		LAST=${VERSION%.*}.$(printf "%#04d" $(expr ${REV} - 1))
-	fi
-
 	MODULES_PATH=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
 
 	for m in ./ ${MODULES_PATH}; do
-		cd ${m} 1>/dev/null
-		if ! git show-ref --quiet --tags ${LAST} 2>/dev/null; then
-			if [ "${FORCE}" -eq "0" ]; then
-				error "${LAST} is not a tag in ${m}"
-				usage
-				exit $E_BAD_OPTION
-			fi
-		fi
-		cd - 1>/dev/null
-	done
-
-	for m in ./ ${MODULES_PATH}; do
 		cd ${m}
-		echo "tagging in $(pwd)"
-		do_set_tag "${VERSION}" "${LAST}" "${FORCE}"
+		do_set_tag "${VERSION}"
 		cd -
 	done
 
