@@ -35,14 +35,13 @@ function error_abort () {
 
 function usage () {
 	echo "
-Usage is as follows:
-$PROGRAM <--usage|--help|-?>
-    Prints this usage output and exits.
-$PROGRAM --version <Release Tag> [--last <Last Release Tag>] [--force]
-    create release tag and put log beginning from <Last Release Tag>
-    in tag comment. If --force is given, only tag will be created without
-    log to handle external submodules without <Last Release Tag>
+Usage: $PROGRAM OPTIONS
 
+OPTIONS
+  --usage|--help|-?        Prints this usage output and exits.
+  --version <Release Tag>  create release tag with commit log
+  --last <Release Tag>     reference to last release tag for commit log
+  --force                  tags will be created without log
 	"
 }
 
