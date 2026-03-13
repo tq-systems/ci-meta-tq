@@ -100,6 +100,14 @@ function main () {
 		exit $E_BAD_OPTION
 	fi
 
+	do_handle_tag "${VERSION}"
+
+	return 0
+}
+
+function do_handle_tag() {
+	local VERSION="$1"
+
 	MODULES_PATH=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
 
 	for m in ./ ${MODULES_PATH}; do
@@ -107,8 +115,6 @@ function main () {
 		do_set_tag "${VERSION}"
 		cd -
 	done
-
-	return 0
 }
 
 main "$@"
