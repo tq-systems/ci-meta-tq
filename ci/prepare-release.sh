@@ -39,8 +39,8 @@ Usage: $PROGRAM OPTIONS
 
 OPTIONS
   --usage|--help|-?        Prints this usage output and exits.
-  --version <Release Tag>  create release tag with commit log
-  --last <Release Tag>     reference to last release tag for commit log
+  --version=<Release Tag>  create release tag with commit log
+  --last=<Release Tag>     reference to last release tag for commit log
   --force                  tags will be created without log
 	"
 }
@@ -80,15 +80,13 @@ function main () {
 	while test $# -gt 0; do
 	    case $1 in
 
-		--version )
-		    shift
-		    VERSION=$1
+		--version=* )
+		    VERSION="${1#*=}"
 		    shift
 		    ;;
 
-		--last )
-		    shift
-		    LAST=$1
+		--last=* )
+		    LAST="${1#*=}"
 		    shift
 		    ;;
 
