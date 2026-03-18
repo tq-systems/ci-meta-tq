@@ -52,6 +52,7 @@ ${SCRIPTNAME} [OPTIONS] <build-dir> <template>
 [--machines=<list>]: build only selected machines
 [--distros=<list>]: build only selected distros
 [--images=<list>]: build only selected targets, usually images
+[--checksum=<tool>]: specify a checksum tool (defaults to 'md5sum')
 
 END
 }
@@ -192,6 +193,7 @@ main () {
 	local -r extra_machine_pkg_for_deploy="kernel-dev kernel-dbg kernel-vmlinux"
 	local machines=""
 	local images=""
+	local checksum="md5sum"
 	local pos_params=""
 	local stamp=""
 	local top_dir=""
@@ -266,6 +268,10 @@ main () {
 			images=${1#*=}
 			shift
 			;;
+		--checksum=* )
+			checksum=${1#*=}
+			shift
+			;;
 		--*=|-*) # unsupported flags
 			error_out "Error: Unsupported flag $1"
 			;;
@@ -287,6 +293,8 @@ main () {
 			info "Disabling archive/deploy in dry-run / skip-bitbake mode"
 			release="no"
 			deploy="no"
+		else
+			check_gnu_util ${checksum}
 		fi
 	fi
 
@@ -430,11 +438,12 @@ main () {
 				info "archiving ${machine} ..."
 				# we create some files in ${artifactsdir}, clean them before recreate
 				rm -f "${artifactsdir}"/*.md
-				rm -f "${artifactsdir}"/*.md5sum
+				# clean any checksum files
+				rm -f "${artifactsdir}"/*.*sum
 				rm -f "${artifactsdir}/${machine_archive}.environment"
-				# create a file containing md5sum of files
-				get_md5sum "${artifactsdir}" > "${deploydir}/${machine_archive}.md5sum"
-				cp "${deploydir}/${machine_archive}.md5sum" "${artifactsdir}/${machine_archive}.md5sum"
+				# create a file containing checksum of files
+				get_checksum ${checksum} "${artifactsdir}" "${deploydir}/${machine_archive}.${checksum}"
+				cp "${deploydir}/${machine_archive}.${checksum}" "${artifactsdir}/${machine_archive}.${checksum}"
 				bitbake --environment | grep '^[A-Za-z][^[:space:]]*="' > "${artifactsdir}/${machine_archive}.environment"
 				# use pregenerated build info
 				cp "${build_info_file}" "${artifactsdir}/${machine_archive}.md"
@@ -514,6 +523,11 @@ main () {
 						error_out "archiving for ${machine} failed"
 					fi
 
+					# create a file containing checksum of binary archive
+					cd "${deploydir}"
+					${checksum} --binary *".BIN.tar.gz" > "${archive_basename}.BIN.tar.gz.${checksum}"
+					cd -
+
 					# create licenses and mirror archive
 					mkdir -p "${archive_basename}.LIC"
 					# copy the file from licenses
@@ -531,6 +545,11 @@ main () {
 
 					# do some cleanup
 					rm -rf "${archive_basename}.LIC"
+
+					# create a file containing checksum of license archive
+					cd "${deploydir}"
+					${checksum} --binary *".LIC.tar.gz" > "${archive_basename}.LIC.tar.gz.${checksum}"
+					cd -
 
 					mkdir -p "${archive_basename}.MIRROR.SRC"
 					download_dir=$(bitbake-getvar -q --value DL_DIR)
