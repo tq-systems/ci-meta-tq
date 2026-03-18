@@ -146,6 +146,24 @@ function check_gnu_util() {
 }
 
 ####
+# func:   get_checksum
+# brief:  calculate checksum for all files in a directory
+# param:  $1 - hash_tool (md5sum, sha1sum, ...)
+# param:  $2 - directory
+# param:  $3 - target file
+# return: checksum of all files inside directory
+####
+function get_checksum () {
+	local hash_tool="${1}"
+	local directory="${2}"
+	local out_file="${3}"
+
+	cd "${directory}"
+	find . -maxdepth 1 -type f -exec ${hash_tool} --binary {} \; > "${out_file}"
+	cd -
+}
+
+####
 # func:   get_md5sum
 # brief:  calculate md5sum for all files directory
 # param:  $1 - directory
