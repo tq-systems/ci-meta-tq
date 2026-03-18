@@ -70,38 +70,38 @@ function exit_error () {
 usage() {
 	cat <<END
 Usage is as follows:
-    
-${PROGRAM} <--version>
-    Prints the program version number on a line by itself and exits.
-    
-${PROGRAM} <--usage|--help|-?>
-    Prints this usage output and exits.
-    
-${PROGRAM} [--format <fmt>] [--prefix <path>] [--verbose|-v] [--separate|-s] [output_file]
-    Creates an archive for the entire git superproject, and its submodules
-    using the passed parameters, described below.
 
-    If '--format' is specified, the archive is created with the named
-    git archiver backend. Obviously, this must be a backend that git archive
-    understands. The format defaults to 'tar' if not specified.
+${PROGRAM} [OPTIONS] [<output_file>]
 
-    If '--prefix' is specified, the archive's superproject and all submodules
-    are created with the <path> prefix named. The default is to not use one.
+Creates an archive for the entire git superproject, and its submodules
+using the passed parameters, described below.
 
-    If '--separate' or '-s' is specified, individual archives will be created
-    for each of the superproject itself and its submodules. The default is to
-    concatenate individual archives into one larger archive.
+OPTIONS
+   --version  Prints the program version number on a line by itself and exits.
 
-    If '--commit' or '-c' is specified, use commit instead of HEAD
+-? --usage --help  Prints this usage output and exits.
 
-    If 'output_file' is specified, the resulting archive is created as the
+   --format <fmt>  archive is created with the named
+       git archiver backend. Obviously, this must be a backend that git archive
+       understands. The format defaults to 'tar' if not specified.
+
+   --prefix <path>  archive's superproject and all submodules
+       are created with the <path> prefix named. The default is to not use one.
+
+-s --separate  individual archives will be created
+       for each of the superproject itself and its submodules. The default is to
+       concatenate individual archives into one larger archive.
+
+-c --commit  use commit instead of HEAD
+
+<output_file>  the resulting archive is created as the
     file named. This parameter is essentially a path that must be writeable.
     When combined with '--separate' ('-s') this path must refer to a directory.
     Without this parameter or when combined with '--separate' the resulting
     archive(s) are named with a dot-separated path of the archived directory and
     a file extension equal to their format (e.g., 'superdir.submodule1dir.tar').
 
-    If '--verbose' or '-v' is specified, progress will be printed.
+-v --verbose  progress will be printed.
 
 END
 }
