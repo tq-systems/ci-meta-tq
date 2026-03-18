@@ -69,39 +69,39 @@ function exit_error () {
 
 usage() {
 	cat <<END
-Usage is as follows:"
-    echo
-${PROGRAM} <--version>"
-    Prints the program version number on a line by itself and exits."
-    echo
-${PROGRAM} <--usage|--help|-?>"
-    Prints this usage output and exits."
-    echo
-${PROGRAM} [--format <fmt>] [--prefix <path>] [--verbose|-v] [--separate|-s] [output_file]"
-    Creates an archive for the entire git superproject, and its submodules"
-    using the passed parameters, described below."
+Usage is as follows:
+    
+${PROGRAM} <--version>
+    Prints the program version number on a line by itself and exits.
+    
+${PROGRAM} <--usage|--help|-?>
+    Prints this usage output and exits.
+    
+${PROGRAM} [--format <fmt>] [--prefix <path>] [--verbose|-v] [--separate|-s] [output_file]
+    Creates an archive for the entire git superproject, and its submodules
+    using the passed parameters, described below.
 
-    If '--format' is specified, the archive is created with the named"
-    git archiver backend. Obviously, this must be a backend that git archive"
-    understands. The format defaults to 'tar' if not specified."
+    If '--format' is specified, the archive is created with the named
+    git archiver backend. Obviously, this must be a backend that git archive
+    understands. The format defaults to 'tar' if not specified.
 
-    If '--prefix' is specified, the archive's superproject and all submodules"
-    are created with the <path> prefix named. The default is to not use one."
+    If '--prefix' is specified, the archive's superproject and all submodules
+    are created with the <path> prefix named. The default is to not use one.
 
-    If '--separate' or '-s' is specified, individual archives will be created"
-    for each of the superproject itself and its submodules. The default is to"
-    concatenate individual archives into one larger archive."
+    If '--separate' or '-s' is specified, individual archives will be created
+    for each of the superproject itself and its submodules. The default is to
+    concatenate individual archives into one larger archive.
 
-    If '--commit' or '-c' is specified, use commit instead of HEAD"
+    If '--commit' or '-c' is specified, use commit instead of HEAD
 
-    If 'output_file' is specified, the resulting archive is created as the"
-    file named. This parameter is essentially a path that must be writeable."
-    When combined with '--separate' ('-s') this path must refer to a directory."
-    Without this parameter or when combined with '--separate' the resulting"
-    archive(s) are named with a dot-separated path of the archived directory and"
-    a file extension equal to their format (e.g., 'superdir.submodule1dir.tar')."
+    If 'output_file' is specified, the resulting archive is created as the
+    file named. This parameter is essentially a path that must be writeable.
+    When combined with '--separate' ('-s') this path must refer to a directory.
+    Without this parameter or when combined with '--separate' the resulting
+    archive(s) are named with a dot-separated path of the archived directory and
+    a file extension equal to their format (e.g., 'superdir.submodule1dir.tar').
 
-    If '--verbose' or '-v' is specified, progress will be printed."
+    If '--verbose' or '-v' is specified, progress will be printed.
 
 END
 }
