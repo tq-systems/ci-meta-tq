@@ -12,7 +12,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
-## scarthgap.TQ.ARM.BSP.0007 (not released yet)
+## scarthgap.TQ.ARM.BSP.0007
 
 ### Added
 
