@@ -18,7 +18,6 @@ trap 'cleanup' QUIT EXIT
 trap 'error_abort $LINENO' ERR
 
 readonly PROGRAM="$(basename "$0")"
-VERSION=
 VERBOSE=0
 
 # RETURN VALUES/EXIT STATUS CODES
@@ -74,9 +73,9 @@ function do_set_tag() {
 }
 
 function main () {
-	VERSION=
-	LAST=
-	FORCE=0
+	local VERSION=
+	local LAST=
+	local FORCE=0
 
 	# Process command-line arguments.
 	while test $# -gt 0; do
