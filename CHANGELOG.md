@@ -19,7 +19,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * meta-openembedded: update to 4d3e2639dec542b58708244662d5ce36810fc510
 * meta-ti: update to 5258ee2f903d8f1e0cbcb9d01488d08b57314009
 
-## scarthgap.TQ.ARM.BSP.0007 (not released yet)
+## scarthgap.TQ.ARM.BSP.0007
 
 ### Added
 
