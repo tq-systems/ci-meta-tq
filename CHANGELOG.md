@@ -22,6 +22,9 @@ Please update to a newer branch with LTS maintenance (scarthgap at time of writi
 
 ### Changed
 
+* poky: update to cf615e1d3bde7e5cb53b56b67954bc6e75bbb1d6 (includes 4.0.34)
+* meta-freescale: update to f1ecdeec20dd95d2eab6c6d9036b2a2309b7d862
+* meta-qt5: update to 227cf5e7b64c93dfc1a45f235c466db8c3fd8707
 * poky: update to 8334e82e1d85e50557bd3da64054fc9e3eafc495 (includes 4.0.33)
 * meta-openembedded: update to 8a598a2bc9199a4fbb9008a32ab143fb509a0933
 * meta-qt5: update to 310a54596785d51db89039f44c564a3aa50744ef
