@@ -4,22 +4,14 @@ BBPATH = "${TOPDIR}"
 BSPDIR := "${@os.path.abspath(os.path.dirname(d.getVar('FILE', True)) + '/../..')}"
 
 BBFILES ?= ""
-BBLAYERS = "\
-    ${BSPDIR}/sources/openembedded-core/meta \
-    ${BSPDIR}/sources/meta-yocto/meta-poky \
-    \
-    ${BSPDIR}/sources/meta-openembedded/meta-oe \
-    ${BSPDIR}/sources/meta-openembedded/meta-python \
-    \
-    ${BSPDIR}/sources/meta-arm/meta-arm \
-    ${BSPDIR}/sources/meta-arm/meta-arm-toolchain \
-    \
-    ${BSPDIR}/sources/meta-ti/meta-ti-bsp \
-    \
-    ${BSPDIR}/sources/meta-rauc \
-    \
-    ${BSPDIR}/sources/meta-qt6 \
-    \
-    ${BSPDIR}/sources/meta-tq/meta-tq \
-    ${BSPDIR}/sources/meta-tq/meta-dumpling \
-"
+BBLAYERS += "${BSPDIR}/sources/openembedded-core/meta"
+BBLAYERS += "${BSPDIR}/sources/meta-yocto/meta-poky"
+BBLAYERS += "${BSPDIR}/sources/meta-openembedded/meta-oe"
+BBLAYERS += "${BSPDIR}/sources/meta-openembedded/meta-python"
+BBLAYERS += "${BSPDIR}/sources/meta-arm/meta-arm"
+BBLAYERS += "${BSPDIR}/sources/meta-arm/meta-arm-toolchain"
+BBLAYERS += "${BSPDIR}/sources/meta-ti/meta-ti-bsp"
+BBLAYERS += "${BSPDIR}/sources/meta-rauc"
+BBLAYERS += "${BSPDIR}/sources/meta-qt6"
+BBLAYERS += "${BSPDIR}/sources/meta-tq/meta-tq"
+BBLAYERS += "${BSPDIR}/sources/meta-tq/meta-dumpling"
