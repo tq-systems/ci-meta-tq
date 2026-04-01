@@ -12,6 +12,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## scarthgap.TQ.ARM.BSP.0008 (not released yet)
+
 * meta-yocto: update to 94d19f9d8392f8a125764df0f8eda04205c7e76c (includes yocto-5.0.16)
 * openembedded-core: update to a9a785d7fa0cfe2a9087dbcde0ef9f0d2a441375 (includes yocto-5.0.16)
 * bitbake: update to 10118785e4a670bce4980e1044c0888a8b6e84af (yocto-5.0.16)
