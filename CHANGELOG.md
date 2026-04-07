@@ -12,6 +12,17 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+* meta-yocto: update to c7c38663a1cafb1fa8593c0b246811e51d3bbe20 (includes yocto-5.0.17)
+* openembedded-core: update to 52380df998b3a8fe6a091f8547434a3231320a8e (includes yocto-5.0.17)
+* bitbake: update to d3b4c352dd33fca90cd31649eda054b884478739 (yocto-5.0.17)
+* meta-openembedded: update to 5124ac4a658899158f4a7a2ddf1d2ca931ec7d0e
+* meta-ti: update to edac88403004bb712bf1711ce83750dc26c7fee3
+* meta-rauc: update to d63878f20eba7a85ecf53566e7a3377e78bb46ac
+* templates: do not use multi-line assignment in bblayers.conf.sample
+
+  No functional change. Use one assignment per line makes maintenance easier.
+
+
 ## scarthgap.TQ.ARM.BSP.0008
 
 * meta-yocto: update to 94d19f9d8392f8a125764df0f8eda04205c7e76c (includes yocto-5.0.16)
