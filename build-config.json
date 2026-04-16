@@ -186,6 +186,19 @@
 				"i.MX93x",
 				"i.MX93x-MINI"
 			]
+		},
+		{
+			"name": "ti",
+			"distros": [
+				"spaetzle-ti",
+				"dumpling-wayland-ti"
+			],
+			"groups": [
+				"AM335x",
+				"AM62x",
+				"AM64x",
+				"AM67x"
+			]
 		}
 	]
 }
