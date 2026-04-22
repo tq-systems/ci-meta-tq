@@ -29,12 +29,12 @@
 [submodule "sources/bitbake"]
 	path = sources/bitbake
 	url = https://git.openembedded.org/bitbake
-	branch = master
+	branch = 2.18
 [submodule "sources/openembedded-core"]
 	path = sources/openembedded-core
 	url = https://git.openembedded.org/openembedded-core
-	branch = master
+	branch = wrynose
 [submodule "sources/meta-yocto"]
 	path = sources/meta-yocto
 	url = https://git.yoctoproject.org/meta-yocto
-	branch = master
+	branch = wrynose
