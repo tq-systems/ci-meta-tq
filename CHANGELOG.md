@@ -22,6 +22,12 @@ Please update to a newer branch with LTS maintenance (scarthgap at time of writi
 
 ### Changed
 
+* poky: update to b0134a0f1382a267f79ec881af916d641d41b235 (includes 4.0.35)
+* meta-openembedded: update to 9d8ef26a9693e2c70ae34abe1a753873d42ec588
+* meta-freescale: update to bb581c2ab90f37c5f3204f24c79d878f1a7a0976
+* meta-tq:
+  * deprecation notice for kirkstone
+  * update recipes for linux 6.1 (stable + TQ-Systems SoM support)
 * poky: update to cf615e1d3bde7e5cb53b56b67954bc6e75bbb1d6 (includes 4.0.34)
 * meta-freescale: update to f1ecdeec20dd95d2eab6c6d9036b2a2309b7d862
 * meta-qt5: update to 227cf5e7b64c93dfc1a45f235c466db8c3fd8707
@@ -57,6 +63,7 @@ Please update to a newer branch with LTS maintenance (scarthgap at time of writi
 
 ### Removed
 
+* meta-tq: remove unmaintained kernel recipes
 * ci: remove Jenkinsfile support
 
 ## kirkstone.TQ.ARM.BSP.0025
