@@ -13,11 +13,11 @@
 [submodule "sources/meta-ti"]
 	path = sources/meta-ti
 	url = https://git.yoctoproject.org/git/meta-ti
-	branch = master
+	branch = wrynose
 [submodule "sources/meta-arm"]
 	path = sources/meta-arm
 	url = https://git.yoctoproject.org/git/meta-arm
-	branch = master
+	branch = wrynose
 [submodule "sources/meta-qt6"]
 	path = sources/meta-qt6
 	url = https://code.qt.io/yocto/meta-qt6.git
