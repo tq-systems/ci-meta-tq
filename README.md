@@ -23,17 +23,15 @@ by these licenses.
 
 ## Supported branches of meta-tq
 
-This project supports the following branches of meta-tq. Unmentioned branches are
-not supported.
-
-- dunfell (only for RZG2 based machines, no longer maintained for all others)
-- kirkstone (bugfixing only)
-- scarthgap (current actively maintained branch)
-
 **Attention:** See the file README.md in the branch you use for details.
 
 Branch names correspond to Yocto Project release names. Special branches
 supporting a special setup are named `<release-name>-<module>`
+
+This project supports multiple branches of meta-tq. TQ-Systems maintains the branches
+following the current LTS branch of Yocto Project / OpenEmbedded and the previous LTS branch.
+
+Exceptions may be documented in the respective branches.
 
 When switching branches keep in mind to keep the submodules in sync:
 
