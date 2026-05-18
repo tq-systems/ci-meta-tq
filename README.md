@@ -79,7 +79,7 @@ Use `ci/ls-machines --file --config=<config>` to show all machines supported by 
 
 ### Setting up an initial build space
 
-To set up an initial build space, clone this repo using 
+To set up an initial build space, clone this repo using
 
 `git clone --branch=<branch-name> --recurse-submodules <url>`
 
