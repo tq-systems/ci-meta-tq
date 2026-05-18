@@ -5,7 +5,7 @@
 ## Foreword
 
 This repo contains setup, configuration and dependencies use to build and test
-the meta-tq hardware support layer. All Yocto Project / Open Embedded layers
+the meta-tq hardware support layer. All Yocto Project / OpenEmbedded layers
 the build depends on, are included as git submodules, to allow reproducible builds.
 
 Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <url>`
@@ -109,7 +109,7 @@ specific overrides. Good use case for this are things like
 * shared sstate cache: you can provide `$SSTATE_DIR` via ~/.yocto/site.conf.
 * local PREMIRROR
 
-Internally the `oe-init-build-env` script from the used openembedded / poky
+Internally the `oe-init-build-env` script from the used OpenEmbedded / poky
 meta layer will be sourced from `setup-environment` to get the bitbake environment
 
 After this step, everything is setup to build an image using bitbake.
@@ -202,4 +202,4 @@ Please make sure, to remove things like
 * `ssh_allow_root_login`
 
 from `IMAGE_FEATURES` and / or `IMAGE_EXTRA_FEATURES` before release. View the
-openembedded / Yocto Project and bitbake documentation.
+OpenEmbedded / Yocto Project and bitbake documentation.
