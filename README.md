@@ -12,7 +12,7 @@ Clone this repo using `git clone --branch=<branch-name> --recurse-submodules <ur
 
 ## License information
 
-This repo contains scripts meta data and documentation. For licensing information
+This repo contains scripts, meta data and documentation. For licensing information
 see the file [LICENSE.md](LICENSE.md)
 
 This repo allows you to setup a workspace / buildspace for poky / the Yocto Project
