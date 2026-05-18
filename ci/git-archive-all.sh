@@ -29,7 +29,6 @@ trap 'error_abort $LINENO' ERR
 
 # Internal variables and initializations.
 readonly PROGRAM=$(basename "$0")
-readonly VERSION=0.2
 
 readonly OLD_PWD="$(pwd)"
 TMPDIR=${TMPDIR:-/tmp}
@@ -77,8 +76,6 @@ Creates an archive for the entire git superproject, and its submodules
 using the passed parameters, described below.
 
 OPTIONS
-   --version  Prints the program version number on a line by itself and exits.
-
 -? --usage --help  Prints this usage output and exits.
 
    --format <fmt>  archive is created with the named
@@ -104,11 +101,6 @@ OPTIONS
 -v --verbose  progress will be printed.
 
 END
-}
-
-function version () {
-    echo "${PROGRAM} version ${VERSION}"
-    return 0
 }
 
 function rm_file () {
@@ -153,11 +145,6 @@ function main () {
 		    shift
 		    COMMIT="$1"
 		    shift
-		    ;;
-
-		--version )
-		    version
-		    exit
 		    ;;
 
 		--verbose | -v )
