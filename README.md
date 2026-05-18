@@ -83,7 +83,7 @@ to newer branch or consider using mainline / upstream versions.
 
 ### Setting up an initial build space
 
-To set up an initial build space, clone this repo using 
+To set up an initial build space, clone this repo using
 
 `git clone --branch=<branch-name> --recurse-submodules <url>`
 
