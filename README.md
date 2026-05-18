@@ -83,6 +83,15 @@ to newer branch or consider using mainline / upstream versions.
 up to end of April 2026. See https://wiki.yoctoproject.org/wiki/Releases.
 Users should update to a newer version with longer maintenance.
 
+Development for this branch (kirkstone) has stopped by TQ Systems GmbH because of
+deprecation of kirkstone LTS by Yocto Project / OpenEmbedded, see
+[Releases page of Yocto Project](https://www.yoctoproject.org/development/releases/).
+If updating to newer LTS version is not possible, contact TQ-Systems GmbH support for assistance.
+
+Furthermore you can use and work with [meta-lts-collab layer](https://git.yoctoproject.org/meta-lts-collab)
+for security updates. Please note that this a community effort and may not cover all recipes / layers
+used with your project. Updates for recipes in `meta-tq` are out of scope of `meta-lts-collab`.
+
 ### Setting up an initial build space
 
 To set up an initial build space, clone this repo using
