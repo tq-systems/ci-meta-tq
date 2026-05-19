@@ -127,6 +127,22 @@ function ensure_boolean_arg () {
 }
 
 ####
+# func:   check_tool_valid
+# brief:  checks if a tool is present on the host
+# param:  $1 - tool name
+#
+# return: 0 on success, error_out otherwise
+####
+function check_tool_valid () {
+	local tool="${1}"
+	if which ${tool} >> /dev/null; then
+		return
+	fi
+
+	error_out "missing ${tool}"
+}
+
+####
 # func:   get_md5sum
 # brief:  calculate md5sum for all files directory
 # param:  $1 - directory
