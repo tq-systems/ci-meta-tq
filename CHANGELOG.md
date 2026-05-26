@@ -12,7 +12,17 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## wrynose release 0001 (not released yet)
+
+### Changed
+
+* temporary disable Qt6 support (now LTS version with wrynose support)
+* .gitmodules: update and switch to wrynose branches
+* templates: change BBFILES assignment to allow using comments
+
 ## scarthgap.TQ.ARM.BSP.0008
+
+### Changed
 
 * meta-yocto: update to 94d19f9d8392f8a125764df0f8eda04205c7e76c (includes yocto-5.0.16)
 * openembedded-core: update to a9a785d7fa0cfe2a9087dbcde0ef9f0d2a441375 (includes yocto-5.0.16)
