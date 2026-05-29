@@ -92,7 +92,7 @@
 		},
 		{
 			"name": "LS10x",
-			"pattern": "tqmls10[0-9]+"
+			"pattern": "tqmls10(?!12|17|18|27|28)"
 		},
 		{
 			"name": "LX2160x",
