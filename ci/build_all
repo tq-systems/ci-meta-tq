@@ -47,6 +47,7 @@ ${SCRIPTNAME} [OPTIONS] <build-dir> <template>
 [--deploy=<yes|no>]: en/disable deploy, default no
 [--deploydir=<directory>]: deploy to this directory (only if --deploy=yes)
 [--release=<yes|no>]: en/disable tarball generation, default no, implies deploy=yes
+[--sbom=<yes|no>]: en/disable CycloneDX SBOM+VEX generation, default no, implied by release=yes
 [--skipbitbake=<yes|no>]: don't call bitbake, default no
 [--version=<name>]: needed for deploy to generate the version part of archive names
 [--machines=<list>]: build only selected machines
@@ -182,6 +183,7 @@ main () {
 	local develmode="no"
 	local dryrun="no"
 	local release="no"
+	local sbom="no"
 	local skipbitbake="no"
 	local build_dir=""
 	local build_info_file=""
@@ -247,6 +249,11 @@ main () {
 				error_out "Error: invalid option assignment $1, must be boolean"
 			shift
 			;;
+		--sbom=* )
+			sbom=$(ensure_boolean_arg "${1#*=}") || \
+				error_out "Error: invalid option assignment $1, must be boolean"
+			shift
+			;;
 		--skipbitbake=* )
 			skipbitbake=$(ensure_boolean_arg "${1#*=}") || \
 				error_out "Error: invalid option assignment $1, must be boolean"
@@ -299,8 +306,9 @@ main () {
 	fi
 
 	if [ "${release}" = "yes" ]; then
-		info "release/archive implies deploy"
+		info "release/archive implies deploy and sbom"
 		deploy="yes"
+		sbom="yes"
 	fi
 
 	# set positional arguments in their proper place
@@ -372,6 +380,11 @@ main () {
 			do_create_auto_conf "ci"
 		else
 			do_create_auto_conf
+		fi
+
+		if [ "${sbom}" = "yes" ]
+		then
+			bitbake_args+=("-R" "${SCRIPTPATH}/../sources/template/conf/templates/ci/cyclonedx.conf")
 		fi
 
 		if [ -n "${SSTATE_DIR}" ]; then
@@ -495,6 +508,16 @@ main () {
 						-exec cp "{}" "${deploydir}/${machine}/" \;
 				done
 
+				# deploy CycloneDX SBOM (bom.json + vex.json) if existing
+				if [ "${sbom}" = "yes" ]; then
+					sbom_dir=$(bitbake-getvar -q --value CYCLONEDX_EXPORT_DIR)
+					if [ -d "${sbom_dir}" ]; then
+						find "${sbom_dir}" -maxdepth 1 \
+							\( -name "*.bom.json" -o -name "*.vex.json" \) \
+							-exec cp "{}" "${deploydir}/${machine}/" \;
+					fi
+				fi
+
 				# copy rest of artifact files but do not override existing files which could be
 				# needed for test
 				find "${artifactsdir}" -type f -print0 | \
@@ -550,6 +573,19 @@ main () {
 					cd "${deploydir}"
 					${checksum} --binary *".LIC.tar.gz" > "${archive_basename}.LIC.tar.gz.${checksum}"
 					cd -
+
+					# Archive CycloneDX SBOM (*.bom.json + *.vex.json only)
+					mkdir -p "${archive_basename}.SBOM-CDX"
+					find "${artifactsdir}" -maxdepth 1 \
+						\( -name "*.bom.json" -o -name "*.vex.json" \) \
+						-exec cp "{}" "${archive_basename}.SBOM-CDX/" \;
+					if [ -n "$(ls -A "${archive_basename}.SBOM-CDX")" ]; then
+						tar -cvf "${archive_basename}.SBOM-CDX.tar.gz" \
+							--directory "$(dirname "${archive_basename}.SBOM-CDX")" \
+							"$(basename "${archive_basename}.SBOM-CDX")" \
+							"${tar_options[@]}"
+					fi
+					rm -rf "${archive_basename}.SBOM-CDX"
 
 					mkdir -p "${archive_basename}.MIRROR.SRC"
 					download_dir=$(bitbake-getvar -q --value DL_DIR)
