@@ -20,3 +20,9 @@ ARCHIVER_MODE[src] ?= "original"
 # disable SPDX generation for merge request speedup
 # shall be enabled for release builds
 INHERIT:remove = "create-spdx"
+
+# pin CycloneDX format version and set per-machine output path
+CYCLONEDX_SPEC_VERSION = "1.6"
+CYCLONEDX_EXPORT_DIR   = "${DEPLOY_DIR}/images/${MACHINE}"
+CYCLONEDX_EXPORT_SBOM  = "${CYCLONEDX_EXPORT_DIR}/${MACHINE}-${PN}.bom.json"
+CYCLONEDX_EXPORT_VEX   = "${CYCLONEDX_EXPORT_DIR}/${MACHINE}-${PN}.vex.json"
