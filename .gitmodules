@@ -38,3 +38,7 @@
 	path = sources/meta-yocto
 	url = https://git.yoctoproject.org/meta-yocto
 	branch = scarthgap
+[submodule "sources/meta-cyclonedx"]
+	path = sources/meta-cyclonedx
+	url = https://github.com/iris-GmbH/meta-cyclonedx.git
+	branch = scarthgap
