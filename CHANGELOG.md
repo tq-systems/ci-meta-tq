@@ -14,6 +14,24 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Deprecated
 
+* Machines with i.MX and stable kernel 6.1:
+
+  Please update to a more recent LTS branch. If this is not possible, Kernel bugfixes from
+  linux-stable 6.1 must be applied and recipe fixes from meta-lts-collab shall be used.
+  Contact TQ-Systems GmbH if support is needed.
+
+* Machines for TQMLS1012AL and TQMLS1028L:
+
+  Support for machines based on kernel branches forked from vendor downstream is no longer maintained
+  since there are no more security backports to the base branches available since a longer time.
+  Please update to a more recent LTS branch.
+
+* Machines for TQMT10xx:
+
+  Support for machines based on kernel branches forked from vendor downstream is no longer maintained
+  since there are no more security backports to the base branches available since a longer time.
+  Please contact TQ-Systems GmbH support.
+
 * Configurations for imx and ti:
 
   Support for machines based on kernel branches forked from vendor downstream is no longer maintained
