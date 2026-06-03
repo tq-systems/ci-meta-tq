@@ -12,6 +12,20 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* meta-yocto: update toca5a51aadaf651881d640688dc3e1e123aa30bf6  (includes yocto-5.0.18)
+* openembedded-core: update to ece80784b493c8b7493478fa2ba0dc1d6d80aa79 (includes yocto-5.0.18)
+* bitbake: update to 82abbfcdbda949851a03bb2cb2049ea689564ad6 (yocto-5.0.18)
+* meta-openembedded: update to d8cc4e44001c7257273d290ce8c4496e93d32841
+* meta-freescale: update to 0c27c21cab57876474bb572e5d378b6707e41224
+* meta-ti: update to a444d3137a527d4a405986a5ffa143ed7dfc0961
+* meta-arm: update to c4fd56386ee30f8b46f8e4eb1220edaf510d2ac0
+
+### Fixed
+
+* meta-tq: security fixes for linux-tq_6.6 / linux-tq_6.12
+
 ## scarthgap.TQ.ARM.BSP.0009 (not released yet)
 
 * meta-tq: update TF-A to 2.12 for all i.MX and layerscape based machines
@@ -27,6 +41,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 
 ## scarthgap.TQ.ARM.BSP.0008
+
+### Changed
 
 * meta-yocto: update to 94d19f9d8392f8a125764df0f8eda04205c7e76c (includes yocto-5.0.16)
 * openembedded-core: update to a9a785d7fa0cfe2a9087dbcde0ef9f0d2a441375 (includes yocto-5.0.16)
