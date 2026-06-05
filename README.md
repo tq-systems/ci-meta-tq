@@ -59,6 +59,7 @@ have the following prerequisites:
 - jq
 - bash
 - gnu grep
+- gnu coreutils (for checksums)
 
 ### Configurations
 
