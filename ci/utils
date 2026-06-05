@@ -164,32 +164,6 @@ function get_checksum () {
 }
 
 ####
-# func:   get_md5sum
-# brief:  calculate md5sum for all files directory
-# param:  $1 - directory
-# return: file containing md5sum of files
-####
-function get_md5sum () {
-	local mypwd
-	local directory=${1}
-	mypwd="$(pwd)"
-
-	if [ -d "${directory}" ]; then
-		cd "${directory}" || return
-		local files
-		files=$(find . -maxdepth 1 -type f)
-
-		for file in ${files}; do
-			if ! md5sum "${file}"; then
-				err "md5sum for ${file}"
-			fi
-		done
-	fi
-	
-	cd "${mypwd}" || return
-}
-
-####
 # func:   do_create_auto_conf
 # brief:  recreate the auto.conf based on template files
 #         copy conf/auto.conf.sample to to conf/auto.conf and
