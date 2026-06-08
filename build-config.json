@@ -1,5 +1,5 @@
 {
-	"yocto-release": "scarthgap",
+	"yocto-release": "wrynose",
 	"yocto-machine-folder": "sources/meta-tq/meta-tq/conf/machine",
 	"distros": [
 		{
