@@ -80,22 +80,6 @@ function assign_or_replace() {
 }
 
 ####
-# func:   is_gnu_grep
-# brief:  checks for GNU grep (needed for perl regex with Negative Lookahead)
-####
-function is_gnu_grep() {
-	if which grep >> /dev/null; then
-		if grep --version | grep GNU >> /dev/null; then
-			return
-		fi
-	fi
-
-	error "need gnu grep"
-
-	return 1
-}
-
-####
 # func:   ensure_boolean_arg
 # brief:  checks if value is boolean and transform it to yes/no if applicable
 # $1 argval
