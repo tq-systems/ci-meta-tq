@@ -143,6 +143,25 @@ function check_tool_valid () {
 }
 
 ####
+# func:   check_gnu_util
+# brief:  checks tool version if it is from GNU utils
+# param:  $1 - tool name
+#
+# return: 0 on success, error_out otherwise
+####
+function check_gnu_util() {
+	local tool=${1}
+
+	check_tool_valid ${tool}
+
+	if ${tool} --version | grep GNU >> /dev/null; then
+		return
+	fi
+
+	error_out "need gnu ${tool}"
+}
+
+####
 # func:   get_md5sum
 # brief:  calculate md5sum for all files directory
 # param:  $1 - directory
