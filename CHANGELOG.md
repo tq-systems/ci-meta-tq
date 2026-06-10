@@ -12,8 +12,9 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
-## scarthgap.TQ.ARM.BSP.0009 (not released yet)
+## scarthgap.TQ.ARM.BSP.0009
 
+* meta-tq: update u-boot-tq_2026.01 with 1GiB Nanya RAM support
 * meta-tq: update TF-A to 2.12 for all i.MX and layerscape based machines
 * meta-yocto: update to c7c38663a1cafb1fa8593c0b246811e51d3bbe20 (includes yocto-5.0.17)
 * openembedded-core: update to 52380df998b3a8fe6a091f8547434a3231320a8e (includes yocto-5.0.17)
