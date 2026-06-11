@@ -27,7 +27,7 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * bitbake: update to 82abbfcdbda949851a03bb2cb2049ea689564ad6 (yocto-5.0.18)
 * meta-openembedded: update to d8cc4e44001c7257273d290ce8c4496e93d32841
 * meta-freescale: update to 0c27c21cab57876474bb572e5d378b6707e41224
-* meta-ti: update to a444d3137a527d4a405986a5ffa143ed7dfc0961
+* meta-ti: update to cef9dee6d756d57bf1f4506ca30dc8e0ecea6e81
 * meta-arm: update to c4fd56386ee30f8b46f8e4eb1220edaf510d2ac0
 
 ### Fixed
