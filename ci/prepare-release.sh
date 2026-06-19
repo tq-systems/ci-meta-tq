@@ -25,6 +25,7 @@ readonly PROGRAM="$(basename "$0")"
 VERBOSE=0
 
 # RETURN VALUES/EXIT STATUS CODES
+readonly E_CLEAN=253
 readonly E_BAD_OPTION=254
 readonly E_UNKNOWN=255
 
@@ -62,6 +63,14 @@ function do_set_tag() {
 
 	echo "creating tag in $(pwd)"
 	git tag -a "${VERSION}" -m "${VERSION}"
+}
+
+function do_check_clean() {
+	if [ -n "$(git status --porcelain)" ]; then
+		git status
+		error "Working tree is not clean."
+		exit $E_CLEAN
+	fi
 }
 
 function main () {
@@ -103,6 +112,8 @@ function main () {
 		usage
 		exit $E_BAD_OPTION
 	fi
+
+	do_check_clean
 
 	do_handle_tag "${VERSION}"
 
