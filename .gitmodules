@@ -9,7 +9,7 @@
 [submodule "sources/meta-freescale"]
 	path = sources/meta-freescale
 	url = https://git.yoctoproject.org/git/meta-freescale
-	branch = master
+	branch = wrynose
 [submodule "sources/meta-ti"]
 	path = sources/meta-ti
 	url = https://git.yoctoproject.org/git/meta-ti
@@ -25,7 +25,7 @@
 [submodule "sources/meta-rauc"]
 	path = sources/meta-rauc
 	url = https://github.com/rauc/meta-rauc.git
-	branch = master
+	branch = wrynose
 [submodule "sources/bitbake"]
 	path = sources/bitbake
 	url = https://git.openembedded.org/bitbake
