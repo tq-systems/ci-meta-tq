@@ -12,6 +12,19 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* meta-yocto: update to 8251bdad5fda780a000fb41e6eda82eadf0fa39e (includes yocto 6.0.1)
+* openembedded-core: update to 530fb9ea9ba6ffe212566d3b95d17b519c52c769 (includes yocto 6.0.1)
+* bitbake: update to acfe02fa38b5da9e6a36c6cedcf91d4fcbefbfbd (includes yocto 6.0.1)
+* meta-openembedded: update to a43f0d532c399458cae44ce66f3799a220fbb497
+* meta-arm: update to 01c33e494636781e0787ccafa46cc0102dd68869
+* meta-ti: update to 0801af5f5f1fd526fa2dda7309c02f10f43bc072
+* meta-freescale:  use wrynose branch and update to 67abc1a6832690a43a0fdfe3ca9c71a0466f48f8
+* meta-rauc: use wrynose branch and update to 38da0e5866a953e664001ba90b5edad68d68cd5d
+* .gitmodules: annotate existence of wrynose branches for more submodules
+* ci: allow using other checksum algos than MD5
+
 ## wrynose release 0001 (not released yet)
 
 ### Changed
