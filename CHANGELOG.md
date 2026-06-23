@@ -14,6 +14,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## scarthgap.TQ.ARM.BSP.0010
 
+### Added
+
+* meta-cyclonedx: add submodule (iris-GmbH/meta-cyclonedx, scarthgap branch) for CycloneDX SBOM and VEX generation
+* build_all: add `--sbom` option to enable CycloneDX SBOM/VEX generation (implied by `--release=yes`)
+* templates: add meta-cyclonedx to all bblayers.conf.sample; configure output path and spec version in auto.conf.ci
+
 ### Changed
 
 * meta-yocto: update toca5a51aadaf651881d640688dc3e1e123aa30bf6  (includes yocto-5.0.18)
