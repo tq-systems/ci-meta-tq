@@ -21,7 +21,8 @@ trap 'error_abort $LINENO' ERR
 # separated by `\|` for grep
 readonly MODULES_EXCLUDE_LIST='/(meta-(openembedded|freescale|ti|arm|qt6|rauc|yocto)|bitbake|openembedded-core)'
 
-readonly PROGRAM="$(basename "$0")"
+PROGRAM="$(basename "$0")"
+readonly PROGRAM
 VERBOSE=0
 
 # RETURN VALUES/EXIT STATUS CODES

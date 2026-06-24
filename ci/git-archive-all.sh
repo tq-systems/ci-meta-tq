@@ -28,9 +28,12 @@ trap 'cleanup' QUIT EXIT
 trap 'error_abort $LINENO' ERR
 
 # Internal variables and initializations.
-readonly PROGRAM=$(basename "$0")
+PROGRAM=$(basename "$0")
+OLD_PWD="$(pwd)"
+readonly PROGRAM
+readonly OLD_PWD
 
-readonly OLD_PWD="$(pwd)"
+
 TMPDIR=${TMPDIR:-/tmp}
  # Create a place to store our work's progress
 TMPFILE=$(mktemp "${TMPDIR}/${PROGRAM}.XXXXXX")

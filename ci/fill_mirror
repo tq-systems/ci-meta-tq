@@ -19,8 +19,10 @@ function error_abort () {
 }
 
 readonly SCRIPTNAME="${0}"
-readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
-readonly SCRIPT="$(basename "${0}")"
+SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
+readonly SCRIPTPATH
+SCRIPT="$(basename "${0}")"
+readonly SCRIPT
 
 . "${SCRIPTPATH}/utils"
 

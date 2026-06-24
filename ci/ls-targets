@@ -13,7 +13,8 @@ set -e
 set -C # noclobber
 
 readonly SCRIPTNAME="${0}"
-readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
+SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
+readonly SCRIPTPATH
 
 # TRAP SIGNALS
 trap 'error_abort $LINENO' ERR
