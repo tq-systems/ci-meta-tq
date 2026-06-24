@@ -33,13 +33,22 @@ Releases before `wrynose` used older names with the following scheme:
 
 ## Next Release
 
-## 6.0.0.0-rc1 (not released yet)
+## 6.0.0.0
+
+### Added
+
+* new release naming
+* compatibility to wrynose / 6.0.x
 
 ### Changed
 
 * temporary disable Qt6 support (now LTS version with wrynose support)
 * .gitmodules: update and switch to wrynose branches
 * templates: change BBFILES assignment to allow using comments
+
+### Removed
+
+* compatibility to scarthgap
 
 ## scarthgap.TQ.ARM.BSP.0008
 
