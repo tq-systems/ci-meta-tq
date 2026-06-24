@@ -37,7 +37,7 @@ readonly SCRIPT
 handle_eula() {
 	local EULA_TYPE="${1}"
 	shift
-	local EULA_FILES="${@}"
+	local EULA_FILES="${*}"
 	# Handle EULA setting
 	local EULA_ACCEPTED=
 	#
