@@ -40,13 +40,22 @@ handle_eula() {
 	local EULA_FILES="${@}"
 	# Handle EULA setting
 	local EULA_ACCEPTED=
+	#
+	# reverse order on config file inclusion in bitbake.conf from openembedde-core/meta:
+	# ..
+	# include conf/site.conf
+	# include conf/auto.conf
+	# include conf/toolcfg.conf
+	# include conf/local.conf
+	#
+	readonly configs="local auto site"
 
-	if grep -q "^\s*ACCEPT_${EULA_TYPE}_EULA\s*=\s*[\"'\'']..*[\"'\'']" conf/local.conf; then
-		EULA_ACCEPTED=1
-	fi
-	if grep -q "^\s*ACCEPT_${EULA_TYPE}_EULA\s*=\s*[\"'\'']..*[\"'\'']" conf/auto.conf; then
-		EULA_ACCEPTED=1
-	fi
+	for conf in ${configs}; do
+		if grep -q "^\s*ACCEPT_${EULA_TYPE}_EULA\s*=\s*[\"'\'']..*[\"'\'']" "conf/${conf}.conf"; then
+			EULA_ACCEPTED=1
+			break;
+		fi
+	done
 
 	if [ -n "${EULA_ACCEPTED}" ]; then
 		# The EULA has been accepted once, so ACCEPT_${EULA_TYPE}_EULA is set
