@@ -21,9 +21,6 @@ function error_abort () {
 
 # Internal variables and initializations.
 readonly SCRIPTNAME="${0}"
-readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
-readonly SCRIPT="$(basename "${0}")"
-readonly VERSION=0.4
 
 usage() {
 	cat <<END

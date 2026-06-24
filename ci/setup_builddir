@@ -18,8 +18,10 @@ function error_abort () {
 	echo "error at $1"
 }
 
-readonly SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
-readonly SCRIPT="$(basename "${0}")"
+SCRIPTPATH=$(dirname "$(readlink -f "${0}")")
+readonly SCRIPTPATH
+SCRIPT="$(basename "${0}")"
+readonly SCRIPT
 
 . "${SCRIPTPATH}/utils"
 
