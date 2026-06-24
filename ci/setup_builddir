@@ -101,7 +101,7 @@ EOF
 			y|Y)
 				echo "EULA has been accepted."
 				echo "ACCEPT_${EULA_TYPE}_EULA = \"1\"" >> conf/local.conf
-				if [ ${EULA_TYPE} == "QT6" ]; then
+				if [ "${EULA_TYPE}" == "QT6" ]; then
 					echo "Defaulting to Qt6 LGPL-3.0-only license: https://doc.qt.io/qt-6/lgpl.html"
 					echo "QT_EDITION = \"opensource\"" >> conf/local.conf
 				fi
