@@ -7,17 +7,18 @@
 	url = https://github.com/openembedded/meta-openembedded.git
 	branch = scarthgap
 [submodule "sources/meta-freescale"]
-	path = sources/meta-freescale
-	url = https://git.yoctoproject.org/git/meta-freescale
-	branch = scarthgap
+    path = sources/meta-freescale
+    url = https://git.yoctoproject.org/meta-freescale
+    branch = scarthgap
 [submodule "sources/meta-ti"]
-	path = sources/meta-ti
-	url = https://git.yoctoproject.org/git/meta-ti
-	branch = scarthgap
+    path = sources/meta-ti
+    url = https://git.yoctoproject.org/meta-ti
+    branch = scarthgap
 [submodule "sources/meta-arm"]
-	path = sources/meta-arm
-	url = https://git.yoctoproject.org/git/meta-arm
-	branch = scarthgap
+    path = sources/meta-arm
+    url = https://git.yoctoproject.org/meta-arm
+    branch = scarthgap
+
 [submodule "sources/meta-qt6"]
 	path = sources/meta-qt6
 	url = https://code.qt.io/yocto/meta-qt6.git
