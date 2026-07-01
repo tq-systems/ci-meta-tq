@@ -191,11 +191,15 @@ if [ "$build_dir_setup_enabled" = "true" ]; then
     generated_config=1
 fi
 
-"${SCRIPTDIR}/setup_builddir" handle_licenses "${CWD}"
+# skip for non-interactive builds
+if tty --silent; then
+    # interactive license query
+    "${SCRIPTDIR}/setup_builddir" handle_licenses "${CWD}"
 
-# Print welcome banner, since we drop output from oe-init-build-env above
-if [ -e "${TEMPLATECONF}/conf-notes.txt" ]; then
-    cat "${TEMPLATECONF}/conf-notes.txt"
+    # Print welcome banner, since we drop output from oe-init-build-env above
+    if [ -e "${TEMPLATECONF}/conf-notes.txt" ]; then
+        cat "${TEMPLATECONF}/conf-notes.txt"
+    fi
 fi
 
 # finally give info whether we use an existing buildspace or
