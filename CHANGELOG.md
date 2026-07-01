@@ -20,6 +20,12 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
   linux-stable 6.1 must be applied and recipe fixes from meta-lts-collab shall be used.
   Contact TQ-Systems GmbH if support is needed.
 
+* Machines for TQMLS102xL:
+
+  Support for machines based on 5.4 LTS kernel branch no longer maintained
+  since this kernel version is not longer in LTS. Please update to a more recent LTS branch.
+  Contact TQ-Systems GmbH if support is needed.
+
 * Machines for TQMLS1012AL and TQMLS1028L:
 
   Support for machines based on kernel branches forked from vendor downstream is no longer maintained
