@@ -48,7 +48,7 @@ handle_eula() {
 	# include conf/toolcfg.conf
 	# include conf/local.conf
 	#
-	readonly configs="local auto site"
+	local -r configs="local auto site"
 
 	for conf in ${configs}; do
 		if grep -q "^\s*ACCEPT_${EULA_TYPE}_EULA\s*=\s*[\"'\'']..*[\"'\'']" "conf/${conf}.conf"; then
