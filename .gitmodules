@@ -21,7 +21,7 @@
 [submodule "sources/meta-qt6"]
 	path = sources/meta-qt6
 	url = https://code.qt.io/yocto/meta-qt6.git
-	branch = 6.8
+	branch = 6.11
 [submodule "sources/meta-rauc"]
 	path = sources/meta-rauc
 	url = https://github.com/rauc/meta-rauc.git
