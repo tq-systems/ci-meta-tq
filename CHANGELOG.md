@@ -18,6 +18,16 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 * build_all: add `--sbom` option to enable CycloneDX SBOM/VEX generation (implied by `--release=yes`)
 * templates: add meta-cyclonedx to all bblayers.conf.sample; configure output path and spec version in auto.conf.ci
 
+### Changed
+
+* reenable insane checks for CI mirroring
+* templates: update uninative mirror handling and leave uninativ INHERIT up to distro
+* CI: improved coding style in scripts
+
+### Fixed
+
+CI: check for non-interactive builds to prevent interactive license acceptance query
+
 ## scarthgap.TQ.ARM.BSP.0010 (not released yet)
 
 ### Changed
