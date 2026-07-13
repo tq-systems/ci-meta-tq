@@ -438,6 +438,7 @@ main () {
 				local machine_archive
 				local pkg_deploy_dir
 				local pkg_type
+				local sbom_dir
 				local yocto_machine_dir
 
 				artifactsdir=$(bitbake-getvar --quiet --value DEPLOY_DIR_IMAGE)
@@ -578,7 +579,7 @@ main () {
 
 					# Archive CycloneDX SBOM (*.bom.json + *.vex.json only)
 					mkdir -p "${archive_basename}.SBOM-CDX"
-					find "${artifactsdir}" -maxdepth 1 \
+					find "${sbom_dir}" -maxdepth 1 \
 						\( -name "*.bom.json" -o -name "*.vex.json" \) \
 						-exec cp "{}" "${archive_basename}.SBOM-CDX/" \;
 					if [ -n "$(ls -A "${archive_basename}.SBOM-CDX")" ]; then
