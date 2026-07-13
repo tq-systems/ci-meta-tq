@@ -591,6 +591,9 @@ main () {
 					if ! [ -f "${archive_basename}.SBOM-CDX.tar.gz" ]; then
 						error_out "failed to create ${archive_basename}.SBOM-CDX.tar.gz"
 					fi
+					cd "${deploydir}"
+					${checksum} --binary ./*.SBOM-CDX.tar.gz > "${archive_basename}.SBOM-CDX.tar.gz.${checksum}"
+					cd -
 
 					mkdir -p "${archive_basename}.MIRROR.SRC"
 					download_dir=$(bitbake-getvar --quiet --value DL_DIR)
