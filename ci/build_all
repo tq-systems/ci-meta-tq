@@ -548,7 +548,7 @@ main () {
 
 					# create a file containing checksum of binary archive
 					cd "${deploydir}"
-					${checksum} --binary *".BIN.tar.gz" > "${archive_basename}.BIN.tar.gz.${checksum}"
+					${checksum} --binary ./*.BIN.tar.gz > "${archive_basename}.BIN.tar.gz.${checksum}"
 					cd -
 
 					# create licenses and mirror archive
@@ -571,7 +571,7 @@ main () {
 
 					# create a file containing checksum of license archive
 					cd "${deploydir}"
-					${checksum} --binary *".LIC.tar.gz" > "${archive_basename}.LIC.tar.gz.${checksum}"
+					${checksum} --binary ./*.LIC.tar.gz > "${archive_basename}.LIC.tar.gz.${checksum}"
 					cd -
 					# Archive CycloneDX SBOM (*.bom.json + *.vex.json only)
 					mkdir -p "${archive_basename}.SBOM-CDX"
