@@ -426,7 +426,7 @@ main () {
 			local distro_codename
 
 			# note: this depends on a selected distro
-			distro_codename=$(bitbake-getvar -q --value --ignore-undefined DISTRO_CODENAME)
+			distro_codename=$(bitbake-getvar --quiet --value --ignore-undefined DISTRO_CODENAME)
 
 			for machine in ${machines}; do
 				# export $MACHINE before query bitbake
@@ -440,7 +440,7 @@ main () {
 				local pkg_type
 				local yocto_machine_dir
 
-				artifactsdir=$(bitbake-getvar -q --value DEPLOY_DIR_IMAGE)
+				artifactsdir=$(bitbake-getvar --quiet --value DEPLOY_DIR_IMAGE)
 				machine_archive=${machine}_${config}_${distro_codename}_${distro}_${stamp}
 				# DEPLOY_DIR_<pkg> depends on PACKAGE_CLASSES, images are built from first type
 				# package class names have naming convention 'package_<type>'
@@ -510,7 +510,7 @@ main () {
 
 				# deploy CycloneDX SBOM (bom.json + vex.json) if existing
 				if [ "${sbom}" = "yes" ]; then
-					sbom_dir=$(bitbake-getvar -q --value CYCLONEDX_EXPORT_DIR)
+					sbom_dir=$(bitbake-getvar --quiet --value CYCLONEDX_EXPORT_DIR)
 					if [ -d "${sbom_dir}" ]; then
 						find "${sbom_dir}" -maxdepth 1 \
 							\( -name "*.bom.json" -o -name "*.vex.json" \) \
@@ -587,7 +587,7 @@ main () {
 					rm -rf "${archive_basename}.SBOM-CDX"
 
 					mkdir -p "${archive_basename}.MIRROR.SRC"
-					download_dir=$(bitbake-getvar -q --value DL_DIR)
+					download_dir=$(bitbake-getvar --quiet --value DL_DIR)
 					# query all archived sources, needs archiver class in config
 					archived_sources=$(find . -wholename "*tmp*/deploy/sources/*/*/*" -printf "%f\n" | sort)
 
