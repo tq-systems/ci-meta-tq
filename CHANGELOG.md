@@ -33,6 +33,10 @@ Releases before `wrynose` used older names with the following scheme:
 
 ## Next Release
 
+### Added
+
+* meta-qt6: Add support for Qt6 in wrynose branch
+
 ### Changed
 
 * meta-yocto: update to 8251bdad5fda780a000fb41e6eda82eadf0fa39e (includes yocto 6.0.1)
