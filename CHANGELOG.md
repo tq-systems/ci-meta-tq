@@ -33,19 +33,21 @@ Releases before `wrynose` used older names with the following scheme:
 
 ## Next Release
 
+## 6.0.1.0-ci1
+
 ### Added
 
 * meta-qt6: Add support for Qt6 in wrynose branch
 
 ### Changed
 
-* meta-yocto: update to 8251bdad5fda780a000fb41e6eda82eadf0fa39e (includes yocto 6.0.1)
-* openembedded-core: update to 530fb9ea9ba6ffe212566d3b95d17b519c52c769 (includes yocto 6.0.1)
-* bitbake: update to acfe02fa38b5da9e6a36c6cedcf91d4fcbefbfbd (includes yocto 6.0.1)
-* meta-openembedded: update to a43f0d532c399458cae44ce66f3799a220fbb497
-* meta-arm: update to 01c33e494636781e0787ccafa46cc0102dd68869
+* meta-yocto: update to 824795b885b25e074a2880fbcd54e1a6c875d47d (includes yocto 6.0.2)
+* openembedded-core: update to b5a6cada82d7ffb362bda9081c354dcc0b6ee264 (includes yocto 6.0.2)
+* meta-cyclonedx: update to 02ec3a875f2cb3ae6ed85981d09228409d25a108
+* meta-arm: update to caa36c53f796beb25d9b9f58b1b7a492e9987e15 (CORSTONE1000-2026.05)
+* meta-freescale: use wrynose branch and  update to 381158b2010cb9c450c24ac2dc72afcb1536d54e
+* meta-openembedded: update to d97b5602d7f64422c94b7311466cda7f6b1962d5
 * meta-ti: update to 0801af5f5f1fd526fa2dda7309c02f10f43bc072
-* meta-freescale:  use wrynose branch and update to 67abc1a6832690a43a0fdfe3ca9c71a0466f48f8
 * meta-rauc: use wrynose branch and update to 38da0e5866a953e664001ba90b5edad68d68cd5d
 * .gitmodules: annotate existence of wrynose branches for more submodules
 * ci: allow using other checksum algos than MD5
