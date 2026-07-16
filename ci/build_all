@@ -426,7 +426,7 @@ main () {
 			local distro_codename
 
 			# note: this depends on a selected distro
-			distro_codename=$(bitbake-getvar -q --value --ignore-undefined DISTRO_CODENAME)
+			distro_codename=$(bitbake-getvar --quiet --value --ignore-undefined DISTRO_CODENAME)
 
 			for machine in ${machines}; do
 				# export $MACHINE before query bitbake
@@ -438,9 +438,10 @@ main () {
 				local machine_archive
 				local pkg_deploy_dir
 				local pkg_type
+				local sbom_dir
 				local yocto_machine_dir
 
-				artifactsdir=$(bitbake-getvar -q --value DEPLOY_DIR_IMAGE)
+				artifactsdir=$(bitbake-getvar --quiet --value DEPLOY_DIR_IMAGE)
 				machine_archive=${machine}_${config}_${distro_codename}_${distro}_${stamp}
 				# DEPLOY_DIR_<pkg> depends on PACKAGE_CLASSES, images are built from first type
 				# package class names have naming convention 'package_<type>'
@@ -510,11 +511,13 @@ main () {
 
 				# deploy CycloneDX SBOM (bom.json + vex.json) if existing
 				if [ "${sbom}" = "yes" ]; then
-					sbom_dir=$(bitbake-getvar -q --value CYCLONEDX_EXPORT_DIR)
+					sbom_dir=$(bitbake-getvar --quiet --value CYCLONEDX_EXPORT_DIR)
 					if [ -d "${sbom_dir}" ]; then
 						find "${sbom_dir}" -maxdepth 1 \
 							\( -name "*.bom.json" -o -name "*.vex.json" \) \
 							-exec cp "{}" "${deploydir}/${machine}/" \;
+					else
+						error_out "built with --sbom, but 'CYCLONEDX_EXPORT_DIR' not found"
 					fi
 				fi
 
@@ -548,7 +551,7 @@ main () {
 
 					# create a file containing checksum of binary archive
 					cd "${deploydir}"
-					${checksum} --binary *".BIN.tar.gz" > "${archive_basename}.BIN.tar.gz.${checksum}"
+					${checksum} --binary ./*.BIN.tar.gz > "${archive_basename}.BIN.tar.gz.${checksum}"
 					cd -
 
 					# create licenses and mirror archive
@@ -571,7 +574,25 @@ main () {
 
 					# create a file containing checksum of license archive
 					cd "${deploydir}"
-					${checksum} --binary *".LIC.tar.gz" > "${archive_basename}.LIC.tar.gz.${checksum}"
+					${checksum} --binary ./*.LIC.tar.gz > "${archive_basename}.LIC.tar.gz.${checksum}"
+					cd -
+					# Archive CycloneDX SBOM (*.bom.json + *.vex.json only)
+					mkdir -p "${archive_basename}.SBOM-CDX"
+					find "${sbom_dir}" -maxdepth 1 \
+						\( -name "*.bom.json" -o -name "*.vex.json" \) \
+						-exec cp "{}" "${archive_basename}.SBOM-CDX/" \;
+					if [ -n "$(ls -A "${archive_basename}.SBOM-CDX")" ]; then
+						tar -cvf "${archive_basename}.SBOM-CDX.tar.gz" \
+							--directory "$(dirname "${archive_basename}.SBOM-CDX")" \
+							"$(basename "${archive_basename}.SBOM-CDX")" \
+							"${tar_options[@]}"
+					fi
+					rm -rf "${archive_basename}.SBOM-CDX"
+					if ! [ -f "${archive_basename}.SBOM-CDX.tar.gz" ]; then
+						error_out "failed to create ${archive_basename}.SBOM-CDX.tar.gz"
+					fi
+					cd "${deploydir}"
+					${checksum} --binary ./*.SBOM-CDX.tar.gz > "${archive_basename}.SBOM-CDX.tar.gz.${checksum}"
 					cd -
 					# Archive CycloneDX SBOM (*.bom.json + *.vex.json only)
 					mkdir -p "${archive_basename}.SBOM-CDX"
@@ -587,7 +608,7 @@ main () {
 					rm -rf "${archive_basename}.SBOM-CDX"
 
 					mkdir -p "${archive_basename}.MIRROR.SRC"
-					download_dir=$(bitbake-getvar -q --value DL_DIR)
+					download_dir=$(bitbake-getvar --quiet --value DL_DIR)
 					# query all archived sources, needs archiver class in config
 					archived_sources=$(find . -wholename "*tmp*/deploy/sources/*/*/*" -printf "%f\n" | sort)
 

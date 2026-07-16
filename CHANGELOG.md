@@ -12,12 +12,6 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
-### Added
-
-* meta-cyclonedx: add submodule (iris-GmbH/meta-cyclonedx, scarthgap branch) for CycloneDX SBOM and VEX generation
-* build_all: add `--sbom` option to enable CycloneDX SBOM/VEX generation (implied by `--release=yes`)
-* templates: add meta-cyclonedx to all bblayers.conf.sample; configure output path and spec version in auto.conf.ci
-
 ### Changed
 
 * reenable insane checks for CI mirroring
@@ -28,7 +22,13 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 CI: check for non-interactive builds to prevent interactive license acceptance query
 
-## scarthgap.TQ.ARM.BSP.0010 (not released yet)
+## scarthgap.TQ.ARM.BSP.0010
+
+### Added
+
+* meta-cyclonedx: add submodule (iris-GmbH/meta-cyclonedx, scarthgap branch) for CycloneDX SBOM and VEX generation
+* build_all: add `--sbom` option to enable CycloneDX SBOM/VEX generation (implied by `--release=yes`)
+* templates: add meta-cyclonedx to all bblayers.conf.sample; configure output path and spec version in auto.conf.ci
 
 ### Changed
 
