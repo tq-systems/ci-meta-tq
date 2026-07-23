@@ -32,13 +32,14 @@ CI: check for non-interactive builds to prevent interactive license acceptance q
 
 ### Changed
 
-* meta-yocto: update toca5a51aadaf651881d640688dc3e1e123aa30bf6  (includes yocto-5.0.18)
-* openembedded-core: update to ece80784b493c8b7493478fa2ba0dc1d6d80aa79 (includes yocto-5.0.18)
-* bitbake: update to 82abbfcdbda949851a03bb2cb2049ea689564ad6 (yocto-5.0.18)
-* meta-openembedded: update to d8cc4e44001c7257273d290ce8c4496e93d32841
-* meta-freescale: update to 0c27c21cab57876474bb572e5d378b6707e41224
-* meta-ti: update to cef9dee6d756d57bf1f4506ca30dc8e0ecea6e81
-* meta-arm: update to c4fd56386ee30f8b46f8e4eb1220edaf510d2ac0
+* meta-yocto: update to 2f749ae477c3b94dce71038f025180d7f612dab0 (yocto-5.0.19)
+* openembedded-core: update to 2814f0962f56c8d1afa4de76d2895ba9b5cb767d (yocto-5.0.19)
+* bitbake: update to 0880963fea4d91a034e4a6e007d23f98658ab986 (yocto-5.0.19)
+* meta-qt6: update to 2a9a0070f652134e15df332918a012862bf34047 (v6.8.4-lts-lgpl)
+* meta-openembedded: update to 7eb94107580092f79ff1b639a87762fe6f96aa12
+* meta-arm: update to 23b572c40ea6709ab3f8bd7abbb5a795fc3631c2
+* meta-ti: update to 6759bb35871fb4f17a2463bee641aa6df6a3d048
+* meta-freescale: update to 4143744bc82508f00395a0ffe30e624b2341176a
 
 ### Fixed
 
