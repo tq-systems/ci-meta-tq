@@ -2,7 +2,7 @@
 ## Extensions for CI (build_all / build without network access)
 ##
 
-# allow automatic building with meta-freescale
+# Allow automatic building with meta-freescale / meta-ti / meta-qt6
 ACCEPT_FSL_EULA = "y"
 ACCEPT_NXP_EULA = "y"
 ACCEPT_TI_EULA = "y"
