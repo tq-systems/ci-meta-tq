@@ -12,9 +12,19 @@ ACCEPT_QT6_EULA = "y"
 BB_NO_NETWORK = "1"
 BB_FETCH_PREMIRRORONLY = "1"
 
-# generate source and license dir for deployment
+# generate source and license dir for deployment:
 INHERIT += "archiver"
-COPYLEFT_LICENSE_EXCLUDE ?= "CLOSED Proprietary"
+# include all packages in archive, that are not covered by COPYLEFT_LICENSE_EXCLUDE
+COPYLEFT_LICENSE_INCLUDE = "*"
+# contains "CLOSED Proprietary" per default
+COPYLEFT_LICENSE_EXCLUDE += "\
+    CLOSED \
+    NXP-Binary-EULA \
+    Proprietary \
+    TI-TFL \
+    TI-TSPA \
+"
+
 ARCHIVER_MODE[src] ?= "original"
 
 # disable SPDX generation for merge request speedup
