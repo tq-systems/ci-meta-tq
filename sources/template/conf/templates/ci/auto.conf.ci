@@ -25,9 +25,12 @@ COPYLEFT_LICENSE_EXCLUDE += "\
     TI-TSPA \
 "
 
+ARCHIVER_MIRROR_EXCLUDE = "file://"
+
 # Source packages for package mirror
 BB_GENERATE_MIRROR_TARBALLS = "1"
 ARCHIVER_MODE[src] ?= "mirror"
+ARCHIVER_MODE[mirror] = "combined"
 
 # disable SPDX generation for merge request speedup
 # shall be enabled for release builds
