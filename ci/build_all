@@ -529,6 +529,7 @@ main () {
 				if [ "${release}" = "yes" ]
 				then
 					local download_dir
+					local archiver_src_dir
 					local archive_basename
 					local download_sources
 					local archived_sources
@@ -597,22 +598,17 @@ main () {
 					cd -
 
 					mkdir -p "${archive_basename}.MIRROR.SRC"
+
 					download_dir=$(bitbake-getvar --quiet --value DL_DIR)
-					# query all archived sources, needs archiver class in config
-					archived_sources=$(find . -wholename "*tmp*/deploy/sources/*/*/*" -printf "%f\n" | sort)
-
-					# copy the file from archived sources if it exists in download_dir
-					download_sources=$(find "${download_dir}" -printf "%f\n" | sort)
-					combined_sources=$(comm -12 <(echo "$archived_sources") <(echo "$download_sources"))
-					echo "$combined_sources" | xargs -I%  cp "${download_dir}/%" "${archive_basename}.MIRROR.SRC" --dereference
-
-					# we assume here that bitbake is configured to use shallow cloning
-					# and that these packages use ${BITBAKE_GIT_MIRROR_PKG_EXTENSION} as extension
-					find "${download_dir}" -name "gitshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION}" -print0 | \
+					archiver_src_dir=$(bitbake-getvar --quiet --value DEPLOY_DIR_SRC)
+					# query all archived sources,
+					# needs archiver class in config and correct settings:
+					# ARCHIVER_MODE[src] = "mirror"
+					# ARCHIVER_MODE[mirror] = "combined"
+					# ARCHIVER_MIRROR_EXCLUDE = "file://"
+					# BB_GENERATE_MIRROR_TARBALLS = "1"
+					find "${archiver_src_dir}" -type f -print0 | \
 						xargs --null --no-run-if-empty cp --no-clobber --target-directory="${archive_basename}.MIRROR.SRC/"
-					find "${download_dir}" -name "gitsmshallow_*.${BITBAKE_GIT_MIRROR_PKG_EXTENSION}" -print0 | \
-						xargs --null --no-run-if-empty cp --no-clobber --target-directory="${archive_basename}.MIRROR.SRC/"
-
 				fi
 				# TODO: linking ${artifactsdir} to ${deploydir}/${machine} only works for fresh
 				# checkout as used in a CI environment
