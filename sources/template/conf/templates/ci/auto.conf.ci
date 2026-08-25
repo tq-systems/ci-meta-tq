@@ -41,3 +41,9 @@ CYCLONEDX_SPEC_VERSION = "1.6"
 CYCLONEDX_EXPORT_DIR   = "${DEPLOY_DIR}/images/${MACHINE}"
 CYCLONEDX_EXPORT_SBOM  = "${CYCLONEDX_EXPORT_DIR}/${MACHINE}-${PN}.bom.json"
 CYCLONEDX_EXPORT_VEX   = "${CYCLONEDX_EXPORT_DIR}/${MACHINE}-${PN}.vex.json"
+# Use kernel CVE filtering based on github.com/CVEProject/cvelistV5.git
+CYCLONEDX_VEX_ADD_KERNEL_CVE = "1"
+
+# exclude github.com/CVEProject/cvelistV5.git to work with up to date data:
+BB_NO_NETWORK:pn-sbom-cve-check-update-cvelist-native = "0"
+BB_FETCH_PREMIRRORONLY:pn-sbom-cve-check-update-cvelist-native = "0"
