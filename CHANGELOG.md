@@ -35,6 +35,8 @@ Releases before `wrynose` used older names with the following scheme:
 
 ### Changed
 
+* ci: adjust to new meta-cyclonedx and allow kernel CVE filtering with VEX output
+* sources/meta-cyclonedx: update to 94c81e3c9cb9d93f0b0b070c0f58ebdccbc76ea9
 * ci: improve source mirror archiving
   * improve license filter
 
