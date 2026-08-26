@@ -33,6 +33,16 @@ Releases before `wrynose` used older names with the following scheme:
 
 ## Next Release
 
+### Changed
+
+* ci: improve source mirror archiving
+  * improve license filter
+
+    - all licenses not marked via exclude list
+    - completion of exclude list
+  * switch to use better archiver mode for source mirror
+  * simplify source mirror archive creation
+
 ## 6.0.1.0-ci1
 
 ### Added
