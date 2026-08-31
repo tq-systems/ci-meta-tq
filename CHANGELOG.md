@@ -12,6 +12,16 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+### Changed
+
+* ci: improve source mirror archiving
+  * improve license filter
+
+    - all licenses not marked via exclude list
+    - completion of exclude list
+  * switch to use better archiver mode for source mirror
+  * simplify source mirror archive creation
+
 ## scarthgap.TQ.ARM.BSP.0011
 
 ### Changed
