@@ -33,7 +33,6 @@ OLD_PWD="$(pwd)"
 readonly PROGRAM
 readonly OLD_PWD
 
-
 TMPDIR=${TMPDIR:-/tmp}
  # Create a place to store our work's progress
 TMPFILE=$(mktemp "${TMPDIR}/${PROGRAM}.XXXXXX")
