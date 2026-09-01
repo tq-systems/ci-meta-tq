@@ -528,12 +528,8 @@ main () {
 
 				if [ "${release}" = "yes" ]
 				then
-					local download_dir
 					local archiver_src_dir
 					local archive_basename
-					local download_sources
-					local archived_sources
-					local combined_sources
 					declare -a tar_options=(
 						--numeric-owner --owner=0 --group=0
 						--sort=name --mtime="@${COMMIT_TIMESTAMP}"
@@ -610,7 +606,6 @@ main () {
 
 					mkdir -p "${archive_basename}.MIRROR.SRC"
 
-					download_dir=$(bitbake-getvar --quiet --value DL_DIR)
 					archiver_src_dir=$(bitbake-getvar --quiet --value DEPLOY_DIR_SRC)
 					# query all archived sources,
 					# needs archiver class in config and correct settings:
