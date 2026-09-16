@@ -14,6 +14,15 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ### Changed
 
+* meta-yocto: update to 961c2399d06fbdb04ee27d06079e186d2c4a14ad (yocto-5.0.20)
+* openembedded-core: update to bb166ac536daa43602ce8962cd3eb137783b8dc9 (contains yocto-5.0.20)
+* bitbake: update to cd50c3481e32afff995a143c3459cfa5ae25abd5 (contains yocto-5.0.20)
+* meta-acyclonedx: update to 4854933e0850172c7d6115eb139af331127748de
+* meta-openembedded: update to b5874ea07d69919d9b40d59f2c2f0bbd24bc3259
+* meta-freescale: update to 9fd8256b5fe8dd4eded2d07206115b14c56bef8b
+* meta-ti: update to ef43a90c91d5a9754b2f28f09debd553fbc6a2d5
+* meta-arm: update to 0a4b911d9fd63ab29c4532a907fae3282dbdcfe4
+
 * ci: improve source mirror archiving
   * improve license filter
 
