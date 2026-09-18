@@ -35,6 +35,16 @@ Releases before `wrynose` used older names with the following scheme:
 
 ### Changed
 
+sources/meta-yocto: update to 1b132647002eea43a2c7a7f857f63f42dacbc26c (includes yocto 6.0.3)
+sources/openembedded-core: update to 00c66f1d38a234f7738c2eb8fafa41b4f057a865 (includes yocto 6.0.3)
+sources/bitbake: update to 0ad6c1c34a5e07a5f8dd66ab248c1e7b37b69fa9 (includes yocto 6.0.3)
+sources/meta-cyclonedx: update to c345f349ad30b053e9b85d1d478f31084fa06afe
+sources/meta-qt6: update to c289aa1c4b3be5c4f69d1a6d3fc6a58bb4b07a93 (include Qt 6.11.3)
+sources/meta-openembedded: update to 14282a02be9c74a1276a7cda7d6c89e054699a11
+sources/meta-ti: update to 018a5e2bc1da78e198ea57900b993ea91795a5d0
+sources/meta-freescale: update to 24668804f62fbf01432d5904255be740c218c716
+sources/meta-arm: update to 0979b80429099f1a42dc0026c8c466cee780bc74
+
 * ci: adjust to new meta-cyclonedx and allow kernel CVE filtering with VEX output
 * sources/meta-cyclonedx: update to 94c81e3c9cb9d93f0b0b070c0f58ebdccbc76ea9
 * ci: improve source mirror archiving
