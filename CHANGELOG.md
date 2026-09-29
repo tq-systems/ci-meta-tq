@@ -12,6 +12,8 @@ files in git the submodule for meta-tq (meta layers meta-tq and meta-dumpling).
 
 ## Next Release
 
+## scarthgap.TQ.ARM.BSP.0012 (not released yet)
+
 ### Changed
 
 * meta-yocto: update to 961c2399d06fbdb04ee27d06079e186d2c4a14ad (yocto-5.0.20)
